@@ -1006,6 +1006,7 @@
             padding: 10px 14px;
             border-radius: 20px;
             font-size: var(--bubble-font-size, 18px);
+            white-space: pre-wrap;
             word-break: break-word;
         }
         .message-row.me .bubble {
@@ -1614,14 +1615,14 @@
         }
         .music-float-btn {
             position: fixed;
-            right: 16px;
-            bottom: 90px;
-            width: 48px;
-            height: 48px;
+            right: 12px;
+            bottom: 80px;
+            width: 36px;
+            height: 36px;
             border-radius: 50%;
             background: var(--accent-color);
             color: white;
-            font-size: 22px;
+            font-size: 18px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -1713,38 +1714,27 @@
         }
         #musicManageModal .modal-content {
             max-width: 480px;
-            background: linear-gradient(145deg, var(--input-bg) 0%, var(--card-bg) 100%) !important;
-            border-radius: 28px !important;
-            padding: 20px 22px 24px !important;
-            box-shadow: 0 20px 50px rgba(120, 80, 200, 0.25) !important;
+            background: var(--input-bg);
+            border-radius: 28px;
+            padding: 20px 22px 24px;
+            box-shadow: 0 20px 50px rgba(120, 80, 200, 0.25);
         }
         .netease-add-area {
-            background: rgba(255, 255, 255, 0.7) !important;
+            background: var(--card-bg);
             backdrop-filter: blur(12px);
-            border-radius: 20px !important;
-            padding: 16px !important;
-            margin-bottom: 12px !important;
-            border: 1px solid rgba(190, 160, 240, 0.2) !important;
-            box-shadow: 0 4px 12px rgba(160, 140, 210, 0.1);
+            border-radius: 20px;
+            padding: 16px;
+            margin-bottom: 12px;
+            border: 1px solid var(--border-light);
+            box-shadow: var(--shadow-sm);
             transition: box-shadow 0.2s;
         }
         .netease-add-area:hover {
             box-shadow: 0 6px 18px rgba(160, 140, 210, 0.18);
         }
         #musicManageModal .sec-btn {
-            background: var(--accent-color) !important;
-            color: white !important;
+            padding: 10px 20px;
             font-weight: 600;
-            border-radius: 40px;
-            padding: 12px 20px;
-            box-shadow: 0 4px 12px rgba(167, 133, 230, 0.3);
-            transition: all 0.2s ease;
-        }
-        #musicManageModal .sec-btn-outline {
-            background: transparent !important;
-            border: 1.5px solid var(--accent-color) !important;
-            color: var(--accent-color) !important;
-            box-shadow: none !important;
         }
         #musicManageModal .sec-btn:active {
             transform: scale(0.97);
@@ -2083,55 +2073,7 @@
         .wf-stat-mini .lbl {
             font-size: 10px;
             color: var(--text-secondary);
-        }
-        .wf-strip {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 6px 14px;
-            overflow-x: auto;
-            flex-shrink: 0;
-            scrollbar-width: none;
-            background: var(--accent-light);
-            border-radius: 0 0 16px 16px;
-            margin: 0 8px 2px 8px;
-            backdrop-filter: blur(4px);
-        }
-        .wf-strip::-webkit-scrollbar {
-            display: none;
-        }
-        .wf-strip-label {
-            font-size: 11px;
-            font-weight: 600;
-            color: var(--accent-color);
-            flex-shrink: 0;
-            white-space: nowrap;
-        }
-        .wf-strip-tag {
-            white-space: nowrap;
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-size: 11px;
-            flex-shrink: 0;
-            background: var(--accent-light);
-            color: var(--text-primary);
-        }
-        .wf-strip-close {
-            background: none;
-            border: none;
-            font-size: 16px;
-            color: var(--text-secondary);
-            cursor: pointer;
-            padding: 2px 6px;
-            border-radius: 50%;
-            flex-shrink: 0;
-            margin-left: auto;
-            line-height: 1;
-            transition: background 0.15s;
-        }
-        .wf-strip-close:hover {
-            background: var(--accent-light);
-        }
+        }        
         .wf-member-select {
             width: 100%;
             margin-bottom: 12px;
@@ -2498,15 +2440,7 @@
         #sendBtn,
         #activeSendBtn {
             font-size: 16px;
-        }
-        #closeMusicManage {
-            width: 100%;
-            margin-top: 8px;
-            background: rgba(167, 133, 230, 0.12) !important;
-            color: var(--accent-color) !important;
-            font-weight: 500;
-        }
-
+        }        
         #musicManageModal input[type="file"] {
             display: block;
             width: 100%;
@@ -2533,6 +2467,335 @@
 
         body[data-theme="night"] .music-actions .small-btn.danger:active {
             background: rgba(255, 80, 80, 0.35);
+        }
+
+        #momentsModal .modal-content {
+            max-width: 620px;
+            max-height: 95vh;
+            background: var(--input-bg);
+            border-radius: 28px;
+            overflow-y: auto;
+            padding: 10px 14px 20px;
+        }
+        .moments-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            position: sticky;
+            top: 0;
+            background: var(--input-bg);
+            z-index: 2;
+            padding: 10px 0 6px;
+            border-bottom: 1px solid var(--border-light);
+        }
+        .moments-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--accent-color);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .moments-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            padding-bottom: 20px;
+        }
+        .moment-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 14px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-light);
+            transition: all 0.3s;
+        }
+        .moment-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        .moment-header img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--accent-color);
+            cursor: pointer;
+        }
+        .moment-author {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        .moment-author-name {
+            font-weight: 600;
+            font-size: 15px;
+            color: var(--text-primary);
+            cursor: pointer;
+        }
+        .moment-time-loc {
+            font-size: 11px;
+            color: var(--text-tertiary);
+            display: flex;
+            gap: 6px;
+        }
+        .moment-content {
+            font-size: 15px;
+            line-height: 1.6;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+            word-break: break-word;
+            white-space: pre-wrap;
+        }
+        .moment-feeling {
+            display: inline-block;
+            font-size: 12px;
+            background: var(--accent-light);
+            color: var(--accent-color);
+            padding: 2px 10px;
+            border-radius: 20px;
+            margin-bottom: 8px;
+        }
+        .moment-images {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 6px;
+            margin: 10px 0;
+        }
+        .moment-images img {
+            width: 100%;
+            aspect-ratio: 1;
+            object-fit: cover;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: transform 0.15s;
+            border: 1px solid var(--border-light);
+        }
+        .moment-images img:active {
+            transform: scale(0.96);
+        }
+        .moment-actions {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+            margin-top: 10px;
+            border-top: 1px solid var(--border-light);
+            padding-top: 10px;
+        }
+        .moment-action-btn {
+            background: none;
+            border: none;
+            font-size: 14px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 8px;
+            border-radius: 20px;
+            transition: 0.2s;
+        }
+        .moment-action-btn:active {
+            background: var(--accent-light);
+            color: var(--accent-color);
+        }
+        .moment-action-btn.liked {
+            color: #ff6b8b;
+            font-weight: bold;
+        }
+        .moment-comments {
+            margin-top: 8px;
+            padding-left: 4px;
+            max-height: 280px;
+            overflow-y: auto;
+        }
+        .comment-item {
+            font-size: 13px;
+            margin-bottom: 6px;
+            display: flex;
+            gap: 6px;
+        }
+        .comment-author {
+            font-weight: 600;
+            color: var(--accent-color);
+            flex-shrink: 0;
+        }
+        .comment-text {
+            color: var(--text-primary);
+            word-break: break-word;
+        }
+        .comment-input-row {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px;
+            align-items: center;
+        }
+        .comment-input-row input {
+            flex: 1;
+            background: var(--bg-body);
+            border: 1px solid var(--border-light);
+            border-radius: 20px;
+            padding: 6px 12px;
+            font-size: 13px;
+            color: var(--text-primary);
+            outline: none;
+        }
+        .comment-input-row button {
+            background: var(--accent-color);
+            border: none;
+            color: #fff;
+            padding: 4px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+        .comment-input-row button:active {
+            opacity: 0.8;
+        }
+        .moment-empty {
+            text-align: center;
+            padding: 40px 0;
+            color: var(--text-tertiary);
+        }
+        .toolbar .icon-btn.moments-btn {
+            position: relative;
+        }
+        .moments-badge {
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            width: 9px;
+            height: 9px;
+            background: #ff4d6a;
+            border-radius: 50%;
+            border: 1.5px solid #fff;
+            display: none;
+        }
+        .moments-badge.active {
+            display: block;
+        }
+        #momentsContainer {
+            max-height: 55vh;
+            overflow-y: auto;
+            padding-right: 4px;
+        }
+        .comment-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 8px;
+            margin-bottom: 6px;
+        }
+        .comment-body {
+            flex: 1;
+            min-width: 0;
+        }
+        .comment-quote {
+            font-size: 11px;
+            color: var(--text-tertiary);
+            background: var(--accent-light);
+            padding: 2px 8px;
+            border-radius: 8px;
+            margin-bottom: 3px;
+            display: inline-block;
+        }
+        .comment-actions {
+            display: flex;
+            gap: 4px;
+            flex-shrink: 0;
+        }
+        .comment-reply-btn,
+        .comment-delete-btn {
+            background: none;
+            border: none;
+            font-size: 14px;
+            cursor: pointer;
+            color: var(--text-secondary);
+            padding: 2px 4px;
+            border-radius: 10px;
+            transition: 0.1s;
+        }
+        .comment-reply-btn:hover,
+        .comment-delete-btn:hover {
+            background: var(--accent-light);
+            color: var(--accent-color);
+        }
+            .immersive-toggle {
+            position: fixed;
+            right: 12px;
+            top: 38%;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--border-light);
+            color: var(--text-secondary);
+            font-size: 13px;
+            cursor: pointer;
+            z-index: 150;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            transition: all 0.25s ease;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .immersive-toggle:hover {
+            background: var(--accent-light);
+            color: var(--accent-color);
+            box-shadow: 0 4px 16px var(--accent-glow);
+        }
+        .immersive-toggle:active {
+            transform: scale(0.9);
+        }
+        
+        body[data-immersive="true"] .status-header {
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            padding-top: 0;
+            padding-bottom: 0;
+            border-bottom-width: 0;
+            transition: max-height 0.35s cubic-bezier(0.4,0,0.2,1),
+                        opacity 0.3s ease,
+                        padding 0.35s ease,
+                        border 0.3s ease;
+        }
+        body[data-immersive="true"] .status-bar-container {
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            padding-top: 0;
+            padding-bottom: 0;
+            margin-top: 0;
+            transition: max-height 0.35s cubic-bezier(0.4,0,0.2,1),
+                        opacity 0.3s ease,
+                        padding 0.35s ease;
+        }
+        
+        .status-header {
+            max-height: 120px;
+            transition: max-height 0.35s cubic-bezier(0.4,0,0.2,1),
+                        opacity 0.3s ease,
+                        padding 0.35s ease,
+                        border 0.3s ease;
+        }
+        .status-bar-container {
+            max-height: 80px;
+            transition: max-height 0.35s cubic-bezier(0.4,0,0.2,1),
+                        opacity 0.3s ease,
+                        padding 0.35s ease;
+        }
+        
+        body[data-immersive="true"] .music-float-btn {
+            bottom: 60px;
         }
     </style>
 </head>
@@ -2568,6 +2831,10 @@
                 <button class="icon-btn" id="groupChatToggleBtn" title="群聊模式">👥</button>
                 <button class="icon-btn" id="puzzleBtn" title="我们的拼图">🧩</button>
                 <button class="icon-btn" id="wordFreqBtn" title="高频词分析">📊</button>
+                <button class="icon-btn moments-btn" id="momentsBtn" title="朋友圈">
+                    🌏
+                    <span class="moments-badge" id="momentsBadge"></span>
+                </button>
                 <button class="icon-btn" id="toolbarMusicBtn" title="音乐库">🎵</button>
                 <button class="icon-btn" id="letterBtn" title="投递信件">✉️</button>
                 <button class="icon-btn" id="letterHistoryBtn" title="信件历史">📜</button>
@@ -2593,14 +2860,7 @@
                     <button class="status-edit-btn" id="editStatusListBtn" title="编辑ta的状态库">✏️</button>
                 </div>
             </div>
-        </div>
-
-        <div class="wf-strip" id="wfStrip" style="display:none;">
-            <span class="wf-strip-label">💜 高频词</span>
-            <div id="wfStripTags"></div>
-            <button class="wf-strip-close" id="wfStripClose" title="关闭">✕</button>
-        </div>
-
+        </div>        
         <div class="chat-messages" id="chatMessages"></div>
         <div class="input-bar">
             <div class="emoji-btn" id="emojiButton">😊</div>
@@ -2610,6 +2870,7 @@
             <button class="send-small" id="sendBtn">➤</button>
             <button class="send-small" id="activeSendBtn">✨</button>
         </div>
+        <button class="immersive-toggle" id="immersiveToggleBtn" title="沉浸式聊天">▼</button>
         <div id="musicFloatBtn" class="music-float-btn hidden">🎵</div>
         <div id="musicControlPanel" class="music-panel hidden">
             <div class="music-panel-header"><span id="musicTitle">未播放</span><button class="music-close" id="closeMusicPanel">✖️</button></div>
@@ -2624,7 +2885,7 @@
                     <input type="text" id="neteaseSongId" class="msg-input" placeholder="网易云音乐 ID 或完整链接" style="margin-bottom:8px;width:100%;">
                     <input type="text" id="neteaseSongName" class="msg-input" placeholder="歌曲名称（可选）" style="margin-bottom:8px;width:100%;">
                     <button class="sec-btn" id="addNeteaseSongBtn" style="width:100%;">➕ 添加歌曲</button>
-                    <div class="data-note" style="margin-top:6px;">示例：id=1859246916 或完整外链</div>
+                    <div class="data-note" style="margin-top:6px;">示例：id=1859246916 或完整外接（如 https://music.163.com/song/media/outer/url?id=123456.mp3）</div>
                 </div>
                 <div class="netease-add-area" style="margin-top:8px;">
                     <div style="font-weight:500;margin-bottom:6px;">📀 导入JSON歌单</div>
@@ -2639,7 +2900,7 @@
                 </div>
                 <div id="musicListContainer" class="music-vertical-list"></div>
                 <div class="button-group"><button class="sec-btn sec-btn-outline" id="exportMusicBackupBtn">💾 导出备份</button><button class="sec-btn sec-btn-outline" id="batchDeleteMusicBtn">🗑️ 批量删除</button></div>
-                <div class="button-group"><button class="sec-btn" id="closeMusicManage">关闭</button></div>
+                <button class="sec-btn" id="closeMusicManage" style="width:100%;margin-top:12px;">关闭</button>
             </div>
         </div>
     </div>
@@ -2709,7 +2970,6 @@
                     const usedInMengAvatar = (profile.mengAvatar && extractImgId(profile.mengAvatar) === imgId);
                     const usedInMyAvatar = (profile.myAvatar && extractImgId(profile.myAvatar) === imgId);
                     const usedInMemberAvatar = groupMembers.some(m => m.avatar && extractImgId(m.avatar) === imgId);
-
                     if (!usedInOtherMessages && !usedInImgCards && !usedInBg && !usedInMengAvatar && !usedInMyAvatar &&
                         !usedInMemberAvatar) {
                         await deleteImageFromDB(imgId);
@@ -2744,15 +3004,19 @@
             renderMessages();
         }
         function isImgIdRef(url) { return url && typeof url === 'string' && url.startsWith(IMG_ID_PREFIX); }
-
         function extractImgId(url) { return isImgIdRef(url) ? url.substring(IMG_ID_PREFIX.length) : null; }
         async function resolveImageUrl(url) {
             if (isImgIdRef(url)) {
                 const id = extractImgId(url);
                 if (avatarCache.has(url)) return avatarCache.get(url);
                 const base64 = await getImageFromDB(id);
-                if (base64) avatarCache.set(url, base64);
-                return base64 || url;
+                if (base64) {
+                    avatarCache.set(url, base64);
+                    return base64;
+                }
+                // 数据库中没有该图片，返回空字符，而不是引用字符串
+                console.warn('图片未在数据库中:', id);
+                return '';
             }
             return url;
         }
@@ -2765,7 +3029,6 @@
             }
         }
         let imageObserver = null;
-
         function setupLazyImageObserver() {
             if ('IntersectionObserver' in window) {
                 imageObserver = new IntersectionObserver((entries) => {
@@ -2796,7 +3059,6 @@
                 }
             }
         }
-
         function makeImgId() { return 'IMG_' + Date.now() + '_' + Math.random().toString(36).substring(2, 10); }
 
         /* ========= 常量与存储键 ========= */
@@ -2829,17 +3091,66 @@
             notificationEnabled: 'notification_enabled',
             groupChatEnabled: 'xiayi_group_chat_enabled',
             groupMembers: 'xiayi_group_members',
+            groupMembersMomentsEnabled: 'xiayi_group_moments_enabled',
             emojiDisabled: 'xiayi_emoji_disabled',
             imgDisabled: 'xiayi_img_disabled',
             showMessageTime: 'xiayi_show_message_time',
             combineReplies: 'xiayi_combine_replies',
+            initialCommentIntervalMin: 'moments_initial_comment_interval_min',
+            initialCommentIntervalMax: 'moments_initial_comment_interval_max',
+            momentsCommentDelayMin: 'moments_comment_delay_min',
+            momentsCommentDelayMax: 'moments_comment_delay_max',
+            momentsTimeStart: 'moments_time_start',
+            momentsTimeEnd: 'moments_time_end',
+            momentsCountMin: 'moments_count_min',
+            momentsCountMax: 'moments_count_max',
         };
 
         /* ========= 全局变量 ========= */
         let musicList = [],
             currentMusicIndex = 0,
             audioPlayer = null;
+        let moments = [];
+        const MOMENTS_STORAGE_KEY = 'xiayi_moments';
+        const MOMENTS_GENERATE_INTERVAL = 45 * 60 * 1000;
+        const MOMENTS_MAX_STORED = 80;
+        let MOMENT_LOCATIONS = (() => {
+            const saved = localStorage.getItem('moment_locations');
+            if (saved) {
+                try { return JSON.parse(saved); } catch (e) {}
+            }
+            const defaults = [
+                "橘色黄昏的街角", "有风的巷子口", "深夜的便利店", "薄暮的河边",
+                "开满花的阳台", "旧书店的角落", "凌晨的天台", "落雨的公交站",
+                "星光照耀的山丘", "安静的树屋里", "洒满阳光的草坪", "海边的长椅"
+            ];
+            localStorage.setItem('moment_locations', JSON.stringify(defaults));
+            return defaults;
+        })();        
+        // 🔧 实时获取作者最新头像（解决头像不同步）
+        function getAuthorAvatar(authorId) {
+            if (authorId === 'meng' || authorId === 'other') {
+                return profile.mengAvatar || defaultAvatar();
+            }
+            if (authorId === 'me') {
+                return profile.myAvatar || defaultAvatar();
+            }
+            const member = groupMembers.find(m => m.id === authorId);
+            return member ? (member.avatar || defaultAvatar()) : defaultAvatar();
+        }        
+        function getMomentTextPool(authorId) {
+            if (authorId === 'meng' || authorId === 'other') {
+                return wordCardList.length ? wordCardList : ["✨ 今天也很美好。"];
+            }
+            const member = groupMembers.find(m => m.id === authorId);
+            if (member) {
+                const pool = getMemberEffectiveTextPool(member);
+                return pool.length ? pool : ["💜 与你相遇真好。"];
+            }
+            return ["🌸 世界因你而温柔。"];
+        }
         let musicPlayMode = 'random';
+        let immersiveMode = false;
         let wordCardList = ["别怕，我在。", "你的声音，我听得很清楚。", "和你待在一起，很安心。", "我会一直陪着你。", "今天也很想你。", "累了就靠一会儿。", "有我在，不用慌。",
             "你很重要，比什么都重要。", "晚安，我的小朋友。", "想和你多待一会儿。", "不要离开我。", "我只对你温柔。", "你是我的例外。", "心跳，是为你而乱的。", "梦里也要见到你。"
         ];
@@ -2859,8 +3170,8 @@
         let activeTalkInterval = null;
         let batchDeleteMode = false;
         const REPLY_MIN_DELAY_MS = 3000;
-        let replyMaxDelayMs = 7000;
-        let replyInterMessageDelayMs = 2500;
+        let replyMaxDelayMs = 20000;
+        let replyInterMessageDelayMs = 5000;
         let mengQuoteEnabled = true;
         let myMessageSoundUrl = null;
         let mengMessageSoundUrl = null;
@@ -2885,6 +3196,7 @@
         let showMessageTimeEnabled = true;
         let groupChatEnabled = false;
         let groupMembers = [];
+        let groupMembersMomentsEnabled = false;
         let puzzleData = {
             grid: [
                 { id: 1, task: '互道早安', completed: false, icon: '☀️' },
@@ -2906,6 +3218,7 @@
             unlockedCount: 0
         };
         let combineRepliesEnabled = false;
+        let selectedMomentImages = [];
         const DEFAULT_MEMBER_WORD_CARDS = ["你好呀~", "今天天气不错呢", "一起聊天吧", "我也这么觉得", "哈哈有趣"];
         const VALID_THEMES = ['light', 'night', 'sunset', 'mint', 'lavender', 'ocean', 'rose', 'forest', 'honey'];
         const THEME_LABELS = {
@@ -2928,12 +3241,170 @@
             { idx: 6, color: '#c2f5e8', label: '薄荷' },
             { idx: 7, color: '#ffd4c2', label: '蜜桃' }
         ];
+        let initialCommentIntervalMin = 5;
+        let initialCommentIntervalMax = 15;
+        let momentsCommentDelayMin = 10;
+        let momentsCommentDelayMax = 20;
+        let momentsTimeStart = '08:00';
+        let momentsTimeEnd = '22:00';
+        let momentsCountMin = 1;
+        let momentsCountMax = 5;
 
         function escapeHtml(str) {
             if (!str) return '';
             return str.replace(/[&<>]/g, m => m === '&' ? '&amp;' : m === '<' ? '&lt;' : '&gt;');
         }
 
+        let toastTimer = null;
+        function showToast(text, icon = '💬') {
+            const toastStyle = document.createElement('style');
+            toastStyle.textContent = `
+                @keyframes toastIn {
+                    from { opacity: 0; transform: translateX(-50%) translateY(-10px); }
+                    to { opacity: 1; transform: translateX(-50%) translateY(0); }
+                }
+            `;
+            document.head.appendChild(toastStyle);
+            const existing = document.getElementById('globalToast');
+            if (existing) existing.remove();
+            clearTimeout(toastTimer);
+            const toast = document.createElement('div');
+            toast.id = 'globalToast';
+            toast.style.cssText = `
+                position: fixed;
+                bottom: 10%;
+                left: 50%;
+                transform: translateX(-50%);
+                background: #2c1a3a;
+                backdrop-filter: blur(16px);
+                border: 1px solid #ffb347;
+                color: #ffdfa5;
+                padding: 12px 24px;
+                border-radius: 50px;
+                font-size: 15px;
+                z-index: 99999;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+                animation: toastIn 0.25s ease-out;
+            `;
+            toast.innerHTML = `<span>${icon}</span> ${escapeHtml(text)}`;
+            document.body.appendChild(toast);
+            toastTimer = setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transition = 'opacity 0.3s';
+                setTimeout(() => toast.remove(), 300);
+            }, 5000);
+        }
+
+        let momentNotificationQueue = [];
+        let lastMomentNotifyTime = 0;
+        const MOMENT_NOTIFY_COOLDOWN = 35000;
+        
+        function showMomentPostNotification(moment) {
+            if (document.getElementById('momentsModal')) return;
+            const now = Date.now();
+            if (now - lastMomentNotifyTime < MOMENT_NOTIFY_COOLDOWN) {
+                momentNotificationQueue.push(moment);
+                if (!momentNotificationQueue._timer) {
+                    momentNotificationQueue._timer = setTimeout(() => {
+                        const next = momentNotificationQueue.shift();
+                        delete momentNotificationQueue._timer;
+                        if (next) showMomentPostNotification(next);
+                    }, MOMENT_NOTIFY_COOLDOWN);
+                }
+                return;
+            }
+            lastMomentNotifyTime = now;
+            const existing = document.getElementById('momentNotifyCard');
+            if (existing) existing.remove();
+            let avatarUrl = getAuthorAvatar(moment.authorId) || moment.authorAvatar || defaultAvatar();
+            if (isImgIdRef(avatarUrl)) {
+                avatarUrl = avatarCache.get(avatarUrl) || defaultAvatar();
+            }
+            let preview = (moment.content || '').trim();
+            if (preview.length > 30) preview = preview.substring(0, 30) + '…';
+            if (!preview && moment.images && moment.images.length) preview = '📷 分享了图片';
+            if (!preview) preview = '分享了新动态';
+            const card = document.createElement('div');
+            card.id = 'momentNotifyCard';
+            card.style.cssText = `
+                position: fixed;
+                top: calc(var(--safe-top, 0px) + 60px);
+                left: 50%;
+                transform: translateX(-50%) translateY(-120px);
+                background: var(--card-bg, #fff);
+                backdrop-filter: blur(20px);
+                -webkit-backdrop-filter: blur(20px);
+                border-radius: 20px;
+                padding: 12px 16px;
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                box-shadow: 0 8px 32px rgba(0,0,0,0.18), 0 0 0 1px var(--border-light, rgba(180,150,220,0.3));
+                z-index: 9998;
+                cursor: pointer;
+                max-width: 90vw;
+                width: auto;
+                min-width: 280px;
+                transition: transform 0.35s cubic-bezier(0.22, 0.61, 0.36, 1);
+                animation: momentNotifySlideIn 0.35s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+            `;
+            if (!document.getElementById('momentNotifyStyle')) {
+                const styleEl = document.createElement('style');
+                styleEl.id = 'momentNotifyStyle';
+                styleEl.textContent = `
+                    @keyframes momentNotifySlideIn {
+                        from { transform: translateX(-50%) translateY(-120px); opacity: 0; }
+                        to { transform: translateX(-50%) translateY(0); opacity: 1; }
+                    }
+                    @keyframes momentNotifySlideOut {
+                        from { transform: translateX(-50%) translateY(0); opacity: 1; }
+                        to { transform: translateX(-50%) translateY(-120px); opacity: 0; }
+                    }
+                `;
+                document.head.appendChild(styleEl);
+            }
+            card.innerHTML = `
+                <img src="${avatarUrl}" 
+                     style="width:44px;height:44px;border-radius:50%;object-fit:cover;flex-shrink:0;border:2px solid var(--accent-color);"
+                     alt="${escapeHtml(moment.authorName)}">
+                <div style="flex:1;min-width:0;">
+                    <div style="font-weight:600;font-size:14px;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                        ${escapeHtml(moment.authorName)} 发布了新动态
+                    </div>
+                    <div style="font-size:12px;color:var(--text-secondary);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                        ${escapeHtml(preview)}
+                    </div>
+                </div>
+                <div style="
+                    background: var(--accent-color);
+                    color: #fff;
+                    padding: 6px 14px;
+                    border-radius: 20px;
+                    font-size: 12px;
+                    font-weight: 600;
+                    flex-shrink: 0;
+                    white-space: nowrap;
+                ">去看看</div>
+            `;
+            card.addEventListener('click', () => {
+                card.style.animation = 'momentNotifySlideOut 0.3s forwards';
+                setTimeout(() => {
+                    card.remove();
+                    openMomentsPanel();
+                }, 300);
+            });
+            document.body.appendChild(card);
+            setTimeout(() => {
+                if (document.getElementById('momentNotifyCard')) {
+                    card.style.animation = 'momentNotifySlideOut 0.4s forwards';
+                    setTimeout(() => card.remove(), 400);
+                }
+            }, 50000);
+        }
+                
         function formatMsgTime(timestamp) {
             const d = new Date(timestamp);
             if (isNaN(d.getTime())) return '';
@@ -3021,7 +3492,6 @@
         }
 
         function analyzeWordCardFrequency(senderFilter) {
-            // 收集要统计的字卡句子
             let targetSentences = [];
             if (groupChatEnabled && senderFilter !== 'other' && senderFilter !== 'me') {
                 const member = groupMembers.find(m => m.id === senderFilter);
@@ -3030,17 +3500,14 @@
                 }
             }
             if (targetSentences.length === 0) {
-                // 默认使用全局字卡
                 targetSentences = [...wordCardList];
             }
-        
             const targetMessages = messages.filter(m => {
                 if (m.type !== 'text') return false;
                 if (senderFilter === 'me') return m.sender === 'me';
                 if (senderFilter === 'other') return m.sender !== 'me' && m.sender !== 'system';
                 return m.sender === senderFilter;
             });
-        
             const freqMap = new Map();
             targetSentences.forEach(s => freqMap.set(s, 0));
             targetMessages.forEach(msg => {
@@ -3054,7 +3521,6 @@
             const sorted = [...freqMap.entries()]
                 .filter(([_, count]) => count > 0)
                 .sort((a, b) => b[1] - a[1]);
-        
             const topN = parseInt(document.getElementById('wfTopN')?.value || 10);
             const top = sorted.slice(0, topN);
             return {
@@ -3227,6 +3693,14 @@
         function saveGroupChatSetting() { localStorage.setItem(STORAGE.groupChatEnabled, groupChatEnabled);
             updateGroupChatToggleUI(); }
 
+        function loadGroupMomentsSetting() {
+            groupMembersMomentsEnabled = localStorage.getItem(STORAGE.groupMembersMomentsEnabled) === 'true';
+        }
+        
+        function saveGroupMomentsSetting() {
+            localStorage.setItem(STORAGE.groupMembersMomentsEnabled, groupMembersMomentsEnabled);
+        }
+        
         function updateGroupChatToggleUI() {
             const btn = document.getElementById('groupChatToggleBtn');
             if (!btn) return;
@@ -3254,26 +3728,90 @@
             modal.innerHTML = `
                 <div class="modal-content" style="max-width:600px;max-height:90vh;">
                     <div class="settings-title" style="display:flex;align-items:center;justify-content:space-between;">
-                        <span>👥 群聊成员管理</span><span class="badge badge-info">${groupMembers.length} 位 | ${getActiveMembers().length} 活跃</span></div>
-                    <div class="settings-section" style="margin-bottom:16px;background:var(--accent-light);"><div class="flex-between"><span><strong>🔛 启用群聊模式</strong></span><label class="toggle-switch"><input type="checkbox" id="groupChatEnableSwitch" ${groupChatEnabled?'checked':''}><span class="slider"></span></label></div><div class="data-note" style="margin-top:8px;">${groupChatEnabled?'✅ 当前【群聊模式】，多位成员共同回复。':'❌ 当前【单人模式】，只有Ta回复。'}</div></div>
+                        <span>👥 群聊成员管理</span>
+                        <span class="badge badge-info">${groupMembers.length} 位 | ${getActiveMembers().length} 活跃</span>
+                    </div>
+        
+                    <div class="settings-section" style="margin-bottom:16px;background:var(--accent-light);">
+                        <div class="flex-between">
+                            <span><strong>🔛 启用群聊模式</strong></span>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="groupChatEnableSwitch" ${groupChatEnabled?'checked':''}>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        <div class="data-note" style="margin-top:8px;">
+                            ${groupChatEnabled?'✅ 当前【群聊模式】，多位成员共同回复。':'❌ 当前【单人模式】，只有Ta回复。'}
+                        </div>
+                    </div>
+        
+                    <div class="settings-section" style="margin-bottom:16px;background:var(--accent-light);">
+                        <div class="flex-between">
+                            <span><strong>🌏 允许群成员发朋友圈</strong></span>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="groupMomentsSwitch" ${groupMembersMomentsEnabled?'checked':''}>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        <div class="data-note" style="margin-top:8px;">
+                            ${groupMembersMomentsEnabled
+                                ? '✅ 启用的群成员可以发布朋友圈（即使群聊未开启）'
+                                : '❌ 仅Ta可以发布朋友圈'}
+                        </div>
+                    </div>
+        
                     <div id="memberListContainer" style="max-height:55vh;overflow-y:auto;padding-right:4px;"></div>
-                    <div class="button-group" style="margin-top:12px;"><button class="sec-btn" id="addNewMemberBtn">➕ 添加成员</button><button class="sec-btn sec-btn-outline" id="closeGroupMemberPanel">关闭</button></div></div>`;
+                    <div class="button-group" style="margin-top:12px;">
+                        <button class="sec-btn" id="addNewMemberBtn">➕ 添加成员</button>
+                        <button class="sec-btn sec-btn-outline" id="closeGroupMemberPanel">关闭</button>
+                    </div>
+                </div>`;
             document.body.appendChild(modal);
+        
             renderMemberListInPanel();
-            document.getElementById('addNewMemberBtn').onclick = () => { const name = prompt('请输入新成员昵称：', '新成员'); if (
-                    name && name.trim()) { addGroupMember(name.trim());
+            document.getElementById('addNewMemberBtn').onclick = () => {
+                const name = prompt('请输入新成员昵称：', '新成员');
+                if (name && name.trim()) {
+                    addGroupMember(name.trim());
                     renderMemberListInPanel();
-                    alert('✅ 已添加：' + name.trim()); } };
-            document.getElementById('closeGroupMemberPanel').onclick = () => { modal.remove();
-                checkPuzzleConditions(); };
+                    alert('✅ 已添加：' + name.trim());
+                }
+            };
+            document.getElementById('closeGroupMemberPanel').onclick = () => {
+                modal.remove();
+                checkPuzzleConditions();
+            };
             const groupSwitch = modal.querySelector('#groupChatEnableSwitch');
-            if (groupSwitch) { groupSwitch.addEventListener('change', (e) => { groupChatEnabled = e.target.checked;
-                    saveGroupChatSetting(); const noteDiv = modal.querySelector('.settings-section .data-note'); if (
-                        noteDiv) noteDiv.innerHTML = groupChatEnabled ?
-                        '✅ 当前【群聊模式】。⚠️ 当所有成员均被禁用时，群聊将不会回复任何消息。' : '❌ 当前【单人模式】。'; if (
-                        groupChatEnabled && groupMembers.length === 0) { loadGroupMembers();
-                        renderMemberListInPanel(); }
-                    updateGroupChatToggleUI(); }); }
+            if (groupSwitch) {
+                groupSwitch.addEventListener('change', (e) => {
+                    groupChatEnabled = e.target.checked;
+                    saveGroupChatSetting();
+                    const noteDiv = modal.querySelector('.settings-section .data-note');
+                    if (noteDiv) {
+                        noteDiv.innerHTML = groupChatEnabled
+                            ? '✅ 当前【群聊模式】。⚠️ 当所有成员均被禁用时，群聊将不会回复任何消息。'
+                            : '❌ 当前【单人模式】。';
+                    }
+                    if (groupChatEnabled && groupMembers.length === 0) {
+                        loadGroupMembers();
+                        renderMemberListInPanel();
+                    }
+                    updateGroupChatToggleUI();
+                });
+            }
+            const momentsSwitch = modal.querySelector('#groupMomentsSwitch');
+            if (momentsSwitch) {
+                momentsSwitch.addEventListener('change', (e) => {
+                    groupMembersMomentsEnabled = e.target.checked;
+                    saveGroupMomentsSetting();
+                    const notes = modal.querySelectorAll('.settings-section .data-note');
+                    if (notes.length >= 2) {
+                        notes[1].innerHTML = groupMembersMomentsEnabled
+                            ? '✅ 启用的群成员可以发布朋友圈（即使群聊未开启）'
+                            : '❌ 仅Ta可以发布朋友圈';
+                    }
+                });
+            }
         }
 
         function renderMemberListInPanel() {
@@ -3392,9 +3930,13 @@
         }
 
         function getMemberEffectiveTextPool(member) {
-            if (member.useGlobalWordCards !== false) { if (wordCardList.length) return wordCardList; if (member.wordCardList
-                    ?.length) return member.wordCardList; return ["💜"]; } else { if (member.wordCardList?.length) return member
-                    .wordCardList; return wordCardList.length ? wordCardList : ["💜"]; }
+            if (member.useGlobalWordCards !== false) {
+                if (wordCardList.length) return wordCardList;
+                if (member.wordCardList?.length) return member.wordCardList;
+                return ["💜"];
+            } else {
+                return member.wordCardList?.length ? member.wordCardList : [];
+            }
         }
 
         function getRandomReplyForMember(member) {
@@ -3402,7 +3944,7 @@
             if (textPool.length) {
                 return { type: 'text', content: textPool[Math.floor(Math.random() * textPool.length)] };
             }
-            return { type: 'text', content: '💜' };
+            return null;
         }
 
         function addMessageWithSender(senderId, senderName, senderAvatar, content, type = 'text', quote = null, imgUrl = null) {
@@ -3457,7 +3999,6 @@
             const isMe = msg.sender === 'me';
             let avatarUrl;
             let senderName;
-
             if (isMe) {
                 avatarUrl = profile.myAvatar || defaultAvatar();
                 senderName = profile.myNick || '我';
@@ -3479,7 +4020,7 @@
             const row = document.createElement('div');
             row.className = `message-row ${isMe?'me':''}`;
             row.dataset.id = msg.id;
-           let realAvatarUrl = avatarUrl,
+            let realAvatarUrl = avatarUrl,
                 useDataRef = false;
             if (isImgIdRef(avatarUrl)) {
                 if (avatarCache.has(avatarUrl)) {
@@ -3560,10 +4101,10 @@
         }
 
         async function sendGroupReplies(forceQuoteMsg = null) {
-            const activeMembers = getActiveMembers();
+            const activeMembers = getActiveMembers().filter(member => {
+                return getMemberEffectiveTextPool(member).length > 0;
+            });
             if (activeMembers.length === 0) return;
-            if (isTyping) return;
-
             if (patList.length > 0 && Math.random() < 0.03) {
                 isTyping = true;
                 const randomMember = activeMembers[Math.floor(Math.random() * activeMembers.length)];
@@ -3578,7 +4119,6 @@
                 isTyping = false;
                 return;
             }
-
             isTyping = true;
             showTypingIndicator(true, '群成员正在输入...');
             const actualMax = Math.max(REPLY_MIN_DELAY_MS, replyMaxDelayMs);
@@ -3586,15 +4126,12 @@
             await new Promise(r => setTimeout(r, delay));
             showTypingIndicator(false);
             markMyMessagesRead();
-
             const replyMemberCount = Math.min(activeMembers.length, getWeightedReplyCount());
             const shuffled = [...activeMembers].sort(() => Math.random() - 0.5);
             const replyingMembers = shuffled.slice(0, replyMemberCount);
-
             for (let mi = 0; mi < replyingMembers.length; mi++) {
                 const member = replyingMembers[mi];
                 const wordCardCount = getWeightedReplyCount();
-
                 let useQuote = null;
                 if (mengQuoteEnabled) {
                     if (mi === 0 && forceQuoteMsg !== null) {
@@ -3604,7 +4141,6 @@
                         if (myMs.length) useQuote = myMs[Math.floor(Math.random() * myMs.length)];
                     }
                 }
-
                 if (combineRepliesEnabled && wordCardCount >= 2) {
                     const combinedContents = [];
                     for (let j = 0; j < wordCardCount; j++) {
@@ -3613,14 +4149,12 @@
                     const combinedText = combinedContents.join('\n');
                     addMessageWithSender(member.id, member.name, member.avatar || defaultAvatar(), combinedText, 'text', useQuote);
                     playSound('meng');
-                
                     if (!emojiDisabled && emojiCardList.length > 0 && Math.random() < 0.2) {
                         await new Promise(r => setTimeout(r, replyInterMessageDelayMs));
                         const randomEmoji = emojiCardList[Math.floor(Math.random() * emojiCardList.length)];
                         addMessageWithSender(member.id, member.name, member.avatar || defaultAvatar(), randomEmoji, 'text', null);
                         playSound('meng');
                     }
-                
                     if (!imgDisabled && imgCardList.length > 0 && Math.random() < 0.2) {
                         const validImgs = imgCardList.filter(img => img && img.url && img.url.trim());
                         if (validImgs.length > 0) {
@@ -3636,19 +4170,16 @@
                         const quote = (j === 0) ? useQuote : null;
                         addMessageWithSender(member.id, member.name, member.avatar || defaultAvatar(), content, 'text', quote);
                         playSound('meng');
-                
                         if (!emojiDisabled && emojiCardList.length > 0 && Math.random() < 0.2) {
                             await new Promise(r => setTimeout(r, replyInterMessageDelayMs));
                             const randomEmoji = emojiCardList[Math.floor(Math.random() * emojiCardList.length)];
                             addMessageWithSender(member.id, member.name, member.avatar || defaultAvatar(), randomEmoji, 'text', null);
                             playSound('meng');
                         }
-                
                         if (j < wordCardCount - 1) {
                             await new Promise(r => setTimeout(r, replyInterMessageDelayMs));
                         }
                     }
-                
                     if (!imgDisabled && imgCardList.length > 0 && Math.random() < 0.2) {
                         const validImgs = imgCardList.filter(img => img && img.url && img.url.trim());
                         if (validImgs.length > 0) {
@@ -3659,18 +4190,15 @@
                         }
                     }
                 }
-
                 if (mi < replyingMembers.length - 1) {
                     await new Promise(r => setTimeout(r, replyInterMessageDelayMs));
                 }
             }
-
             isTyping = false;
         }
 
         async function sendMengRepliesLegacy(forceQuoteMsg = null) {
             if (isTyping) return;
-
             if (patList.length > 0 && Math.random() < 0.03) {
                 isTyping = true;
                 showTypingIndicator(true);
@@ -3681,7 +4209,6 @@
                 isTyping = false;
                 return;
             }
-
             isTyping = true;
             showTypingIndicator(true);
             const actualMax = Math.max(REPLY_MIN_DELAY_MS, replyMaxDelayMs);
@@ -3689,9 +4216,7 @@
             await new Promise(r => setTimeout(r, delay));
             showTypingIndicator(false);
             markMyMessagesRead();
-
             const wordCardCount = getWeightedReplyCount();
-
             let useQuote = null;
             if (mengQuoteEnabled) {
                 if (forceQuoteMsg !== null) {
@@ -3701,7 +4226,6 @@
                     if (myMs.length) useQuote = myMs[Math.floor(Math.random() * myMs.length)];
                 }
             }
-
             if (combineRepliesEnabled && wordCardCount >= 2) {
                 const combinedContents = [];
                 for (let i = 0; i < wordCardCount; i++) {
@@ -3711,17 +4235,15 @@
                             : '💜'
                     );
                 }
-                const combinedText = combinedContents.join('\n');
+                const combinedText = combinedContents.join(' ');
                 addMessage('meng', combinedText, 'text', useQuote);
                 playSound('meng');
-            
                 if (!emojiDisabled && emojiCardList.length > 0 && Math.random() < 0.2) {
                     await new Promise(r => setTimeout(r, replyInterMessageDelayMs));
                     const randomEmoji = emojiCardList[Math.floor(Math.random() * emojiCardList.length)];
                     addMessage('meng', randomEmoji, 'text', null);
                     playSound('meng');
                 }
-            
                 if (!imgDisabled && imgCardList.length > 0 && Math.random() < 0.2) {
                     const validImgs = imgCardList.filter(img => img && img.url && img.url.trim());
                     if (validImgs.length > 0) {
@@ -3739,19 +4261,16 @@
                     const quote = (i === 0) ? useQuote : null;
                     addMessage('meng', content, 'text', quote);
                     playSound('meng');
-            
                     if (!emojiDisabled && emojiCardList.length > 0 && Math.random() < 0.2) {
                         await new Promise(r => setTimeout(r, replyInterMessageDelayMs));
                         const randomEmoji = emojiCardList[Math.floor(Math.random() * emojiCardList.length)];
                         addMessage('meng', randomEmoji, 'text', null);
                         playSound('meng');
                     }
-            
                     if (i < wordCardCount - 1) {
                         await new Promise(r => setTimeout(r, replyInterMessageDelayMs));
                     }
                 }
-            
                 if (!imgDisabled && imgCardList.length > 0 && Math.random() < 0.2) {
                     const validImgs = imgCardList.filter(img => img && img.url && img.url.trim());
                     if (validImgs.length > 0) {
@@ -3762,11 +4281,13 @@
                     }
                 }
             }
-
             isTyping = false;
         }
 
         async function sendMengReplies(forceQuoteMsg = null) {
+            if (forceQuoteMsg && forceQuoteMsg.sender !== 'me') {
+                forceQuoteMsg = null;
+            }
             if (groupChatEnabled) await sendGroupReplies(forceQuoteMsg);
             else await sendMengRepliesLegacy(forceQuoteMsg);
         }
@@ -3924,10 +4445,10 @@
             const at = localStorage.getItem(STORAGE.mengActiveTalk);
             mengActiveTalkEnabled = at === 'true';
             try { const smd = localStorage.getItem(STORAGE.replyMaxDelayMs); if (smd && !isNaN(parseInt(smd))) { let v = parseInt(
-                        smd); if (v < REPLY_MIN_DELAY_MS) v = REPLY_MIN_DELAY_MS; if (v > 120000) v = 120000;
+                        smd); if (v < REPLY_MIN_DELAY_MS) v = REPLY_MIN_DELAY_MS; if (v > 300000) v = 300000;   
                     replyMaxDelayMs = v; } } catch (e) { replyMaxDelayMs = 7000; }
             try { const sid = localStorage.getItem(STORAGE.replyInterMessageDelayMs); if (sid !== null && !isNaN(parseInt(
-                sid))) { let v = parseInt(sid); if (v < 0) v = 0; if (v > 7000) v = 7000;
+                sid))) { let v = parseInt(sid); if (v < 0) v = 0; if (v > 15000) v = 15000;
                     replyInterMessageDelayMs = v; } } catch (e) { replyInterMessageDelayMs = 2500; }
             const sq = localStorage.getItem(STORAGE.mengQuoteEnabled);
             mengQuoteEnabled = sq !== null ? sq === 'true' : true;
@@ -3936,7 +4457,8 @@
             loadNotificationSetting();
             loadPatList();
             loadGroupChatSetting();
-            loadGroupMembers();
+            loadGroupMembers();     
+            loadGroupMomentsSetting(); 
             const ed = localStorage.getItem(STORAGE.emojiDisabled);
             emojiDisabled = ed === 'true';
             const id = localStorage.getItem(STORAGE.imgDisabled);
@@ -3947,17 +4469,860 @@
             startLetterChecker();
             processAllPendingLetters();
             loadCustomBubbleCSS();
-            loadCustomBackground();
-            setTimeout(() => { const result = analyzeWordFrequency('other', 5);
-                updateWfStrip(result.topWords); }, 500);
+            loadCustomBackground();            
             loadPuzzleData();
             ensurePuzzleGridUpToDate();
             setTimeout(checkPuzzleConditions, 500);
             if (mengActiveTalkEnabled) startActiveTalkTimer();
             else stopActiveTalkTimer();
             loadShowMessageTimeSetting();
+            const imMode = localStorage.getItem('xiayi_immersive_mode');
+            immersiveMode = imMode === 'true';
+            applyImmersiveMode();
             const cr = localStorage.getItem(STORAGE.combineReplies);
             combineRepliesEnabled = cr === 'true';
+            try {
+                const sm = localStorage.getItem(MOMENTS_STORAGE_KEY);
+                if (sm) moments = JSON.parse(sm);
+                else moments = [];
+            } catch (e) { moments = []; }
+            const icmin = localStorage.getItem(STORAGE.initialCommentIntervalMin);
+            if (icmin !== null && !isNaN(parseInt(icmin))) {
+                initialCommentIntervalMin = Math.max(1, parseInt(icmin));
+            }
+            const icmax = localStorage.getItem(STORAGE.initialCommentIntervalMax);
+            if (icmax !== null && !isNaN(parseInt(icmax))) {
+                initialCommentIntervalMax = Math.max(initialCommentIntervalMin, parseInt(icmax));
+            }
+            const rpmin = localStorage.getItem(STORAGE.momentsCommentDelayMin);
+            if (rpmin !== null && !isNaN(parseInt(rpmin))) {
+                momentsCommentDelayMin = Math.max(2, parseInt(rpmin));
+            }
+            const rpmax = localStorage.getItem(STORAGE.momentsCommentDelayMax);
+            if (rpmax !== null && !isNaN(parseInt(rpmax))) {
+                momentsCommentDelayMax = Math.max(momentsCommentDelayMin, parseInt(rpmax));
+            }
+            const ts = localStorage.getItem(STORAGE.momentsTimeStart);
+            if (ts) momentsTimeStart = ts;
+            const te = localStorage.getItem(STORAGE.momentsTimeEnd);
+            if (te) momentsTimeEnd = te;
+            const cnMin = localStorage.getItem(STORAGE.momentsCountMin);
+            if (cnMin && !isNaN(parseInt(cnMin))) momentsCountMin = Math.max(1, parseInt(cnMin));
+            const cnMax = localStorage.getItem(STORAGE.momentsCountMax);
+            if (cnMax && !isNaN(parseInt(cnMax))) momentsCountMax = Math.max(momentsCountMin, parseInt(cnMax));
+        }
+
+        function saveMoments() {
+            if (moments.length > MOMENTS_MAX_STORED) {
+                moments = moments.slice(-MOMENTS_MAX_STORED);
+            }
+            localStorage.setItem(MOMENTS_STORAGE_KEY, JSON.stringify(moments));
+            updateMomentsBadge();
+        }
+        
+        function startInitialComments(moment) {
+            let allowedCandidates = [];
+            if (moment.authorId === 'meng' || moment.authorId === 'other') {
+                // 修改前：allowedCandidates = ['me', 'meng'];
+                // 修改后：去掉 'me'，只有梦自己评论
+                allowedCandidates = ['meng'];
+            } else if (moment.authorId === 'me') {
+                if (groupMembersMomentsEnabled) {
+                    const enabledMembers = groupMembers.filter(m => m.enabled).map(m => m.id);
+                    if (enabledMembers.length) {
+                        allowedCandidates.push(...enabledMembers);
+                    }
+                }
+                if (!allowedCandidates.includes('meng')) allowedCandidates.push('meng');
+            } else {
+                // 修改前：allowedCandidates = [authorId, 'me'];
+                // 修改后：去掉 'me'，只有动态作者自己评论
+                allowedCandidates = [authorId];
+            }
+            const candidates = [];
+            for (const authorId of allowedCandidates) {
+                let name = 'ta';
+                if (authorId === 'meng') {
+                    name = profile.mengNick || 'ta';
+                } else if (authorId === 'me') {
+                    name = profile.myNick || '我';
+                } else {
+                    const m = groupMembers.find(mm => mm.id === authorId);
+                    if (m) name = m.name;
+                }
+                const pool = getMomentTextPool(authorId);
+                const text = pool[Math.floor(Math.random() * pool.length)] || '💬';
+                candidates.push({ authorId, authorName: name, content: text, timestamp: Date.now() });
+            }
+            moment.comments = moment.comments || [];
+            const targetCount = Math.floor(Math.random() * 3);
+            let addedCount = 0;
+            function addNext() {
+                if (addedCount >= targetCount || !moments.find(m => m.id === moment.id)) return;
+                const candidate = candidates[addedCount % candidates.length];
+                const pool = getMomentTextPool(candidate.authorId);
+                const freshText = pool[Math.floor(Math.random() * pool.length)] || '💬';
+                const newComment = {
+                    id: 'cmt_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4),
+                    authorId: candidate.authorId,
+                    authorName: candidate.authorName,
+                    content: freshText,
+                    timestamp: Date.now()
+                };
+                moment.comments.push(newComment);
+                saveMoments();
+                addedCount++;
+                if (moment.authorId === 'me' && candidate.authorId !== 'me') {
+                    showToast(`${candidate.authorName} 在你朋友圈留了言～`, '💬');
+                }
+                if (addedCount < targetCount) {
+                    const delay = initialCommentIntervalMin * 1000 + Math.random() * (initialCommentIntervalMax * 1000);
+                    setTimeout(addNext, delay);
+                }
+            }
+            addNext();
+        }
+        
+        function postMoment(content, feeling, location, images) {
+            const newMoment = {
+                id: 'mom_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6),
+                authorId: 'me',
+                authorName: profile.myNick || '我',
+                authorAvatar: profile.myAvatar || defaultAvatar(),
+                content: content || '',
+                feeling: feeling || '',
+                location: location || '',
+                images: images.map(img => img.url),
+                timestamp: Date.now(),
+                likes: [],
+                comments: []
+            };
+            const interactCandidates = [];
+            if (groupChatEnabled && groupMembers.length) {
+                interactCandidates.push(...groupMembers.filter(m => m.enabled).map(m => m.id));
+            } else {
+                interactCandidates.push('meng');
+            }
+            const likeCount = Math.min(interactCandidates.length, Math.floor(Math.random() * 5) + 1);
+            const shuffledLikes = [...interactCandidates].sort(() => Math.random() - 0.5);
+            newMoment.likes = shuffledLikes.slice(0, likeCount);
+            moments.unshift(newMoment);
+            saveMoments();
+            startInitialComments(newMoment);
+        }
+
+        function deleteMoment(id) {
+            moments = moments.filter(m => m.id !== id);
+            saveMoments();
+        }
+
+        function showImagePickerForMoment(currentImgs, callback) {
+            const modal = document.createElement('div');
+            modal.className = 'modal';
+            modal.innerHTML = `<div class="modal-content" style="max-width:480px;">
+                <div class="settings-title">选择图片（可多选）</div>
+                <div id="momentImgPickerGrid" class="picker-grid"></div>
+                <div class="button-group"><button class="sec-btn" id="confirmMomentImgs">确认</button><button class="sec-btn sec-btn-outline" id="cancelMomentImgs">取消</button></div>
+            </div>`;
+            document.body.appendChild(modal);
+            const grid = document.getElementById('momentImgPickerGrid');
+            imgCardList.forEach(img => {
+                const div = document.createElement('div');
+                div.className = 'picker-img-item';
+                const isSelected = currentImgs.some(sel => String(sel.url) === String(img.url));
+                if (isSelected) div.style.background = 'var(--accent-light)';
+                if (isImgIdRef(img.url)) {
+                    div.innerHTML = `<img data-img-ref="${escapeHtml(img.url)}" src="${defaultAvatar()}" alt=""><span>${isSelected?'✅':' '}</span>`;
+                    loadImgElement(div.querySelector('img'), img.url).catch(() => {});
+                } else {
+                    div.innerHTML = `<img src="${img.url}" alt=""><span>${isSelected?'✅':' '}</span>`;
+                }
+                div.onclick = () => {
+                    const idx = currentImgs.findIndex(i => String(i.url) === String(img.url));
+                    if (idx === -1) {
+                        currentImgs.push(img);
+                        div.style.background = 'var(--accent-light)';
+                        div.querySelector('span').textContent = '✅';
+                    } else {
+                        currentImgs.splice(idx, 1);
+                        div.style.background = '';
+                        div.querySelector('span').textContent = ' ';
+                    }
+                };
+                grid.appendChild(div);
+            });
+            document.getElementById('confirmMomentImgs').onclick = () => { modal.remove(); callback(currentImgs); };
+            document.getElementById('cancelMomentImgs').onclick = () => modal.remove();
+        }
+
+        function updateMomentImgPreview() {
+            const container = document.getElementById('momentImgPreview');
+            if (!container) return;
+            container.innerHTML = selectedMomentImages.map(img => {
+                // 优先从缓存获取真实图片地址，解决刚上传的图片无法预览的问题
+                let src = img.url;
+                if (isImgIdRef(src)) {
+                    src = avatarCache.get(src) || defaultAvatar();
+                }
+                return `<img src="${src}" 
+                             style="width:60px;height:60px;border-radius:8px;object-fit:cover;margin-right:6px;">`;
+            }).join('');
+            const cnt = document.getElementById('momentImgCount');
+            if (cnt) cnt.textContent = `${selectedMomentImages.length}张`;
+            const submitBtn = document.getElementById('submitMomentBtn');
+            if (submitBtn) submitBtn.disabled = !document.getElementById('momentContentInput')?.value.trim() 
+                                                && selectedMomentImages.length === 0;
+        }
+
+        function resetMomentEditor() {
+            selectedMomentImages = [];
+            updateMomentImgPreview();
+            const content = document.getElementById('momentContentInput');
+            if (content) content.value = '';
+            const feel = document.getElementById('momentFeelingInput');
+            if (feel) feel.value = '';
+            const loc = document.getElementById('momentLocationInput');
+            if (loc) loc.value = '';
+            const submit = document.getElementById('submitMomentBtn');
+            if (submit) submit.disabled = true;
+        }
+
+        function generateRandomMoment(authorId = null) {
+            if (!authorId) {
+                const candidates = [];
+                if (groupMembersMomentsEnabled && groupMembers.some(m => m.enabled)) {
+                    candidates.push(...groupMembers.filter(m => m.enabled).map(m => m.id));
+                }
+                if (candidates.length === 0) {
+                    candidates.push('meng');
+                }
+                authorId = candidates[Math.floor(Math.random() * candidates.length)];
+            }
+            let authorName, authorAvatar;
+            if (authorId === 'meng' || authorId === 'other') {
+                authorName = profile.mengNick || 'ta';
+                authorAvatar = profile.mengAvatar || defaultAvatar();
+            } else {
+                const member = groupMembers.find(m => m.id === authorId);
+                if (!member) return null;
+                authorName = member.name;
+                authorAvatar = member.avatar || defaultAvatar();
+            }
+            const textPool = getMomentTextPool(authorId);
+            const sentenceCount = Math.floor(Math.random() * 3) + 1;
+            const selectedSentences = [];
+            for (let i = 0; i < sentenceCount; i++) {
+                const s = textPool[Math.floor(Math.random() * textPool.length)];
+                if (!selectedSentences.includes(s)) selectedSentences.push(s);
+            }
+            const content = selectedSentences.join(' ');
+            const imageProbability = 0.3;
+            let images = [];
+            
+            if (!imgDisabled && imgCardList.length > 0 && Math.random() < imageProbability) {
+                const randomImg = imgCardList[Math.floor(Math.random() * imgCardList.length)];
+                if (randomImg && randomImg.url) {
+                    images.push(randomImg.url);
+                }
+            }
+            const feeling = statusList.length ? statusList[Math.floor(Math.random() * statusList.length)] : '✨ 温柔';
+            const location = MOMENT_LOCATIONS[Math.floor(Math.random() * MOMENT_LOCATIONS.length)];
+            const moment = {
+                id: 'mom_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6),
+                authorId, authorName, authorAvatar, content, images, feeling, location,
+                timestamp: Date.now(),
+                likes: [],
+                comments: []
+            };
+            const interactCandidates = [];
+            if (authorId === 'meng') {
+                interactCandidates.push('me');
+            } else if (authorId === 'me') {
+                const enabledMembers = groupMembers.filter(m => m.enabled).map(m => m.id);
+                if (enabledMembers.length) {
+                    interactCandidates.push(...enabledMembers);
+                } else {
+                    interactCandidates.push('meng');
+                }
+            } else {
+                interactCandidates.push('me');
+            }
+            const likeCount = Math.min(interactCandidates.length, Math.floor(Math.random() * 5));
+            const shuffledLikes = [...interactCandidates].sort(() => Math.random() - 0.5);
+            moment.likes = shuffledLikes.slice(0, likeCount);
+            moments.unshift(moment);
+            saveMoments();
+            
+            if (moment.authorId !== 'me') {
+                showMomentPostNotification(moment);
+            }
+            
+            startInitialComments(moment);
+            return moment;
+        }
+
+        let momentPlanTimers = [];
+
+        function scheduleDailyMoments() {
+            stopMomentsGenerator();
+            const now = new Date();
+            const todayStart = new Date(now);
+            todayStart.setHours(0, 0, 0, 0);
+            const todayEnd = new Date(now);
+            todayEnd.setHours(24, 0, 0, 0);
+            const [sh, sm] = (momentsTimeStart || '08:00').split(':').map(Number);
+            const [eh, em] = (momentsTimeEnd || '22:00').split(':').map(Number);
+            const windowStart = new Date(now);
+            windowStart.setHours(sh, sm || 0, 0, 0);
+            const windowEnd = new Date(now);
+            windowEnd.setHours(eh, em || 0, 0, 0);
+            if (windowEnd <= windowStart) {
+                windowEnd.setDate(windowEnd.getDate() + 1);
+            }
+            let effectiveStart = Math.max(now.getTime(), windowStart.getTime());
+            if (effectiveStart >= windowEnd.getTime()) {
+                const msUntilTomorrowStart = (todayEnd.getTime() - now.getTime()) + 1000;
+                const midnightTimer = setTimeout(() => {
+                    scheduleDailyMoments();
+                }, msUntilTomorrowStart);
+                momentPlanTimers.push(midnightTimer);
+                return;
+            }
+            const candidates = [];
+            candidates.push('meng');
+            if (groupMembersMomentsEnabled && groupMembers.length) {
+                groupMembers.filter(m => m.enabled).forEach(m => candidates.push(m.id));
+            }
+            const remainingMs = windowEnd.getTime() - effectiveStart;
+            candidates.forEach(authorId => {
+                const count = momentsCountMin + Math.floor(Math.random() * (momentsCountMax - momentsCountMin + 1));
+                const times = [];
+                for (let i = 0; i < count; i++) {
+                    times.push(effectiveStart + Math.random() * remainingMs);
+                }
+                times.sort((a, b) => a - b);
+                times.forEach(time => {
+                    const delay = time - Date.now();
+                    if (delay <= 0) {
+                        generateRandomMoment(authorId);
+                    } else {
+                        const timerId = setTimeout(() => {
+                            if (!document.hidden) {
+                                generateRandomMoment(authorId);
+                            }
+                            momentPlanTimers = momentPlanTimers.filter(t => t !== timerId);
+                        }, delay);
+                        momentPlanTimers.push(timerId);
+                    }
+                });
+            });
+            const nextWindowStart = new Date(windowStart);
+            nextWindowStart.setDate(nextWindowStart.getDate() + 1);
+            const msUntilNextWindow = nextWindowStart.getTime() - Date.now();
+            const nextDayTimer = setTimeout(() => {
+                scheduleDailyMoments();
+            }, msUntilNextWindow);
+            momentPlanTimers.push(nextDayTimer);
+        }
+
+        function stopMomentsGenerator() {
+            momentPlanTimers.forEach(tid => clearTimeout(tid));
+            momentPlanTimers = [];
+        }
+        
+        function startMomentsGenerator() {
+            scheduleDailyMoments();
+        }
+
+        function updateMomentsBadge() {
+            const badge = document.getElementById('momentsBadge');
+            if (!badge) return;
+            const recent = moments.slice(0, 5);
+            const hasUnread = recent.some(m => {
+                const iLiked = m.likes.includes('me');
+                const iCommented = m.comments.some(c => c.authorId === 'me');
+                return !iLiked || !iCommented;
+            });
+            badge.classList.toggle('active', hasUnread && recent.length > 0);
+        }
+
+        async function renderMomentsList(containerId) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+            if (!moments.length) {
+                container.innerHTML = '<div class="moment-empty">🍃 世界很安静，还没有人发过朋友圈呢。</div>';
+                return;
+            }
+            const sorted = [...moments].sort((a, b) => b.timestamp - a.timestamp);
+            let html = '';
+            for (const moment of sorted) {
+                const avatarUrl = getAuthorAvatar(moment.authorId) || moment.authorAvatar || defaultAvatar();
+                const avatarSrc = isImgIdRef(avatarUrl)
+                    ? (avatarCache.get(avatarUrl) || defaultAvatar())
+                    : avatarUrl;
+                let imagesHtml = '';
+                if (moment.images && moment.images.length) {
+                    imagesHtml = '<div class="moment-images">';
+                    for (const imgUrl of moment.images) {
+                        let realUrl = imgUrl;
+                        if (isImgIdRef(imgUrl)) {
+                            realUrl = await resolveImageUrl(imgUrl);
+                            // 🔧 关键修复：如果解析后仍然是引用字符串（说明索引库中已无此图片），强制使用默认头像
+                            if (!realUrl || isImgIdRef(realUrl)) {
+                                realUrl = defaultAvatar();
+                            }
+                        }
+                        imagesHtml += `<img src="${realUrl}" class="moment-img-clickable" data-full-img="${realUrl}" alt="朋友圈图片">`;
+                    }
+                    imagesHtml += '</div>';
+                }
+                const likedByMe = moment.likes.includes('me');
+                const likeCount = moment.likes.length;
+                const commentCount = moment.comments.length;
+                let commentsHtml = '';
+                if (moment.comments && moment.comments.length) {
+                    commentsHtml = '<div class="moment-comments">';
+                    for (const cmt of moment.comments) {
+                        let quoteHtml = '';
+                        if (cmt.quoteCommentId) {
+                            quoteHtml = `<div class="comment-quote">↪ 回复 <b>${escapeHtml(cmt.quoteAuthorName)}</b>：${escapeHtml(cmt.quoteContent?.substring(0,30))}…</div>`;
+                        }
+                        commentsHtml += `
+                            <div class="comment-item" data-comment-id="${cmt.id}">
+                                <div class="comment-body">
+                                    ${quoteHtml}
+                                    <span class="comment-author">${escapeHtml(cmt.authorName)}：</span>
+                                    <span class="comment-text">${escapeHtml(cmt.content)}</span>
+                                </div>
+                                <div class="comment-actions">
+                                    <button class="comment-reply-btn" data-comment-id="${cmt.id}" title="引用回复">回复</button>
+                                    <button class="comment-delete-btn" data-comment-id="${cmt.id}" title="删除">✕</button>
+                                </div>
+                            </div>`;
+                    }
+                    commentsHtml += '</div>';
+                }
+                const deleteBtnHtml = `<button class="moment-delete-btn" data-moment-id="${moment.id}" style="position:absolute; top:8px; right:10px; background:none; border:none; font-size:18px; cursor:pointer; color:var(--text-tertiary); padding:4px;" title="删除">删除</button>`;
+                html += `
+                    <div class="moment-card" data-moment-id="${moment.id}" style="position:relative;">
+                        <div class="moment-header">
+                            <img src="${avatarSrc}" alt="${escapeHtml(moment.authorName)}">
+                            <div class="moment-author">
+                                <span class="moment-author-name">${escapeHtml(moment.authorName)}</span>
+                                <span class="moment-time-loc">
+                                    <span>${formatMsgTime(moment.timestamp)}</span>
+                                    ${moment.location ? `<span>· ${escapeHtml(moment.location)}</span>` : ''}
+                                </span>
+                            </div>
+                        </div>
+                        ${deleteBtnHtml}
+                        <div class="moment-content">${escapeHtml(moment.content)}</div>
+                        ${moment.feeling ? `<span class="moment-feeling">${escapeHtml(moment.feeling)}</span>` : ''}
+                        ${imagesHtml}
+                        <div class="moment-actions">
+                            <button class="moment-action-btn like-btn ${likedByMe ? 'liked' : ''}" data-moment-id="${moment.id}">
+                                ${likedByMe ? '❤️' : '🤍'} <span>${likeCount}</span>
+                            </button>
+                            <button class="moment-action-btn comment-toggle-btn" data-moment-id="${moment.id}">
+                                💬 <span>${commentCount}</span>
+                            </button>
+                        </div>
+                        <div class="comment-section" id="commentSection_${moment.id}" style="display:none;">
+                            ${commentsHtml}
+                            <div class="comment-input-row">
+                                <input type="text" class="comment-input" data-moment-id="${moment.id}" placeholder="说点什么吧...">
+                                <button class="send-comment-btn" data-moment-id="${moment.id}">发送</button>
+                            </div>
+                        </div>
+                    </div>`;
+            }
+            container.innerHTML = html;
+            bindMomentEvents(container);
+        }
+
+        function bindMomentEvents(container) {
+            let replyQuote = null;
+            container.querySelectorAll('.like-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const momentId = btn.dataset.momentId;
+                    const moment = moments.find(m => m.id === momentId);
+                    if (!moment) return;
+                    const idx = moment.likes.indexOf('me');
+                    if (idx === -1) {
+                        moment.likes.push('me');
+                        if (Math.random() < 0.4) {
+                            const candidates = [];
+                            if (moment.authorId === 'meng') {
+                            } else if (moment.authorId === 'me') {
+                                const enabledMembers = groupMembers.filter(m => m.enabled && !moment.likes.includes(m.id)).map(m => m.id);
+                                if (enabledMembers.length) {
+                                    candidates.push(...enabledMembers);
+                                }
+                                if (!moment.likes.includes('meng')) candidates.push('meng');
+                            }
+                            if (candidates.length) {
+                                moment.likes.push(candidates[Math.floor(Math.random() * candidates.length)]);
+                            }
+                        }
+                    } else {
+                        moment.likes.splice(idx, 1);
+                    }
+                    saveMoments();
+                    renderMomentsList('momentsContainer');
+                });
+            });
+            container.querySelectorAll('.comment-toggle-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const section = document.getElementById('commentSection_' + btn.dataset.momentId);
+                    if (section) section.style.display = section.style.display === 'none' ? 'block' : 'none';
+                });
+            });
+            container.querySelectorAll('.send-comment-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const momentId = btn.dataset.momentId;
+                    const input = container.querySelector(`.comment-input[data-moment-id="${momentId}"]`);
+                    if (!input) return;
+                    const text = input.value.trim();
+                    if (!text) return;
+                    const moment = moments.find(m => m.id === momentId);
+                    if (!moment) return;
+                    const quoteRef = replyQuote;
+                    const newComment = {
+                        id: 'cmt_' + Date.now(),
+                        authorId: 'me',
+                        authorName: profile.myNick || '我',
+                        content: text,
+                        timestamp: Date.now(),
+                        quoteCommentId: quoteRef ? quoteRef.id : null,
+                        quoteContent: quoteRef ? quoteRef.content : '',
+                        quoteAuthorName: quoteRef ? quoteRef.authorName : ''
+                    };
+                    moment.comments.push(newComment);
+                    const myComment = newComment;
+                    saveMoments();
+                    replyQuote = null;
+                    input.value = '';
+                    input.placeholder = '说点什么吧...';
+                    renderMomentsList('momentsContainer');
+                    const replyDelay = momentsCommentDelayMin * 1000 + Math.random() * (momentsCommentDelayMax * 1000);
+                    setTimeout(() => {
+                        let replyAuthorId, replyAuthorName, textPool;
+                        if (quoteRef && quoteRef.authorId !== 'me') {
+                            replyAuthorId = quoteRef.authorId;
+                            replyAuthorName = quoteRef.authorName;
+                            textPool = getMomentTextPool(replyAuthorId);
+                            if (!textPool || textPool.length === 0) textPool = ['谢谢你～', '收到啦', '嗯嗯'];
+                        } else {
+                            if (moment.authorId === 'me') {
+                                const otherCandidates = [];
+                                if (groupChatEnabled && groupMembers.length) {
+                                    otherCandidates.push(...groupMembers.filter(m => m.enabled).map(m => m.id));
+                                } else {
+                                    otherCandidates.push('meng');
+                                }
+                                replyAuthorId = otherCandidates[Math.floor(Math.random() * otherCandidates.length)];
+                                if (replyAuthorId === 'meng') {
+                                    replyAuthorName = profile.mengNick || 'ta';
+                                } else {
+                                    const m = groupMembers.find(mm => mm.id === replyAuthorId);
+                                    replyAuthorName = m ? m.name : 'ta';
+                                }
+                                textPool = getMomentTextPool(replyAuthorId);
+                            } else {
+                                replyAuthorId = moment.authorId;
+                                replyAuthorName = moment.authorName;
+                                textPool = getMomentTextPool(moment.authorId);
+                            }
+                        }
+                        if (textPool && textPool.length) {
+                            const replyContent = {
+                                id: 'cmt_' + Date.now(),
+                                authorId: replyAuthorId,
+                                authorName: replyAuthorName,
+                                content: textPool[Math.floor(Math.random() * textPool.length)],
+                                timestamp: Date.now()
+                            };
+                            if (myComment.quoteCommentId) {
+                                replyContent.quoteCommentId = myComment.id;
+                                replyContent.quoteContent = myComment.content;
+                                replyContent.quoteAuthorName = myComment.authorName;
+                            }
+                            moment.comments.push(replyContent);
+                            saveMoments();
+                            renderMomentsList('momentsContainer');
+                            if (replyAuthorId !== 'me') {
+                                showToast(`${replyAuthorName} 刚刚回复了你哦～`, '💬');
+                            }
+                        }
+                    }, replyDelay);
+                });
+            });
+            container.querySelectorAll('.comment-delete-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const commentId = btn.dataset.commentId;
+                    const momentCard = btn.closest('.moment-card');
+                    if (!momentCard) return;
+                    const momentId = momentCard.dataset.momentId;
+                    const moment = moments.find(m => m.id === momentId);
+                    if (!moment) return;
+                    if (confirm('确定删除这条评论吗？')) {
+                        moment.comments = moment.comments.filter(c => c.id !== commentId);
+                        saveMoments();
+                        renderMomentsList('momentsContainer');
+                    }
+                });
+            });
+            container.querySelectorAll('.comment-reply-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const commentId = btn.dataset.commentId;
+                    const momentCard = btn.closest('.moment-card');
+                    if (!momentCard) return;
+                    const momentId = momentCard.dataset.momentId;
+                    const moment = moments.find(m => m.id === momentId);
+                    if (!moment) return;
+                    const targetComment = moment.comments.find(c => c.id === commentId);
+                    if (targetComment) {
+                        replyQuote = targetComment;
+                        const input = container.querySelector(`.comment-input[data-moment-id="${momentId}"]`);
+                        if (input) {
+                            input.placeholder = `回复 ${targetComment.authorName}：${targetComment.content.substring(0,20)}…`;
+                            input.focus();
+                        }
+                    }
+                });
+            });
+            container.querySelectorAll('.moment-img-clickable').forEach(img => {
+                img.addEventListener('click', (e) => {
+                    const fullSrc = img.dataset.fullImg;
+                    if (fullSrc) showImageOverlay(fullSrc);
+                });
+            });
+            container.querySelectorAll('.moment-delete-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const momentId = btn.dataset.momentId;
+                    if (confirm('确定删除这条动态吗？')) {
+                        deleteMoment(momentId);
+                        renderMomentsList('momentsContainer');
+                    }
+                });
+            });
+            container.querySelectorAll('.moment-header img, .moment-author-name').forEach(el => {
+                el.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const momentCard = el.closest('.moment-card');
+                    if (!momentCard) return;
+                    const momentId = momentCard.dataset.momentId;
+                    const moment = moments.find(m => m.id === momentId);
+                    if (moment) {
+                        showMemberHistoryMoments(moment.authorId);
+                    }
+                });
+            });
+        }
+
+        function showImageOverlay(src) {
+            const overlay = document.createElement('div');
+            overlay.className = 'image-overlay';
+            overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.9);display:flex;justify-content:center;align-items:center;z-index:9999;cursor:zoom-out;';
+            overlay.innerHTML = `<img src="${src}" style="max-width:90%;max-height:90%;border-radius:12px;object-fit:contain;">`;
+            document.body.appendChild(overlay);
+            overlay.addEventListener('click', () => overlay.remove());
+        }
+
+        function showMemberHistoryMoments(authorId) {
+            const authorMoments = moments.filter(m => m.authorId === authorId).sort((a, b) => b.timestamp - a.timestamp);
+            if (authorMoments.length === 0) {
+                alert('该成员暂无朋友圈');
+                return;
+            }
+            const authorName = authorMoments[0].authorName;
+            const modal = document.createElement('div');
+            modal.className = 'modal';
+            modal.id = 'memberHistoryModal';
+            let html = `<div class="modal-content" style="max-width:480px;max-height:75vh;">
+                <div class="moments-header" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+                    <div class="moments-title">👤 ${escapeHtml(authorName)} 的朋友圈</div>
+                    <button class="icon-btn" id="closeMemberHistory">✖️</button>
+                </div>
+                <div class="moments-list" id="memberHistoryList" style="max-height: calc(75vh - 100px); overflow-y: auto;">
+                <div class="moments-list" id="memberHistoryList">`;
+            for (const moment of authorMoments) {
+                const avatarUrl = getAuthorAvatar(moment.authorId) || moment.authorAvatar || defaultAvatar();
+                const avatarSrc = isImgIdRef(avatarUrl) ? defaultAvatar() : avatarUrl;
+                const avatarAttr = isImgIdRef(avatarUrl)
+                    ? `data-img-ref="${escapeHtml(avatarUrl)}" src="${defaultAvatar()}"`
+                    : `src="${avatarUrl}"`;
+                let imagesHtml = '';
+                if (moment.images && moment.images.length) {
+                    imagesHtml = '<div class="moment-images">';
+                    for (const imgUrl of moment.images) {
+                        const isRef = isImgIdRef(imgUrl);
+                        const src = isRef ? defaultAvatar() : imgUrl;
+                        const attr = isRef ? `data-img-ref="${escapeHtml(imgUrl)}"` : `src="${imgUrl}"`;
+                        imagesHtml += `<img ${attr} src="${src}" class="moment-img-clickable" data-full-img="${imgUrl}" alt="图片">`;
+                    }
+                    imagesHtml += '</div>';
+                }
+                html += `
+                    <div class="moment-card">
+                        <div class="moment-header">
+                            <img ${avatarAttr} alt="${escapeHtml(authorName)}">
+                            <div class="moment-author">
+                                <span class="moment-author-name">${escapeHtml(authorName)}</span>
+                                <span class="moment-time-loc">
+                                    <span>${formatMsgTime(moment.timestamp)}</span>
+                                    ${moment.location ? `<span>· ${escapeHtml(moment.location)}</span>` : ''}
+                                </span>
+                            </div>
+                        </div>
+                        <div class="moment-content">${escapeHtml(moment.content)}</div>
+                        ${moment.feeling ? `<span class="moment-feeling">${escapeHtml(moment.feeling)}</span>` : ''}
+                        ${imagesHtml}
+                    </div>`;
+            }
+            html += `</div></div>`;
+            modal.innerHTML = html;
+            document.body.appendChild(modal);
+            resolveImgElementsInContainer(modal);
+            modal.querySelector('#closeMemberHistory').onclick = () => modal.remove();
+            modal.addEventListener('click', (e) => { if (e.target === modal) modal.remove(); });
+            modal.querySelectorAll('.moment-img-clickable').forEach(img => {
+                img.addEventListener('click', (e) => {
+                    const fullSrc = img.dataset.fullImg || img.src;
+                    if (fullSrc && !fullSrc.startsWith('data:image/svg')) {
+                        showImageOverlay(fullSrc);
+                    }
+                });
+            });
+        }
+
+        function openMomentsPanel() {
+            const notifyCard = document.getElementById('momentNotifyCard');
+            if (notifyCard) {
+                notifyCard.style.animation = 'momentNotifySlideOut 0.3s forwards';
+                setTimeout(() => notifyCard.remove(), 300);
+            }
+            const existing = document.getElementById('momentsModal');
+            if (existing) { existing.remove(); return; }
+            const modal = document.createElement('div');
+            modal.className = 'modal';
+            modal.id = 'momentsModal';
+            modal.innerHTML = `
+                <div class="modal-content">
+                    <div class="moments-header" style="max-width:620px;max-height:95vh;">
+                        <div class="moments-title">🌏 朋友圈</div>
+                        <div style="display:flex; gap:8px;">
+                            <button class="icon-btn" id="postMomentBtn" title="发布动态">✏️</button>
+                            <button class="icon-btn" id="refreshMomentsBtn" title="刷新">🔄</button>
+                            <button class="icon-btn" id="closeMomentsModal" title="关闭">✖️</button>
+                        </div>
+                    </div>
+                    <div id="momentPostPanel" style="display:none; margin-bottom:16px;">
+                        <textarea id="momentContentInput" class="textarea-clean" placeholder="分享你的心情..." rows="3" style="background:var(--bg-body); border:1px solid var(--border-light); border-radius:16px; padding:10px; width:100%; resize:vertical;"></textarea>
+                        <div style="display:flex; gap:8px; margin-top:8px; align-items:center;">
+                            <input type="text" id="momentFeelingInput" class="msg-input" placeholder="此刻的心情（选填）" style="flex:1; background:var(--bg-body);">
+                            <input type="text" id="momentLocationInput" class="msg-input" placeholder="位置（选填）" style="flex:1; background:var(--bg-body);">
+                        </div>
+                        <div style="margin-top:8px; display:flex; gap:8px; align-items:center;">
+                            <button class="small-btn primary-outline" id="momentPickImgBtn">🖼️ 从图库选</button>
+                            <button class="small-btn primary-outline" id="momentUploadImgBtn">📤 上传图片</button>
+                            <input type="file" id="momentUploadImgInput" accept="image/*" multiple style="display:none;">
+                            <span id="momentImgCount" style="font-size:12px; color:var(--text-secondary);">0张</span>
+                        </div>
+                        <div id="momentImgPreview" style="display:flex; gap:8px; flex-wrap:wrap; margin-top:8px;"></div>
+                        <div class="button-group" style="margin-top:12px; justify-content:flex-end;">
+                            <button class="sec-btn sec-btn-outline" id="cancelPostMoment">取消</button>
+                            <button class="sec-btn" id="submitMomentBtn" disabled>发布</button>
+                        </div>
+                    </div>
+                    <div class="moments-list" id="momentsContainer"></div>
+                </div>`;
+            document.body.appendChild(modal);
+            document.getElementById('postMomentBtn').onclick = () => {
+                document.getElementById('momentPostPanel').style.display = 'block';
+                document.getElementById('momentContentInput').focus();
+            };
+            document.getElementById('cancelPostMoment').onclick = () => {
+                document.getElementById('momentPostPanel').style.display = 'none';
+                resetMomentEditor();
+            };
+            document.getElementById('momentContentInput').addEventListener('input', () => {
+                const hasText = document.getElementById('momentContentInput').value.trim().length > 0;
+                document.getElementById('submitMomentBtn').disabled = !hasText && selectedMomentImages.length === 0;
+            });
+            // 方式一：从图片库选择（保留原有功能）
+            document.getElementById('momentPickImgBtn').onclick = async () => {
+                if (!imgCardList.length) {
+                    alert('图片库暂无图片，请先上传或使用"上传图片"按钮');
+                    return;
+                }
+                showImagePickerForMoment(selectedMomentImages, (newImgs) => {
+                    selectedMomentImages = newImgs;
+                    updateMomentImgPreview();
+                });
+            };
+            
+            // 方式二：直接上传本地图片（新增功能）
+            document.getElementById('momentUploadImgBtn').onclick = () => {
+                document.getElementById('momentUploadImgInput').click();
+            };
+            
+            document.getElementById('momentUploadImgInput').onchange = async (e) => {
+                const files = Array.from(e.target.files);
+                if (!files.length) return;
+            
+                for (const file of files) {
+                    if (!file.type.startsWith('image/')) continue;
+            
+                    // 读取文件为 base64
+                    const base64 = await new Promise((resolve, reject) => {
+                        const reader = new FileReader();
+                        reader.onload = ev => resolve(ev.target.result);
+                        reader.onerror = reject;
+                        reader.readAsDataURL(file);
+                    });
+            
+                    // 生成唯一 ID 并保存到 IndexedDB
+                    const imgId = makeImgId();
+                    await saveImageToDB(imgId, base64);
+            
+                    // 构建图片引用
+                    const imgRef = IMG_ID_PREFIX + imgId;
+                    avatarCache.set(imgRef, base64);
+            
+                    // 添加到当前选中的图片列表
+                    selectedMomentImages.push({ id: Date.now() + Math.random(), url: imgRef });
+            
+                    // 同步添加到图片库，方便以后使用
+                    imgCardList.push({ id: Date.now() + Math.random(), url: imgRef });
+                }
+            
+                // 保存图片库并刷新预览
+                saveImgCards();
+                updateMomentImgPreview();
+                e.target.value = ''; // 清空 input，允许重复选择同一文件
+            };
+            document.getElementById('submitMomentBtn').onclick = () => {
+                const content = document.getElementById('momentContentInput').value.trim();
+                const feeling = document.getElementById('momentFeelingInput').value.trim();
+                const location = document.getElementById('momentLocationInput').value.trim();
+                if (!content && selectedMomentImages.length === 0) { alert('请输入内容或选择图片'); return; }
+                postMoment(content, feeling, location, selectedMomentImages);
+                document.getElementById('momentPostPanel').style.display = 'none';
+                resetMomentEditor();
+                renderMomentsList('momentsContainer');
+            };
+            renderMomentsList('momentsContainer');
+            document.getElementById('closeMomentsModal').onclick = () => modal.remove();
+            document.getElementById('refreshMomentsBtn')?.addEventListener('click', () => {
+                renderMomentsList('momentsContainer');
+            });
+            modal.addEventListener('click', (e) => { if (e.target === modal) modal.remove(); });
+            const badge = document.getElementById('momentsBadge');
+            if (badge) badge.classList.remove('active');
         }
 
         function setTheme(mode, cidx) {
@@ -3974,7 +5339,6 @@
         }
 
         function setThemeOnly(mode) { setTheme(mode, currentColorIdx); }
-
         function setColorIdxOnly(cidx) { setTheme(currentThemeMode, cidx); }
 
         function setBubbleFontSize(px) {
@@ -4035,7 +5399,7 @@
                     <div class="settings-section"><div style="font-weight:600;margin-bottom:8px;">🎯 气泡色彩微调</div><div class="color-dot-row" id="colorDotRow">${colorDotsHtml}</div><div class="data-note">在日光/午夜主题下效果更明显</div></div>
                     <div class="settings-section"><div style="font-weight:600;margin-bottom:8px;">🔤 气泡字体大小</div><div class="font-slider-group"><span style="font-size:0.85rem;">🔠</span><input type="range" id="fontSizeSliderInPanel" min="12" max="28" step="1" value="${currentSize}"><span id="fontSizeBadgeInPanel" class="font-size-badge">${currentSize}px</span></div></div>
                     <div class="button-group"><button class="sec-btn" id="applyThemeSettingsBtn">应用</button><button class="sec-btn sec-btn-outline" id="resetThemeDefaultsBtn">↺ 恢复默认</button></div>
-                    <button class="sec-btn sec-btn-outline" id="closeThemePanelBtn" style="width:100%;margin-top:6px;">关闭</button></div>`;
+                    <button class="sec-btn" id="closeThemePanelBtn" style="width:100%;margin-top:6px;">关闭</button></div>`;
             document.body.appendChild(modal);
             modal.querySelectorAll('.theme-pill-btn').forEach(btn => {
                 btn.addEventListener('click', () => { const tv = btn.dataset.themeVal; if (tv) setThemeOnly(tv);
@@ -4069,30 +5433,20 @@
         }
 
         function saveWordCards() { localStorage.setItem(STORAGE.wordCards, JSON.stringify(wordCardList)); }
-
         function saveEmojiCards() { localStorage.setItem(STORAGE.emojiCards, JSON.stringify(emojiCardList)); }
-
         function saveImgCards() { localStorage.setItem(STORAGE.imgCards, JSON.stringify(imgCardList)); }
-
         function saveProfile() { localStorage.setItem(STORAGE.profile, JSON.stringify(profile)); }
-
         function saveLetters() { localStorage.setItem(STORAGE.letters, JSON.stringify(letters)); }
-
         function saveMengIgnoreSetting() { localStorage.setItem(STORAGE.mengMaybeIgnore, mengMaybeIgnore); }
-
         function saveMengActiveTalkSetting() { localStorage.setItem(STORAGE.mengActiveTalk, mengActiveTalkEnabled); }
-
         function saveMengQuoteSetting() { localStorage.setItem(STORAGE.mengQuoteEnabled, mengQuoteEnabled); }
-
         function saveMyMessageSound(url) { myMessageSoundUrl = url; if (url) localStorage.setItem(STORAGE.myMessageSound,
             url);
         else localStorage.removeItem(STORAGE.myMessageSound); }
-
         function saveMengMessageSound(url) { mengMessageSoundUrl = url; if (url) localStorage.setItem(STORAGE.mengMessageSound,
                 url);
         else localStorage.removeItem(STORAGE.mengMessageSound); }
-
-        function saveReplyInterDelayMs(ms) { replyInterMessageDelayMs = Math.min(7000, Math.max(0, ms));
+        function saveReplyInterDelayMs(ms) { replyInterMessageDelayMs = Math.min(15000, Math.max(0, ms));
             localStorage.setItem(STORAGE.replyInterMessageDelayMs, replyInterMessageDelayMs); }
 
         function isPureEmojiLine(line) {
@@ -4409,7 +5763,6 @@
                 const member = groupMembers.find(m => m.id === targetMemberId);
                 if (member) targetName = member.name;
             }
-
             modal.innerHTML = `
                 <div class="modal-content" style="max-width:560px;">
                     <div class="settings-title">✉️ 给 ${escapeHtml(targetName)} 的手写信</div>
@@ -4457,7 +5810,6 @@
                     </div>
                 </div>`;
             document.body.appendChild(modal);
-
             const textarea = document.getElementById('letterContentModal');
             const lineCount = document.getElementById('letterLineCount');
             function updateCount() {
@@ -4466,7 +5818,6 @@
             }
             textarea.addEventListener('input', updateCount);
             updateCount();
-
             document.getElementById('sendLetterModal').onclick = () => {
                 const txt = textarea.value;
                 const lines = txt.split(/\r?\n/).filter(l => l.trim());
@@ -4503,23 +5854,21 @@
         function showLetterDetail(letter) {
             const modal = document.createElement('div');
             modal.className = 'modal';
-
             const letterContentHtml = letter.sentences
                 .map(s => `<div style="margin-bottom:6px; line-height:1.8;">${escapeHtml(s)}</div>`)
                 .join('');
-
             let replyHtml = '';
             if (letter.status === 'completed' && letter.replyMessages?.length) {
-                const replyContentHtml = letter.replyMessages
-                    .map(r => {
-                        if (r.type === 'text') {
-                            return `<div style="margin-bottom:8px; line-height:1.8;">${escapeHtml(r.content)}</div>`;
-                        } else if (r.type === 'image') {
-                            return `<div style="margin-bottom:8px; line-height:1.8;">🖼️ 图片消息</div>`;
-                        }
-                        return '';
-                    }).join('');
-
+                const allTexts = letter.replyMessages
+                    .filter(r => r.type === 'text')
+                    .map(r => r.content)
+                    .join(' ');
+                let replyContentHtml = '';
+                if (allTexts) {
+                    replyContentHtml = `<div style="line-height:1.8;">${escapeHtml(allTexts)}</div>`;
+                } else {
+                    replyContentHtml = `<div style="line-height:1.8;">💌 对方未回复文字内容</div>`;
+                }
                 replyHtml = `
                     <div style="margin-top:20px;">
                         <div style="font-weight:600; margin-bottom:10px; color:var(--accent-color); font-size:15px;">
@@ -4532,13 +5881,11 @@
             } else {
                 replyHtml = `<div class="data-note" style="margin-top:16px;">⏳ 预计 ${new Date(letter.dueTime).toLocaleString()} 后回复</div>`;
             }
-
             let targetInfo = '';
             if (letter.targetMemberId) {
                 const member = groupMembers.find(m => m.id === letter.targetMemberId);
                 if (member) targetInfo = `<div style="margin: 8px 0; font-size: 14px;">👤 收信人：${escapeHtml(member.name)}</div>`;
             }
-
             modal.innerHTML = `
                 <div class="modal-content" style="max-width:560px;">
                     <div class="settings-title">📜 信件详情</div>
@@ -4593,7 +5940,7 @@
                     </div>
                     <div id="patListContainer" style="max-height:60vh;overflow-y:auto;"></div>
                     <button class="sec-btn sec-btn-outline" id="closePatModal">关闭</button>
-                </div>`;    
+                </div>`;
             document.body.appendChild(modalDiv);
 
             function rp() { const c = document.getElementById('patListContainer'); if (!c) return; if (!patList.length) { c
@@ -4636,6 +5983,7 @@
             <div class="modal-content" style="max-width:580px; padding:12px 16px;">
                 <div class="settings-title" style="margin-bottom:12px;">⚙️ 设置管理</div>
                 <div class="manage-fold"><div class="manage-fold-header" onclick="this.parentElement.classList.toggle('open'); this.classList.toggle('open')"><span class="fold-arrow">▶</span> 👤 基础信息</div><div class="manage-fold-body"><div class="flex-between" style="margin-bottom:8px;"><span>我的昵称</span><input type="text" id="nickMyInput" value="${escapeHtml(profile.myNick)}" style="width:60%;background:var(--bg-body);border:1px solid var(--border-light);border-radius:20px;padding:6px 12px;"></div><div class="flex-between"><span>Ta的昵称</span><input type="text" id="nickMengInput" value="${escapeHtml(profile.mengNick)}" style="width:60%;background:var(--bg-body);border:1px solid var(--border-light);border-radius:20px;padding:6px 12px;"></div><button class="sec-btn" id="saveNicknamesBtn" style="margin-top:10px;width:100%;">保存昵称</button><div class="data-note" style="margin-top:4px;">💡 点击顶部头像可更换头像</div></div></div>
+                <div class="manage-fold"><div class="manage-fold-header" onclick="this.parentElement.classList.toggle('open'); this.classList.toggle('open')"><span class="fold-arrow">▶</span> 🎨 外观</div><div class="manage-fold-body"><div style="margin-bottom:6px;font-weight:500;">🖼️ 聊天背景更换</div><input type="file" id="bgUploadInput" accept="image/jpeg,image/jpg" style="margin-bottom:10px;"><div class="button-group"><button class="sec-btn" id="applyBgBtn">应用背景</button><button class="sec-btn sec-btn-outline" id="resetBgBtn">恢复默认</button></div><div style="margin-top:14px;margin-bottom:6px;font-weight:500;">🫧 气泡CSS</div><textarea id="bubbleCssTextarea" class="textarea-clean" rows="10"></textarea><div class="button-group" style="margin-top:6px;"><button class="sec-btn" id="applyBubbleCss">应用</button><button class="sec-btn sec-btn-outline" id="resetBubbleCss">恢复</button><button class="sec-btn sec-btn-outline" id="loadExampleCssBtn">示例</button></div></div></div>                
                 <div class="manage-fold"><div class="manage-fold-header" onclick="this.parentElement.classList.toggle('open'); this.classList.toggle('open')"><span class="fold-arrow">▶</span> 📂 内容库</div><div class="manage-fold-body">
                     <div style="margin-bottom:8px;display:flex;align-items:center;gap:6px;">
                         <span style="font-weight:500;">💬 字卡</span>
@@ -4654,9 +6002,73 @@
                 <div class="flex-between" style="margin-bottom:10px;"><span>显示消息时间</span><label class="toggle-switch"><input type="checkbox" id="showTimeToggle" ${showMessageTimeEnabled?'checked':''}><span class="slider"></span></label></div>                    
                 <div class="flex-between" style="margin-bottom:10px;"><span>组合回复</span><label class="toggle-switch"><input type="checkbox" id="combineRepliesToggle" ${combineRepliesEnabled?'checked':''}><span class="slider"></span></label></div>
                 <div class="data-note" style="margin-bottom:10px;">💡 开启后多条字卡回复将合并为一条消息（换行分隔），减少消息刷屏</div>
-                <div style="margin-bottom:10px;"><span>⏱️ 最大等待：</span><strong id="replySpeedValue">${Math.round(replyMaxDelayMs/1000)}</strong>秒</div><input type="range" id="replySpeedSlider" min="3" max="120" value="${Math.round(replyMaxDelayMs/1000)}" style="width:100%;"><div style="margin-top:10px;"><span>⏳ 消息间隔：</span><strong id="interDelayValue">${(replyInterMessageDelayMs/1000).toFixed(1)}</strong>秒</div><input type="range" id="interDelaySlider" min="0" max="7" step="0.5" value="${(replyInterMessageDelayMs/1000).toFixed(1)}" style="width:100%;"></div></div>
-                <div class="manage-fold"><div class="manage-fold-header" onclick="this.parentElement.classList.toggle('open'); this.classList.toggle('open')"><span class="fold-arrow">▶</span> 🔔 消息设置</div><div class="manage-fold-body"><div class="flex-between" style="margin-bottom:10px;"><span>推送通知</span><label class="toggle-switch"><input type="checkbox" id="notificationToggle" ${notificationEnabled?'checked':''}><span class="slider"></span></label></div><button class="sec-btn sec-btn-outline" id="requestNotifPermBtn" style="width:100%;margin-bottom:12px;">请求通知权限</button><div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;"><span style="flex-shrink:0;">我的提示音</span><input type="file" id="mySoundUpload" accept="audio/mpeg" style="flex:1;min-width:0;"><button class="small-btn" id="clearMySound">清除</button></div><div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;"><span style="flex-shrink:0;">Ta的提示音</span><input type="file" id="mengSoundUpload" accept="audio/mpeg" style="flex:1;min-width:0;"><button class="small-btn" id="clearMengSound">清除</button></div><div class="data-note" style="margin-top:4px;">导入的MP3音频文件小于1MB</div></div></div>
-                <div class="manage-fold"><div class="manage-fold-header" onclick="this.parentElement.classList.toggle('open'); this.classList.toggle('open')"><span class="fold-arrow">▶</span> 🎨 外观</div><div class="manage-fold-body"><div style="margin-bottom:6px;font-weight:500;">🖼️ 聊天背景更换</div><input type="file" id="bgUploadInput" accept="image/jpeg,image/jpg" style="margin-bottom:10px;"><div class="button-group"><button class="sec-btn" id="applyBgBtn">应用背景</button><button class="sec-btn sec-btn-outline" id="resetBgBtn">恢复默认</button></div><div style="margin-top:14px;margin-bottom:6px;font-weight:500;">🫧 气泡CSS</div><textarea id="bubbleCssTextarea" class="textarea-clean" rows="10"></textarea><div class="button-group" style="margin-top:6px;"><button class="sec-btn" id="applyBubbleCss">应用</button><button class="sec-btn sec-btn-outline" id="resetBubbleCss">恢复</button><button class="sec-btn sec-btn-outline" id="loadExampleCssBtn">示例</button></div></div></div>
+                <div style="margin-bottom:10px;"><span>⏱️ 最大等待：</span><strong id="replySpeedValue">${Math.round(replyMaxDelayMs/1000)}</strong>秒</div><input type="range" id="replySpeedSlider" min="3" max="500" value="${Math.round(replyMaxDelayMs/1000)}" style="width:100%;"><div style="margin-top:10px;"><span>⏳ 消息间隔：</span><strong id="interDelayValue">${(replyInterMessageDelayMs/1000).toFixed(1)}</strong>秒</div><input type="range" id="interDelaySlider" min="0" max="15" step="0.5" value="${(replyInterMessageDelayMs/1000).toFixed(1)}" style="width:100%;"></div></div>
+                <div class="manage-fold"><div class="manage-fold-header" onclick="this.parentElement.classList.toggle('open'); this.classList.toggle('open')"><span class="fold-arrow">▶</span> 🔔 消息设置</div><div class="manage-fold-body"><div class="flex-between" style="margin-bottom:10px;"><span>推送通知</span><label class="toggle-switch"><input type="checkbox" id="notificationToggle" ${notificationEnabled?'checked':''}><span class="slider"></span></label></div><button class="sec-btn sec-btn-outline" id="requestNotifPermBtn" style="width:100%;margin-bottom:12px;">请求通知权限</button><div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;"><span style="flex-shrink:0;">我的提示音</span><input type="file" id="mySoundUpload" accept="audio/mpeg" style="flex:1;min-width:0;"><button class="small-btn" id="clearMySound">清除</button></div><div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;"><span style="flex-shrink:0;">Ta的提示音</span><input type="file" id="mengSoundUpload" accept="audio/mpeg" style="flex:1;min-width:0;"><button class="small-btn" id="clearMengSound">清除</button></div><div class="data-note" style="margin-top:4px;">导入的MP3音频文件小于1MB</div></div></div>               
+                <div class="manage-fold" id="momentsManageFold">
+                    <div class="manage-fold-header" onclick="this.parentElement.classList.toggle('open'); this.classList.toggle('open')">
+                        <span class="fold-arrow">▶</span> 🌏 朋友圈管理
+                    </div>
+                    <div class="manage-fold-body">
+                        
+                        <div style="margin-bottom: 20px;">
+                            <div style="font-weight:600; margin-bottom:8px;">📅 生成时间与条数</div>
+                            <div style="display:flex; gap:10px; align-items:center; margin-bottom:8px;">
+                                <label>开始时间：</label>
+                                <input type="time" id="momentsTimeStartInput" value="${momentsTimeStart}" style="background:var(--bg-body);border:1px solid var(--border-light);border-radius:20px;padding:6px;">
+                                <label style="margin-left:12px;">结束时间：</label>
+                                <input type="time" id="momentsTimeEndInput" value="${momentsTimeEnd}" style="background:var(--bg-body);border:1px solid var(--border-light);border-radius:20px;padding:6px;">
+                            </div>
+                            <div class="data-note" style="margin-bottom:12px;">💡 设置每天允许发朋友圈的时间段（在此范围内随机分布）。若开始时间晚于结束时间，视为跨夜。</div>
+                            <div style="display:flex; gap:10px; align-items:center; margin-bottom:8px;">
+                                <label>每人最少条数：</label>
+                                <input type="number" id="momentsCountMinInput" min="1" max="10" value="${momentsCountMin}" style="width:70px; background:var(--bg-body);border:1px solid var(--border-light);border-radius:20px;padding:6px;">
+                                <label style="margin-left:12px;">最多条数：</label>
+                                <input type="number" id="momentsCountMaxInput" min="1" max="10" value="${momentsCountMax}" style="width:70px; background:var(--bg-body);border:1px solid var(--border-light);border-radius:20px;padding:6px;">
+                            </div>
+                            <div class="data-note" style="margin-bottom:6px;">💡 每个成员（包括Ta）每天随机发送的条数范围。</div>
+                            <button class="sec-btn" id="saveMomentsScheduleBtn" style="width:100%;">保存并立即生效</button>
+                        </div>
+                
+                        <hr style="margin: 12px 0;">
+                
+                        <div style="margin-bottom: 20px;">
+                            <div style="font-weight:600; margin-bottom:8px;">💬 评论速度</div>
+                            <div style="margin-bottom:12px; font-weight:500; font-size:13px;">初始评论（动态发布后）</div>
+                            <div style="margin-bottom:8px;">
+                                <span>最快间隔：</span><strong id="icMinValue">${initialCommentIntervalMin}</strong> 秒
+                                <input type="range" id="icMinSlider" min="1" max="60" value="${initialCommentIntervalMin}" style="width:100%;">
+                            </div>
+                            <div style="margin-bottom:8px;">
+                                <span>最慢间隔：</span><strong id="icMaxValue">${initialCommentIntervalMax}</strong> 秒
+                                <input type="range" id="icMaxSlider" min="1" max="120" value="${initialCommentIntervalMax}" style="width:100%;">
+                            </div>
+                            <hr style="margin: 12px 0;">
+                            <div style="margin-bottom:12px; font-weight:500; font-size:13px;">回复速度（你评论后Ta的回复）</div>
+                            <div style="margin-bottom:8px;">
+                                <span>最小延迟：</span><strong id="replyMinValue">${momentsCommentDelayMin}</strong> 秒
+                                <input type="range" id="replyMinSlider" min="2" max="60" value="${momentsCommentDelayMin}" style="width:100%;">
+                            </div>
+                            <div style="margin-bottom:8px;">
+                                <span>最大延迟：</span><strong id="replyMaxValue">${momentsCommentDelayMax}</strong> 秒
+                                <input type="range" id="replyMaxSlider" min="2" max="120" value="${momentsCommentDelayMax}" style="width:100%;">
+                            </div>
+                            <div class="data-note">💡 初始评论会在发布后陆续出现，对回复速度的修改立即生效。</div>
+                        </div>
+                
+                        <hr style="margin: 12px 0;">
+                
+                        <div>
+                            <div style="font-weight:600; margin-bottom:8px;">📍 地点管理</div>
+                            <div id="momentLocationsManager" style="max-height:180px;overflow-y:auto;margin-bottom:10px;"></div>
+                            <div style="display:flex; gap:6px;">
+                                <input type="text" id="newLocationInput" placeholder="新地点名称" style="flex:1;background:var(--bg-body);border:1px solid var(--border-light);border-radius:20px;padding:6px 12px;">
+                                <button class="small-btn primary-outline" id="addLocationBtn">➕ 添加</button>
+                            </div>
+                            <div class="data-note" style="margin-top:6px;">💡 修改后立即生效，新动态将随机使用列表中的地点</div>
+                        </div>
+                
+                    </div>
+                </div>
                 <div class="manage-fold"><div class="manage-fold-header" onclick="this.parentElement.classList.toggle('open'); this.classList.toggle('open')"><span class="fold-arrow">▶</span> 💾 数据</div><div class="manage-fold-body"><div class="button-group"><button class="sec-btn" id="exportDataBtn">📤 导出备份</button><button class="sec-btn sec-btn-outline" id="importDataBtn">📥 导入备份</button></div></div></div>
                 <button class="sec-btn" id="closeManage" style="margin-top:12px;width:100%;">关闭</button></div>`;
             document.body.appendChild(modalDiv);
@@ -4775,7 +6187,7 @@
                         .mengActiveTalk, STORAGE.musicPlayMode, STORAGE.replyMaxDelayMs, STORAGE
                         .replyInterMessageDelayMs, STORAGE.mengQuoteEnabled, STORAGE.myMessageSound, STORAGE
                         .mengMessageSound, STORAGE.patList, STORAGE.groupChatEnabled, STORAGE.groupMembers,
-                        STORAGE.emojiDisabled, STORAGE.imgDisabled
+                        STORAGE.emojiDisabled, STORAGE.imgDisabled,MOMENTS_STORAGE_KEY
                     ]; let exp = {};
                     keys.forEach(k => { const v = localStorage.getItem(k); if (v !== null) exp[k] = v; }); const blob =
                         new Blob([JSON.stringify({ version: "2.1", timestamp: Date.now(), data: exp })], { type:
@@ -4830,6 +6242,101 @@
                     checkPuzzleConditions(); } else alert('请选择图片'); };
             document.getElementById('resetBgBtn').onclick = () => { saveCustomBackground(null);
                 pbg = null; };
+            function renderLocationList() {
+                const container = document.getElementById('momentLocationsManager');
+                if (!container) return;
+                if (!MOMENT_LOCATIONS.length) {
+                    container.innerHTML = '<div class="data-note">暂无地点，请添加</div>';
+                    return;
+                }
+                container.innerHTML = MOMENT_LOCATIONS.map((loc, idx) => `
+                    <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px; padding:4px 0;">
+                        <span style="flex:1; font-size:14px;">${escapeHtml(loc)}</span>
+                        <button class="small-btn danger" data-del-loc="${idx}" style="padding:2px 10px;font-size:11px;">✕</button>
+                    </div>`).join('');
+                container.querySelectorAll('[data-del-loc]').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const idx = parseInt(btn.dataset.delLoc);
+                        MOMENT_LOCATIONS.splice(idx, 1);
+                        localStorage.setItem('moment_locations', JSON.stringify(MOMENT_LOCATIONS));
+                        renderLocationList();
+                    });
+                });
+            }
+            document.getElementById('addLocationBtn').addEventListener('click', () => {
+                const input = document.getElementById('newLocationInput');
+                const name = input.value.trim();
+                if (!name) return;
+                MOMENT_LOCATIONS.push(name);
+                localStorage.setItem('moment_locations', JSON.stringify(MOMENT_LOCATIONS));
+                input.value = '';
+                renderLocationList();
+            });
+            renderLocationList();
+            const icMinSlider = document.getElementById('icMinSlider');
+            const icMaxSlider = document.getElementById('icMaxSlider');
+            const icMinVal = document.getElementById('icMinValue');
+            const icMaxVal = document.getElementById('icMaxValue');
+            if (icMinSlider && icMaxSlider) {
+                function syncIcMin(v) {
+                    v = Math.max(1, Math.min(v, parseInt(icMaxSlider.value)));
+                    icMinSlider.value = v;
+                    icMinVal.textContent = v;
+                    initialCommentIntervalMin = v;
+                    localStorage.setItem(STORAGE.initialCommentIntervalMin, v);
+                }
+                function syncIcMax(v) {
+                    v = Math.max(parseInt(icMinSlider.value), v);
+                    icMaxSlider.value = v;
+                    icMaxVal.textContent = v;
+                    initialCommentIntervalMax = v;
+                    localStorage.setItem(STORAGE.initialCommentIntervalMax, v);
+                }
+                icMinSlider.addEventListener('input', () => syncIcMin(parseInt(icMinSlider.value)));
+                icMaxSlider.addEventListener('input', () => syncIcMax(parseInt(icMaxSlider.value)));
+            }
+            const replyMinSlider = document.getElementById('replyMinSlider');
+            const replyMaxSlider = document.getElementById('replyMaxSlider');
+            const replyMinVal = document.getElementById('replyMinValue');
+            const replyMaxVal = document.getElementById('replyMaxValue');
+            if (replyMinSlider && replyMaxSlider) {
+                function syncReplyMin(v) {
+                    v = Math.max(2, Math.min(v, parseInt(replyMaxSlider.value)));
+                    replyMinSlider.value = v;
+                    replyMinVal.textContent = v;
+                    momentsCommentDelayMin = v;
+                    localStorage.setItem(STORAGE.momentsCommentDelayMin, v);
+                }
+                function syncReplyMax(v) {
+                    v = Math.max(parseInt(replyMinSlider.value), v);
+                    replyMaxSlider.value = v;
+                    replyMaxVal.textContent = v;
+                    momentsCommentDelayMax = v;
+                    localStorage.setItem(STORAGE.momentsCommentDelayMax, v);
+                }
+                replyMinSlider.addEventListener('input', () => syncReplyMin(parseInt(replyMinSlider.value)));
+                replyMaxSlider.addEventListener('input', () => syncReplyMax(parseInt(replyMaxSlider.value)));
+            }
+            document.getElementById('saveMomentsScheduleBtn').onclick = () => {
+                const newStart = document.getElementById('momentsTimeStartInput').value;
+                const newEnd = document.getElementById('momentsTimeEndInput').value;
+                const newMin = parseInt(document.getElementById('momentsCountMinInput').value);
+                const newMax = parseInt(document.getElementById('momentsCountMaxInput').value);
+                if (!newStart || !newEnd || isNaN(newMin) || isNaN(newMax) || newMin > newMax) {
+                    alert('请填写完整且合理的时间与条数（最少 ≤ 最多）');
+                    return;
+                }
+                momentsTimeStart = newStart;
+                momentsTimeEnd = newEnd;
+                momentsCountMin = Math.max(1, newMin);
+                momentsCountMax = Math.min(10, Math.max(momentsCountMin, newMax));
+                localStorage.setItem(STORAGE.momentsTimeStart, momentsTimeStart);
+                localStorage.setItem(STORAGE.momentsTimeEnd, momentsTimeEnd);
+                localStorage.setItem(STORAGE.momentsCountMin, momentsCountMin);
+                localStorage.setItem(STORAGE.momentsCountMax, momentsCountMax);
+                scheduleDailyMoments();
+                alert('✅ 朋友圈生成计划已更新');
+            };
             document.getElementById('closeManage').onclick = () => { modalDiv.remove(); };
             document.getElementById('loadExampleCssBtn').onclick = () => {
                 const exampleCSS =
@@ -4859,7 +6366,7 @@
                 spv.innerText = Math.round(v / 1000); });
             const idsl = document.getElementById('interDelaySlider'),
                 idv = document.getElementById('interDelayValue');
-            if (idsl) idsl.addEventListener('input', () => { let v = parseFloat(idsl.value); if (v > 7) v = 7;
+            if (idsl) idsl.addEventListener('input', () => { let v = parseFloat(idsl.value); if (v > 15) v = 15;
                 idsl.value = v;
                 idv.innerText = v.toFixed(1);
                 saveReplyInterDelayMs(Math.round(v * 1000)); });
@@ -4867,7 +6374,6 @@
                 saveEmojiDisabledSetting(); });
             document.getElementById('imgDisabledToggle')?.addEventListener('change', e => { imgDisabled = !e.target.checked;
                 saveImgDisabledSetting(); });
-
             document.getElementById('importGlobalAutoBtn').onclick = () => {
                 document.getElementById('globalImportFileInput').click();
             };
@@ -4878,14 +6384,7 @@
             };
             document.getElementById('exportGlobalTxtBtn').onclick = exportWordAndEmojiTxt;
         }
-
-        function updateWfStrip(words) { const strip = document.getElementById('wfStrip'),
-                tagsDiv = document.getElementById('wfStripTags'); if (!strip || !tagsDiv) return; if (!words || words.length ===
-                0) { strip.style.display = 'none'; return; }
-            strip.style.display = 'flex';
-            tagsDiv.innerHTML = words.slice(0, 5).map(([word]) => `<span class="wf-strip-tag">${escapeHtml(word)}</span>`).join(
-                ''); }
-
+        
         function openPuzzlePanel() {
             const modal = document.createElement('div');
             modal.className = 'modal';
@@ -4940,9 +6439,7 @@
                     <button class="sec-btn" style="width:100%;margin-top:12px;" id="closeWfModal">关闭</button>
                 </div>`;
             document.body.appendChild(modal);
-        
             const currentTab = { value: 'other' };
-        
             function renderWfBody() {
                 const topN = parseInt(document.getElementById('wfTopN')?.value || 10);
                 let senderFilter = currentTab.value;
@@ -4953,29 +6450,22 @@
                 if (senderFilter === 'wordcard' && memberSelect && memberSelect.value) {
                     senderFilter = memberSelect.value;
                 }
-        
                 const body = document.getElementById('wfBody');
                 if (!body) return;
-        
                 let result;
                 if (currentTab.value === 'wordcard') {
-                    // 字卡句子频度
                     result = analyzeWordCardFrequency(senderFilter === 'wordcard' ? (memberSelect ? memberSelect.value : 'other') : senderFilter);
                 } else {
                     result = analyzeWordFrequency(senderFilter === 'wordcard' ? (memberSelect ? memberSelect.value : 'other') : senderFilter, topN);
                 }
-        
                 if (result.totalMessages === 0) {
                     body.innerHTML = '<div class="wf-tag-cloud"><span class="wf-empty">暂无文本消息</span></div>';
                     if (currentTab.value !== 'me') updateWfStrip([]);
                     return;
                 }
-        
                 const maxCount = result.topWords.length > 0 ? result.topWords[0][1] : 1;
-        
                 let tagsHtml;
                 if (currentTab.value === 'wordcard') {
-                    // 字卡句子展示（长句）
                     tagsHtml = result.topWords.map(([sentence, count]) => {
                         const sizeClass = getSizeClass(count, maxCount);
                         return `<span class="wf-tag tag-other ${sizeClass}" style="word-break:break-word;white-space:normal;text-align:left;">${escapeHtml(sentence)}<span class="freq-count">${count}</span></span>`;
@@ -4987,7 +6477,6 @@
                         return `<span class="wf-tag ${tagClass} ${sizeClass}">${escapeHtml(word)}<span class="freq-count">${count}</span></span>`;
                     }).join('');
                 }
-        
                 const statsHtml = `
                     <div class="wf-stats-row">
                         <div class="wf-stat-mini"><div class="num">${result.totalMessages}</div><div class="lbl">分析消息</div></div>
@@ -4996,12 +6485,10 @@
                     </div>
                     <div class="wf-tag-cloud">${tagsHtml}</div>`;
                 body.innerHTML = statsHtml;
-        
                 if (currentTab.value !== 'me' && currentTab.value !== 'wordcard') {
                     updateWfStrip(result.topWords);
                 }
             }
-        
             modal.querySelectorAll('.wf-tab').forEach(tab => {
                 tab.addEventListener('click', () => {
                     modal.querySelectorAll('.wf-tab').forEach(t => t.classList.remove('active'));
@@ -5010,14 +6497,12 @@
                     renderWfBody();
                 });
             });
-        
             const memberSelect = modal.querySelector('#wfMemberSelect');
             if (memberSelect) {
                 memberSelect.addEventListener('change', () => {
                     renderWfBody();
                 });
             }
-        
             document.getElementById('wfTopN')?.addEventListener('change', renderWfBody);
             document.getElementById('wfRefreshBtn')?.addEventListener('click', renderWfBody);
             document.getElementById('wfCopyBtn')?.addEventListener('click', () => {
@@ -5028,10 +6513,8 @@
                     navigator.clipboard.writeText(text).then(() => alert('已复制'));
                 }
             });
-        
             document.getElementById('closeWfModal').onclick = () => modal.remove();
             modal.addEventListener('click', (e) => { if (e.target === modal) modal.remove(); });
-        
             renderWfBody();
         }
 
@@ -5041,7 +6524,7 @@
             "❌ 通知权限已被拒绝，请在浏览器设置中手动开启"); return false; } const result = await Notification.requestPermission(); if (
             result === "granted") { alert("✅ 通知权限已开启"); return true; } else { alert("❌ 你拒绝了通知权限"); return false; } }
 
-        function sendNotificationForMengMessage(msgContent, msgType) { 
+        function sendNotificationForMengMessage(msgContent, msgType) {
             if (!notificationEnabled || !("Notification" in window) ||
                 Notification.permission !== "granted" || !document.hidden) return;
             const safeContent = msgContent || '';
@@ -5063,7 +6546,6 @@
             if (textPool.length > 0) pool.push(...textPool.map(t => ({ type: 'text', val: t })));
             if (emojiCardList.length > 0) pool.push(...emojiCardList.map(e => ({ type: 'text', val: e })));
             if (pool.length === 0) return [{ type: 'text', val: "💌 你的信我收到了。" }];
-
             const allText = letterSentences.join(' ');
             const words = allText.replace(/[，。！？、；：\s]/g, '').split('').filter(c => c.length > 0);
             const keywords = words.filter((c, i) => i < 10);
@@ -5076,8 +6558,7 @@
                 });
             }
             const useMatched = matchedReplies.length > 0 && Math.random() < 0.3;
-
-            const cnt = Math.floor(Math.random() * 13) + 3;
+            const cnt = Math.floor(Math.random() * 8) + 8;
             const res = [];
             if (useMatched) {
                 const matchedCount = Math.min(3, matchedReplies.length, cnt);
@@ -5102,7 +6583,6 @@
             letter.replyMessages = generateReplyMessages(targetMember, letter.sentences);
             letter.replyTime = Date.now();
             saveLetters();
-
             if (notificationEnabled && "Notification" in window && Notification.permission === "granted") {
                 const senderName = targetMember ? targetMember.name : (profile.mengNick || 'ta');
                 const replyCount = letter.replyMessages?.length || 0;
@@ -5116,7 +6596,6 @@
                     });
                 } catch (e) {}
             }
-
             checkPuzzleConditions();
         }
         async function processAllPendingLetters() { for (let l of letters) { if (l.status === 'pending' && Date.now() >= l
@@ -5136,8 +6615,9 @@
         function updateMusicModeIcon() { const b = document.getElementById('musicModeBtn'); if (b) b.innerText = musicPlayMode ===
                 'random' ? '🔀' : musicPlayMode === 'single' ? '🔂' : '🔁'; }
 
-        function applyLoopByMode() { if (audioPlayer) audioPlayer.loop = (musicPlayMode === 'single'); }
-
+        function applyLoopByMode() { 
+            if (audioPlayer) audioPlayer.loop = (musicPlayMode === 'single');
+        }
         function handleSongEnd() { if (musicPlayMode !== 'single' && musicList.length) playMusic(getNextMusicIndex()); }
 
         function formatTime(s) { if (isNaN(s)) return "0:00";
@@ -5271,19 +6751,29 @@
                     bb.innerText = '🗑️ 批量删除';
                     renderMusicListUI(); } };
             setupMusicImportHandler();
-            document.getElementById('addNeteaseSongBtn').onclick = () => { const idInput = document.getElementById(
-                    'neteaseSongId'); const nameInput = document.getElementById('neteaseSongName'); const rawId = idInput.value
-                    .trim(); if (!rawId) { alert('请输入网易云音乐ID或链接'); return; } let songId = rawId; const match = rawId.match(
-                    /[?&]id=(\d+)/); if (match) songId = match[1]; else if (/^\d+$/.test(rawId)) songId = rawId; else { alert(
-                        '无法识别ID格式'); return; } const url =
-                    `https://music.163.com/song/media/outer/url?id=${songId}.mp3`;
-                const name = nameInput.value.trim() || '网易云音乐 ' + songId;
-                musicList.push({ name, url });
-                saveMusicList();
-                renderMusicListUI();
-                idInput.value = '';
-                nameInput.value = '';
-                alert('✅ 已添加：' + name); };
+            const neteaseBtn = document.getElementById('addNeteaseSongBtn');
+            if (neteaseBtn && !neteaseBtn.dataset.bound) {
+                neteaseBtn.addEventListener('click', () => {
+                    const idInput = document.getElementById('neteaseSongId');
+                    const nameInput = document.getElementById('neteaseSongName');
+                    const rawId = idInput.value.trim();
+                    if (!rawId) { alert('请输入网易云音乐ID或链接'); return; }
+                    let songId = '';
+                    const match = rawId.match(/[?&]id=(\d+)/);
+                    if (match && match[1]) songId = match[1];
+                    else if (/^\d+$/.test(rawId)) songId = rawId;
+                    if (!songId) { alert('无法识别ID格式'); return; }
+                    const songName = nameInput.value.trim() || `网易云歌曲 ${songId}`;
+                    const songUrl = `https://music.163.com/song/media/outer/url?id=${songId}.mp3`;
+                    musicList.push({ name: songName, url: songUrl });
+                    saveMusicList();
+                    renderMusicListUI();
+                    idInput.value = '';
+                    nameInput.value = '';
+                    alert('✅ 已添加：' + songName);
+                });
+                neteaseBtn.dataset.bound = 'true';
+            }
         }
 
         let isProcessingLongPress = false;
@@ -5397,9 +6887,7 @@
 
         function cleanupStatusTimers() { if (statusUpdateInterval) clearInterval(statusUpdateInterval); if (countdownInterval)
                 clearInterval(countdownInterval); if (letterTimer) clearInterval(letterTimer); }
-        window.addEventListener('beforeunload', () => { cleanupStatusTimers();
-            stopActiveTalkTimer(); if (audioPlayer) audioPlayer.pause();
-            saveMessagesImmediately(); });
+        window.addEventListener('beforeunload', () => { cleanupStatusTimers(); stopActiveTalkTimer(); stopMomentsGenerator(); if (audioPlayer) audioPlayer.pause(); saveMessagesImmediately(); });
 
         function loadPuzzleData() { const saved = localStorage.getItem('puzzleData'); if (saved) puzzleData = JSON.parse(saved);
             else savePuzzleData(); }
@@ -5489,6 +6977,7 @@
                 changeNick('me'); };
             document.getElementById('groupChatToggleBtn').onclick = openGroupMemberPanel;
             document.getElementById('wordFreqBtn').onclick = openWordFrequencyPanel;
+            document.getElementById('momentsBtn').onclick = openMomentsPanel;
             document.getElementById('puzzleBtn').onclick = openPuzzlePanel;
             document.getElementById('messageInput').addEventListener('keypress', e => { if (e.key === 'Enter') { e
                         .preventDefault();
@@ -5515,8 +7004,8 @@
                 saveMusicPlayMode();
                 updateMusicModeIcon();
                 applyLoopByMode(); };
-            document.getElementById('wfStripClose').onclick = () => {
-                document.getElementById('wfStrip').style.display = 'none'; }; }
+            document.getElementById('immersiveToggleBtn').onclick = toggleImmersiveMode;
+            }
 
         function exportChatMessages() {
             if (!messages.length) { alert('暂无对话'); return; }
@@ -5552,6 +7041,33 @@
                 `⚠️ 清空 ${messages.length} 条消息？`)) { await clearAllMessagesSafe();
                 alert('✅ 已清空'); } }
 
+        function toggleImmersiveMode() {
+            immersiveMode = !immersiveMode;
+            localStorage.setItem('xiayi_immersive_mode', immersiveMode);
+            applyImmersiveMode();
+        }
+        
+        function applyImmersiveMode() {
+            const btn = document.getElementById('immersiveToggleBtn');
+            if (immersiveMode) {
+                document.body.setAttribute('data-immersive', 'true');
+                if (btn) {
+                    btn.innerHTML = '▲';
+                    btn.title = '退出沉浸式聊天';
+                }
+            } else {
+                document.body.removeAttribute('data-immersive');
+                if (btn) {
+                    btn.innerHTML = '▼';
+                    btn.title = '沉浸式聊天';
+                }
+            }
+            setTimeout(() => {
+                scrollToBottom();
+                setAppHeight();
+            }, 400);
+        }
+        
         window.onload = () => { setupLazyImageObserver();
             setAppHeight();
             loadData();
@@ -5564,6 +7080,13 @@
             loadBubbleFontSize();
             bindEvents();
             initStatusSystem();
+            startMomentsGenerator();
+            if (moments.length === 0) {
+                for (let i = 0; i < 3; i++) {
+                    generateRandomMoment();
+                }
+            }
+            updateMomentsBadge();
             loadMusicList();
             initAudioPlayer(); if (musicList.length && localStorage.getItem(STORAGE.currentMusicIndex)) { const idx = parseInt(
                     localStorage.getItem(STORAGE.currentMusicIndex)); if (musicList[idx]) playMusic(idx); }
