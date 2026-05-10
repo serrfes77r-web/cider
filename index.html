@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>ta · 灵犀对话</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
             margin: 0;
@@ -839,18 +840,22 @@
         .icon-btn {
             background: none;
             border: none;
-            font-size: 18px;
+            font-size: 15px;
             cursor: pointer;
             padding: 6px;
             border-radius: 50%;
             transition: all 0.2s;
-            color: var(--text-primary);
-            min-width: 34px;
-            min-height: 34px;
+            color: var(--text-secondary);
+            min-width: 32px;
+            min-height: 32px;
             display: inline-flex;
             align-items: center;
             justify-content: center;
             flex-shrink: 0;
+        }
+        .icon-btn:hover {
+            color: var(--accent-color);
+            background: var(--accent-light);
         }
         .icon-btn:active {
             transform: scale(0.92);
@@ -888,7 +893,7 @@
             min-width: 0;
         }
         .status-icon {
-            font-size: 18px;
+            font-size: 16px;
             color: var(--accent-color);
             filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.1));
             transition: color 0.3s ease;
@@ -926,7 +931,7 @@
         .status-refresh-btn {
             background: none;
             border: none;
-            font-size: 14px;
+            font-size: 13px;
             cursor: pointer;
             color: var(--text-secondary);
             padding: 5px;
@@ -1012,10 +1017,6 @@
         .message-row.me .bubble {
             background: var(--bubble-me);
             color: var(--text-primary);
-        }
-
-        body[data-theme="night"] .bubble {
-            color: #f0eaff;
         }
         .bubble.image-bubble {
             background: transparent !important;
@@ -1115,14 +1116,14 @@
         .emoji-btn,
         .image-picker-btn,
         .pat-btn {
-            font-size: 18px;
+            font-size: 16px;
             background: none;
             border: none;
             cursor: pointer;
             transition: transform 0.2s ease;
-            color: var(--text-primary);
-            width: 32px;
-            height: 32px;
+            color: var(--text-secondary);
+            width: 34px;
+            height: 34px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -1152,13 +1153,13 @@
             border: none;
             color: #fff;
             font-weight: 600;
-            padding: 6px 12px;
+            padding: 6px 14px;
             border-radius: 32px;
             cursor: pointer;
             transition: 0.2s;
-            font-size: 12px;
+            font-size: 14px;
             white-space: nowrap;
-            min-width: 44px;
+            min-width: 40px;
             box-shadow: 0 2px 8px var(--accent-glow);
         }
         .send-small:active {
@@ -1180,7 +1181,7 @@
             display: inline-block;
             max-width: 80%;
             font-style: italic;
-            transition: all 0.3s ease;
+            font-weight: bold;          /* ← 新增此行 */
         }
         .message-row.pat-message .msg-avatar {
             display: none;
@@ -1587,7 +1588,7 @@
         .small-btn {
             background: var(--accent-light);
             border: none;
-            padding: 6px 12px;
+            padding: 6px 14px;
             border-radius: 30px;
             font-size: 12px;
             margin-right: 8px;
@@ -1622,7 +1623,7 @@
             border-radius: 50%;
             background: var(--accent-color);
             color: white;
-            font-size: 18px;
+            font-size: 16px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -2073,7 +2074,7 @@
         .wf-stat-mini .lbl {
             font-size: 10px;
             color: var(--text-secondary);
-        }        
+        }
         .wf-member-select {
             width: 100%;
             margin-bottom: 12px;
@@ -2372,9 +2373,9 @@
                 padding: 3px 8px;
             }
             .icon-btn {
-                min-width: 30px;
-                min-height: 30px;
-                font-size: 16px;
+                min-width: 28px;
+                min-height: 28px;
+                font-size: 13px;
                 padding: 4px;
             }
             .status-header {
@@ -2440,7 +2441,7 @@
         #sendBtn,
         #activeSendBtn {
             font-size: 16px;
-        }        
+        }
         #musicManageModal input[type="file"] {
             display: block;
             width: 100%;
@@ -2468,7 +2469,6 @@
         body[data-theme="night"] .music-actions .small-btn.danger:active {
             background: rgba(255, 80, 80, 0.35);
         }
-
         #momentsModal .modal-content {
             max-width: 620px;
             max-height: 95vh;
@@ -2476,6 +2476,11 @@
             border-radius: 28px;
             overflow-y: auto;
             padding: 10px 14px 20px;
+        }
+        #momentsContainer {
+            max-height: 65vh;
+            overflow-y: auto;
+            padding-right: 4px;
         }
         .moments-header {
             display: flex;
@@ -2678,11 +2683,6 @@
         .moments-badge.active {
             display: block;
         }
-        #momentsContainer {
-            max-height: 55vh;
-            overflow-y: auto;
-            padding-right: 4px;
-        }
         .comment-item {
             display: flex;
             justify-content: space-between;
@@ -2724,7 +2724,7 @@
             background: var(--accent-light);
             color: var(--accent-color);
         }
-            .immersive-toggle {
+        .immersive-toggle {
             position: fixed;
             right: 12px;
             top: 38%;
@@ -2736,13 +2736,13 @@
             -webkit-backdrop-filter: blur(12px);
             border: 1px solid var(--border-light);
             color: var(--text-secondary);
-            font-size: 13px;
+            font-size: 12px;
             cursor: pointer;
             z-index: 150;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
             transition: all 0.25s ease;
             user-select: none;
             -webkit-tap-highlight-color: transparent;
@@ -2755,7 +2755,7 @@
         .immersive-toggle:active {
             transform: scale(0.9);
         }
-        
+
         body[data-immersive="true"] .status-header {
             max-height: 0;
             opacity: 0;
@@ -2763,10 +2763,10 @@
             padding-top: 0;
             padding-bottom: 0;
             border-bottom-width: 0;
-            transition: max-height 0.35s cubic-bezier(0.4,0,0.2,1),
-                        opacity 0.3s ease,
-                        padding 0.35s ease,
-                        border 0.3s ease;
+            transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+                opacity 0.3s ease,
+                padding 0.35s ease,
+                border 0.3s ease;
         }
         body[data-immersive="true"] .status-bar-container {
             max-height: 0;
@@ -2775,28 +2775,41 @@
             padding-top: 0;
             padding-bottom: 0;
             margin-top: 0;
-            transition: max-height 0.35s cubic-bezier(0.4,0,0.2,1),
-                        opacity 0.3s ease,
-                        padding 0.35s ease;
+            transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+                opacity 0.3s ease,
+                padding 0.35s ease;
         }
-        
+
         .status-header {
             max-height: 120px;
-            transition: max-height 0.35s cubic-bezier(0.4,0,0.2,1),
-                        opacity 0.3s ease,
-                        padding 0.35s ease,
-                        border 0.3s ease;
+            transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+                opacity 0.3s ease,
+                padding 0.35s ease,
+                border 0.3s ease;
         }
         .status-bar-container {
             max-height: 80px;
-            transition: max-height 0.35s cubic-bezier(0.4,0,0.2,1),
-                        opacity 0.3s ease,
-                        padding 0.35s ease;
+            transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+                opacity 0.3s ease,
+                padding 0.35s ease;
         }
-        
+
         body[data-immersive="true"] .music-float-btn {
             bottom: 60px;
         }
+        input[type="text"],
+        input[type="time"],
+        input[type="number"],
+        input[type="search"],
+        textarea,
+        select {
+            color: var(--text-primary);
+        }
+
+        ::placeholder {
+            color: var(--text-tertiary);
+            opacity: 1;
+        }       
     </style>
 </head>
 <body>
@@ -2826,21 +2839,21 @@
                 </div>
             </div>
             <div class="toolbar">
-                <button class="icon-btn" id="themeToggle" title="主题与字体">🎨</button>
-                <button class="icon-btn" id="manageCardsBtn" title="设置管理">⚙️</button>
-                <button class="icon-btn" id="groupChatToggleBtn" title="群聊模式">👥</button>
-                <button class="icon-btn" id="puzzleBtn" title="我们的拼图">🧩</button>
-                <button class="icon-btn" id="wordFreqBtn" title="高频词分析">📊</button>
+                <button class="icon-btn" id="themeToggle" title="主题与字体"><i class="fa-solid fa-palette"></i></button>
+                <button class="icon-btn" id="manageCardsBtn" title="设置管理"><i class="fa-solid fa-gear"></i></button>
+                <button class="icon-btn" id="groupChatToggleBtn" title="群聊模式"><i class="fa-solid fa-users"></i></button>
+                <button class="icon-btn" id="puzzleBtn" title="我们的拼图"><i class="fa-solid fa-puzzle-piece"></i></button>
+                <button class="icon-btn" id="wordFreqBtn" title="高频词分析"><i class="fa-solid fa-chart-bar"></i></button>
                 <button class="icon-btn moments-btn" id="momentsBtn" title="朋友圈">
-                    🌏
+                    <i class="fa-solid fa-globe"></i>
                     <span class="moments-badge" id="momentsBadge"></span>
                 </button>
-                <button class="icon-btn" id="toolbarMusicBtn" title="音乐库">🎵</button>
-                <button class="icon-btn" id="letterBtn" title="投递信件">✉️</button>
-                <button class="icon-btn" id="letterHistoryBtn" title="信件历史">📜</button>
-                <button class="icon-btn" id="exportChatBtn" title="导出对话">📤</button>
-                <button class="icon-btn" id="importChatBtn" title="导入对话">📥</button>
-                <button class="icon-btn" id="clearAllMsg" title="清空对话">🗑️</button>
+                <button class="icon-btn" id="toolbarMusicBtn" title="音乐库"><i class="fa-solid fa-music"></i></button>
+                <button class="icon-btn" id="letterBtn" title="投递信件"><i class="fa-solid fa-envelope"></i></button>
+                <button class="icon-btn" id="letterHistoryBtn" title="信件历史"><i class="fa-solid fa-clock-rotate-left"></i></button>
+                <button class="icon-btn" id="exportChatBtn" title="导出对话"><i class="fa-solid fa-file-export"></i></button>
+                <button class="icon-btn" id="importChatBtn" title="导入对话"><i class="fa-solid fa-file-import"></i></button>
+                <button class="icon-btn" id="clearAllMsg" title="清空对话"><i class="fa-solid fa-trash-can"></i></button>
             </div>
             <div class="right-profile">
                 <div class="avatar-group" id="editMyAvatar">
@@ -2852,54 +2865,54 @@
         <div class="status-bar-container">
             <div class="status-card">
                 <div class="status-left">
-                    <span class="status-icon">❤️</span>
+                    <span class="status-icon"><i class="fa-solid fa-heart"></i></span>
                     <span class="status-text" id="dynamicStatusText">加载中...</span>
                 </div>
                 <div class="status-right">
                     <span class="status-timer" id="statusTimerLabel">🌙 更新倒计时</span>
-                    <button class="status-edit-btn" id="editStatusListBtn" title="编辑ta的状态库">✏️</button>
+                    <button class="status-edit-btn" id="editStatusListBtn" title="编辑ta的状态库"><i class="fa-solid fa-pen-to-square"></i></button>
                 </div>
             </div>
-        </div>        
+        </div>
         <div class="chat-messages" id="chatMessages"></div>
         <div class="input-bar">
-            <div class="emoji-btn" id="emojiButton">😊</div>
-            <div class="image-picker-btn" id="imagePickerBtn">🖼️</div>
-            <div class="pat-btn" id="patBtn">👋</div>
+            <div class="emoji-btn" id="emojiButton" title="表情"><i class="fa-regular fa-face-smile"></i></div>
+            <div class="image-picker-btn" id="imagePickerBtn" title="图片"><i class="fa-regular fa-image"></i></div>
+            <div class="pat-btn" id="patBtn" title="拍一拍"><i class="fa-solid fa-hand"></i></div>
             <input type="text" id="messageInput" class="msg-input" placeholder="和ta聊天..." autocomplete="off">
-            <button class="send-small" id="sendBtn">➤</button>
-            <button class="send-small" id="activeSendBtn">✨</button>
+            <button class="send-small" id="sendBtn"><i class="fa-solid fa-paper-plane"></i></button>
+            <button class="send-small" id="activeSendBtn"><i class="fa-solid fa-bolt"></i></button>
         </div>
-        <button class="immersive-toggle" id="immersiveToggleBtn" title="沉浸式聊天">▼</button>
-        <div id="musicFloatBtn" class="music-float-btn hidden">🎵</div>
+        <button class="immersive-toggle" id="immersiveToggleBtn" title="沉浸式聊天"><i class="fa-solid fa-chevron-down"></i></button>
+        <div id="musicFloatBtn" class="music-float-btn hidden"><i class="fa-solid fa-music"></i></div>
         <div id="musicControlPanel" class="music-panel hidden">
-            <div class="music-panel-header"><span id="musicTitle">未播放</span><button class="music-close" id="closeMusicPanel">✖️</button></div>
+            <div class="music-panel-header"><span id="musicTitle">未播放</span><button class="music-close" id="closeMusicPanel"><i class="fa-solid fa-xmark"></i></button></div>
             <div class="music-progress"><span id="musicCurrentTime" class="music-time">0:00</span><input type="range" id="musicProgress" value="0" step="0.01"><span id="musicDuration" class="music-time">0:00</span></div>
-            <div class="music-controls"><button id="prevMusicBtn">⏮</button><button id="playPauseMusicBtn">▶</button><button id="nextMusicBtn">⏭</button><button id="musicModeBtn" title="播放模式">🔀</button></div>
+            <div class="music-controls"><button id="prevMusicBtn"><i class="fa-solid fa-backward"></i></button><button id="playPauseMusicBtn"><i class="fa-solid fa-play"></i></button><button id="nextMusicBtn"><i class="fa-solid fa-forward"></i></button><button id="musicModeBtn" title="播放模式"><i class="fa-solid fa-shuffle"></i></button></div>
         </div>
         <div id="musicManageModal" class="modal hidden">
             <div class="modal-content">
-                <div class="settings-title">🎵 音乐库管理</div>
+                <div class="settings-title"><i class="fa-solid fa-music"></i> 音乐库管理</div>
                 <div class="netease-add-area">
-                    <div style="font-weight:500;margin-bottom:6px;">🎵 导入网易云音乐外链</div>
+                    <div style="font-weight:500;margin-bottom:6px;"><i class="fa-solid fa-link"></i> 导入网易云音乐外链</div>
                     <input type="text" id="neteaseSongId" class="msg-input" placeholder="网易云音乐 ID 或完整链接" style="margin-bottom:8px;width:100%;">
                     <input type="text" id="neteaseSongName" class="msg-input" placeholder="歌曲名称（可选）" style="margin-bottom:8px;width:100%;">
-                    <button class="sec-btn" id="addNeteaseSongBtn" style="width:100%;">➕ 添加歌曲</button>
+                    <button class="sec-btn" id="addNeteaseSongBtn" style="width:100%;"><i class="fa-solid fa-plus"></i> 添加歌曲</button>
                     <div class="data-note" style="margin-top:6px;">示例：id=1859246916 或完整外接（如 https://music.163.com/song/media/outer/url?id=123456.mp3）</div>
                 </div>
                 <div class="netease-add-area" style="margin-top:8px;">
-                    <div style="font-weight:500;margin-bottom:6px;">📀 导入JSON歌单</div>
+                    <div style="font-weight:500;margin-bottom:6px;"><i class="fa-solid fa-file-import"></i> 导入JSON歌单</div>
                     <input type="file" id="musicImportPlaylistInput" accept=".json" style="margin-bottom:8px;">
                     <button class="sec-btn" id="musicImportPlaylistBtn">开始导入</button>
                     <div class="data-note">格式：[{ "title":"歌名", "url":"http://..." }]</div>
                 </div>
                 <input type="file" id="musicUploadInput" accept="audio/mpeg" multiple>
                 <div style="display:flex; justify-content:space-between; align-items:center; margin: 16px 0 8px;">
-                    <span style="font-weight:600;">📋 我的歌单</span>
+                    <span style="font-weight:600;"><i class="fa-solid fa-list"></i> 我的歌单</span>
                     <span class="badge badge-info" id="musicCount">0首</span>
                 </div>
                 <div id="musicListContainer" class="music-vertical-list"></div>
-                <div class="button-group"><button class="sec-btn sec-btn-outline" id="exportMusicBackupBtn">💾 导出备份</button><button class="sec-btn sec-btn-outline" id="batchDeleteMusicBtn">🗑️ 批量删除</button></div>
+                <div class="button-group"><button class="sec-btn sec-btn-outline" id="exportMusicBackupBtn"><i class="fa-solid fa-download"></i> 导出备份</button><button class="sec-btn sec-btn-outline" id="batchDeleteMusicBtn"><i class="fa-solid fa-trash-can"></i> 批量删除</button></div>
                 <button class="sec-btn" id="closeMusicManage" style="width:100%;margin-top:12px;">关闭</button>
             </div>
         </div>
@@ -2928,10 +2941,25 @@
         async function saveImageToDB(id, base64) {
             if (!base64 || typeof base64 !== 'string') return;
             if (!base64.startsWith('data:') && !base64.startsWith('__IMG_ID__')) return;
+            
+            // 将 Base64 转换为 Blob（节省约 30% 空间）
+            let blob;
+            if (base64.startsWith('data:')) {
+                const parts = base64.split(',');
+                const mime = parts[0].match(/:(.*?);/)?.[1] || 'image/png';
+                const binary = atob(parts[1]);
+                const ab = new ArrayBuffer(binary.length);
+                const ia = new Uint8Array(ab);
+                for (let i = 0; i < binary.length; i++) ia[i] = binary.charCodeAt(i);
+                blob = new Blob([ab], { type: mime });
+            } else {
+                blob = base64; // 非 data: URL 保持原样（极少场景）
+            }
+        
             const db = await openImgDB();
             return new Promise((resolve, reject) => {
                 const tx = db.transaction(IMG_STORE_NAME, 'readwrite');
-                tx.objectStore(IMG_STORE_NAME).put({ id, base64 });
+                tx.objectStore(IMG_STORE_NAME).put({ id, blob }); // 存储 Blob 对象
                 tx.oncomplete = () => resolve();
                 tx.onerror = () => reject(tx.error);
             });
@@ -2941,7 +2969,20 @@
             return new Promise(resolve => {
                 const tx = db.transaction(IMG_STORE_NAME, 'readonly');
                 const req = tx.objectStore(IMG_STORE_NAME).get(id);
-                req.onsuccess = () => resolve(req.result?.base64 || '');
+                req.onsuccess = () => {
+                    const record = req.result;
+                    if (!record) return resolve('');
+                    // 新数据为 Blob
+                    if (record.blob instanceof Blob) {
+                        const url = URL.createObjectURL(record.blob);
+                        resolve(url);
+                    } else if (record.base64) {
+                        // 兼容旧的 Base64 数据
+                        resolve(record.base64);
+                    } else {
+                        resolve('');
+                    }
+                };
                 req.onerror = () => resolve('');
             });
         }
@@ -3014,7 +3055,6 @@
                     avatarCache.set(url, base64);
                     return base64;
                 }
-                // 数据库中没有该图片，返回空字符，而不是引用字符串
                 console.warn('图片未在数据库中:', id);
                 return '';
             }
@@ -3060,7 +3100,27 @@
             }
         }
         function makeImgId() { return 'IMG_' + Date.now() + '_' + Math.random().toString(36).substring(2, 10); }
-
+        // 新增：压缩图片，默认最大 1024 像素，JPEG 质量 0.8
+        async function compressImage(base64, maxWidth = 1024, quality = 0.8) {
+            return new Promise((resolve) => {
+                const img = new Image();
+                img.onload = () => {
+                    let width = img.width, height = img.height;
+                    if (width > maxWidth) {
+                        height = Math.round((height * maxWidth) / width);
+                        width = maxWidth;
+                    }
+                    const canvas = document.createElement('canvas');
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+                    const compressed = canvas.toDataURL('image/jpeg', quality);
+                    resolve(compressed);
+                };
+                img.src = base64;
+            });
+        }
         /* ========= 常量与存储键 ========= */
         const STORAGE = {
             messages: 'xiayi_messages',
@@ -3083,6 +3143,7 @@
             currentStatusText: 'ta_current_status_text',
             musicPlayMode: 'music_play_mode',
             replyMaxDelayMs: 'meng_reply_max_delay_ms',
+            replyMinDelayMs: 'meng_reply_min_delay_ms',
             replyInterMessageDelayMs: 'meng_reply_inter_delay_ms',
             mengQuoteEnabled: 'meng_quote_enabled',
             myMessageSound: 'my_message_sound',
@@ -3104,6 +3165,8 @@
             momentsTimeEnd: 'moments_time_end',
             momentsCountMin: 'moments_count_min',
             momentsCountMax: 'moments_count_max',
+            lastActiveTime: 'xiayi_last_active_time',
+            offlineGenerated: 'xiayi_offline_moments_generated',
         };
 
         /* ========= 全局变量 ========= */
@@ -3126,8 +3189,7 @@
             ];
             localStorage.setItem('moment_locations', JSON.stringify(defaults));
             return defaults;
-        })();        
-        // 🔧 实时获取作者最新头像（解决头像不同步）
+        })();
         function getAuthorAvatar(authorId) {
             if (authorId === 'meng' || authorId === 'other') {
                 return profile.mengAvatar || defaultAvatar();
@@ -3137,7 +3199,7 @@
             }
             const member = groupMembers.find(m => m.id === authorId);
             return member ? (member.avatar || defaultAvatar()) : defaultAvatar();
-        }        
+        }
         function getMomentTextPool(authorId) {
             if (authorId === 'meng' || authorId === 'other') {
                 return wordCardList.length ? wordCardList : ["✨ 今天也很美好。"];
@@ -3151,6 +3213,7 @@
         }
         let musicPlayMode = 'random';
         let immersiveMode = false;
+        let offlineGeneratedHandled = false;
         let wordCardList = ["别怕，我在。", "你的声音，我听得很清楚。", "和你待在一起，很安心。", "我会一直陪着你。", "今天也很想你。", "累了就靠一会儿。", "有我在，不用慌。",
             "你很重要，比什么都重要。", "晚安，我的小朋友。", "想和你多待一会儿。", "不要离开我。", "我只对你温柔。", "你是我的例外。", "心跳，是为你而乱的。", "梦里也要见到你。"
         ];
@@ -3171,6 +3234,7 @@
         let batchDeleteMode = false;
         const REPLY_MIN_DELAY_MS = 3000;
         let replyMaxDelayMs = 20000;
+        let replyMinDelayMs = 3000;
         let replyInterMessageDelayMs = 5000;
         let mengQuoteEnabled = true;
         let myMessageSoundUrl = null;
@@ -3301,8 +3365,9 @@
         let momentNotificationQueue = [];
         let lastMomentNotifyTime = 0;
         const MOMENT_NOTIFY_COOLDOWN = 35000;
-        
+
         function showMomentPostNotification(moment) {
+            if (window.__offlineGenerating) return;
             if (document.getElementById('momentsModal')) return;
             const now = Date.now();
             if (now - lastMomentNotifyTime < MOMENT_NOTIFY_COOLDOWN) {
@@ -3404,7 +3469,7 @@
                 }
             }, 50000);
         }
-                
+
         function formatMsgTime(timestamp) {
             const d = new Date(timestamp);
             if (isNaN(d.getTime())) return '';
@@ -3696,19 +3761,19 @@
         function loadGroupMomentsSetting() {
             groupMembersMomentsEnabled = localStorage.getItem(STORAGE.groupMembersMomentsEnabled) === 'true';
         }
-        
+
         function saveGroupMomentsSetting() {
             localStorage.setItem(STORAGE.groupMembersMomentsEnabled, groupMembersMomentsEnabled);
         }
-        
+
         function updateGroupChatToggleUI() {
             const btn = document.getElementById('groupChatToggleBtn');
             if (!btn) return;
             if (groupChatEnabled) { btn.classList.add('group-active');
                 btn.title = '群聊模式 (已开启)';
-                btn.innerHTML = '👥'; } else { btn.classList.remove('group-active');
+                btn.innerHTML = '<i class="fa-solid fa-users"></i>'; } else { btn.classList.remove('group-active');
                 btn.title = '群聊模式';
-                btn.innerHTML = '👥'; }
+                btn.innerHTML = '<i class="fa-solid fa-users"></i>'; }
         }
 
         function toggleGroupChat() {
@@ -3728,10 +3793,10 @@
             modal.innerHTML = `
                 <div class="modal-content" style="max-width:600px;max-height:90vh;">
                     <div class="settings-title" style="display:flex;align-items:center;justify-content:space-between;">
-                        <span>👥 群聊成员管理</span>
+                        <span><i class="fa-solid fa-users"></i> 群聊成员管理</span>
                         <span class="badge badge-info">${groupMembers.length} 位 | ${getActiveMembers().length} 活跃</span>
                     </div>
-        
+
                     <div class="settings-section" style="margin-bottom:16px;background:var(--accent-light);">
                         <div class="flex-between">
                             <span><strong>🔛 启用群聊模式</strong></span>
@@ -3744,7 +3809,7 @@
                             ${groupChatEnabled?'✅ 当前【群聊模式】，多位成员共同回复。':'❌ 当前【单人模式】，只有Ta回复。'}
                         </div>
                     </div>
-        
+
                     <div class="settings-section" style="margin-bottom:16px;background:var(--accent-light);">
                         <div class="flex-between">
                             <span><strong>🌏 允许群成员发朋友圈</strong></span>
@@ -3759,15 +3824,15 @@
                                 : '❌ 仅Ta可以发布朋友圈'}
                         </div>
                     </div>
-        
+
                     <div id="memberListContainer" style="max-height:55vh;overflow-y:auto;padding-right:4px;"></div>
                     <div class="button-group" style="margin-top:12px;">
-                        <button class="sec-btn" id="addNewMemberBtn">➕ 添加成员</button>
+                        <button class="sec-btn" id="addNewMemberBtn"><i class="fa-solid fa-plus"></i> 添加成员</button>
                         <button class="sec-btn sec-btn-outline" id="closeGroupMemberPanel">关闭</button>
                     </div>
                 </div>`;
             document.body.appendChild(modal);
-        
+
             renderMemberListInPanel();
             document.getElementById('addNewMemberBtn').onclick = () => {
                 const name = prompt('请输入新成员昵称：', '新成员');
@@ -3828,8 +3893,8 @@
                     <div class="member-avatar-wrap member-avatar-clickable" data-member-id="${member.id}" title="更换头像"><img ${avatarAttr} alt="${escapeHtml(member.name)}"></div>
                     <div class="member-info"><input type="text" class="member-name-input" value="${escapeHtml(member.name)}" data-member-id="${member.id}" data-field="name"><span class="member-word-count">📝 ${member.wordCardList?member.wordCardList.length:0} 条</span>
                     <div class="member-toggle-row"><div class="toggle-item"><label>启用</label><label class="toggle-switch" style="width:44px;height:22px;"><input type="checkbox" class="member-enabled-toggle" data-member-id="${member.id}" ${member.enabled?'checked':''}><span class="slider" style="width:44px;height:22px;"></span></label></div><div class="toggle-item"><label>全局字卡</label><label class="toggle-switch" style="width:44px;height:22px;"><input type="checkbox" class="member-global-word-toggle" data-member-id="${member.id}" ${member.useGlobalWordCards!==false?'checked':''}><span class="slider" style="width:44px;height:22px;"></span></label></div></div></div>
-                    <div class="member-actions"><button class="small-btn primary-outline member-edit-words-btn" data-member-id="${member.id}">✏️编辑独立字卡</button><button class="small-btn danger member-delete-btn" data-member-id="${member.id}">删除该成员</button></div>
-                    <div class="member-word-editor" id="wordEditor_${member.id}"><textarea id="wordTextarea_${member.id}" rows="10">${(member.wordCardList||[]).map(w=>escapeHtml(w)).join('\n')}</textarea><div class="button-group" style="justify-content:space-between;"><div style="display:flex;gap:6px;"><button class="small-btn member-save-words-btn" data-member-id="${member.id}">保存</button><button class="small-btn danger member-clear-words-btn" data-member-id="${member.id}">清空</button><button class="small-btn sec-btn-outline member-close-editor-btn" data-member-id="${member.id}">收起</button></div><div style="display:flex;gap:6px;"><button class="small-btn primary-outline member-import-words-btn" data-member-id="${member.id}">📥导入</button><button class="small-btn primary-outline member-export-words-btn" data-member-id="${member.id}">📤导出</button><input type="file" id="memberImportFile_${member.id}" accept=".txt,.json" style="display:none;"></div></div></div></div>`;
+                    <div class="member-actions"><button class="small-btn primary-outline member-edit-words-btn" data-member-id="${member.id}"><i class="fa-solid fa-pen-to-square"></i> 编辑独立字卡</button><button class="small-btn danger member-delete-btn" data-member-id="${member.id}"><i class="fa-solid fa-trash-can"></i> 删除该成员</button></div>
+                    <div class="member-word-editor" id="wordEditor_${member.id}"><textarea id="wordTextarea_${member.id}" rows="10">${(member.wordCardList||[]).map(w=>escapeHtml(w)).join('\n')}</textarea><div class="button-group" style="justify-content:space-between;"><div style="display:flex;gap:6px;"><button class="small-btn member-save-words-btn" data-member-id="${member.id}">保存</button><button class="small-btn danger member-clear-words-btn" data-member-id="${member.id}">清空</button><button class="small-btn sec-btn-outline member-close-editor-btn" data-member-id="${member.id}">收起</button></div><div style="display:flex;gap:6px;"><button class="small-btn primary-outline member-import-words-btn" data-member-id="${member.id}"><i class="fa-solid fa-file-import"></i> 导入</button><button class="small-btn primary-outline member-export-words-btn" data-member-id="${member.id}"><i class="fa-solid fa-file-export"></i> 导出</button><input type="file" id="memberImportFile_${member.id}" accept=".txt,.json" style="display:none;"></div></div></div></div>`;
             }).join('');
             container.querySelectorAll('.member-avatar-clickable').forEach(el => el.addEventListener('click', () =>
                 changeMemberAvatar(el.dataset.memberId)));
@@ -3888,7 +3953,7 @@
             if (!member) return;
             const modalDiv = document.createElement('div');
             modalDiv.className = 'modal';
-            modalDiv.innerHTML = `<div class="modal-content" style="max-width:400px;"><div class="settings-title">🖼️ 更换「${escapeHtml(member.name)}」头像</div><div><button class="sec-btn sec-btn-outline" id="uploadFileModeBtn">📁 文件</button><button class="sec-btn sec-btn-outline" id="pasteUrlModeBtn">🔗 URL</button></div><input type="file" id="avatarFileInput" accept="image/*" style="display:none;"><input type="text" id="avatarUrlInput" class="msg-input" placeholder="URL地址" style="display:none;"><div id="avatarPreviewArea" style="display:none;text-align:center;"><img id="avatarPreviewImg" style="max-width:100px;border-radius:50%;"></div><div class="button-group"><button class="sec-btn sec-btn-outline" id="cancelAvatarModal">取消</button><button class="sec-btn" id="confirmAvatarBtn" disabled>确认</button></div></div>`;
+            modalDiv.innerHTML = `<div class="modal-content" style="max-width:400px;"><div class="settings-title"><i class="fa-solid fa-image"></i> 更换「${escapeHtml(member.name)}」头像</div><div><button class="sec-btn sec-btn-outline" id="uploadFileModeBtn"><i class="fa-solid fa-folder-open"></i> 文件</button><button class="sec-btn sec-btn-outline" id="pasteUrlModeBtn"><i class="fa-solid fa-link"></i> URL</button></div><input type="file" id="avatarFileInput" accept="image/*" style="display:none;"><input type="text" id="avatarUrlInput" class="msg-input" placeholder="URL地址" style="display:none;"><div id="avatarPreviewArea" style="display:none;text-align:center;"><img id="avatarPreviewImg" style="max-width:100px;border-radius:50%;"></div><div class="button-group"><button class="sec-btn sec-btn-outline" id="cancelAvatarModal">取消</button><button class="sec-btn" id="confirmAvatarBtn" disabled>确认</button></div></div>`;
             document.body.appendChild(modalDiv);
             let sel = null,
                 isB64 = false;
@@ -4121,8 +4186,9 @@
             }
             isTyping = true;
             showTypingIndicator(true, '群成员正在输入...');
-            const actualMax = Math.max(REPLY_MIN_DELAY_MS, replyMaxDelayMs);
-            const delay = REPLY_MIN_DELAY_MS + Math.random() * (actualMax - REPLY_MIN_DELAY_MS);
+            const actualMin = Math.min(replyMinDelayMs, replyMaxDelayMs);
+            const actualMax = Math.max(replyMinDelayMs, replyMaxDelayMs);
+            const delay = actualMin + Math.random() * (actualMax - actualMin);
             await new Promise(r => setTimeout(r, delay));
             showTypingIndicator(false);
             markMyMessagesRead();
@@ -4211,8 +4277,9 @@
             }
             isTyping = true;
             showTypingIndicator(true);
-            const actualMax = Math.max(REPLY_MIN_DELAY_MS, replyMaxDelayMs);
-            const delay = REPLY_MIN_DELAY_MS + Math.random() * (actualMax - REPLY_MIN_DELAY_MS);
+            const actualMin = Math.min(replyMinDelayMs, replyMaxDelayMs);
+            const actualMax = Math.max(replyMinDelayMs, replyMaxDelayMs);
+            const delay = actualMin + Math.random() * (actualMax - actualMin);
             await new Promise(r => setTimeout(r, delay));
             showTypingIndicator(false);
             markMyMessagesRead();
@@ -4383,7 +4450,7 @@
             const app = document.getElementById('chatApp');
             if (!app) return;
             if (url && url.trim() !== '') {
-                if (isImgIdRef(url)) { resolveImageUrl(url).then(realUrl => { if (realUrl && realUrl.startsWith('data:')) { app
+                if (isImgIdRef(url)) { resolveImageUrl(url).then(realUrl => { if (realUrl) { app
                             .style.backgroundImage = `url(${realUrl})`;
                         app.style.backgroundSize = 'cover';
                         app.style.backgroundPosition = 'center';
@@ -4445,8 +4512,17 @@
             const at = localStorage.getItem(STORAGE.mengActiveTalk);
             mengActiveTalkEnabled = at === 'true';
             try { const smd = localStorage.getItem(STORAGE.replyMaxDelayMs); if (smd && !isNaN(parseInt(smd))) { let v = parseInt(
-                        smd); if (v < REPLY_MIN_DELAY_MS) v = REPLY_MIN_DELAY_MS; if (v > 300000) v = 300000;   
+                        smd); if (v < REPLY_MIN_DELAY_MS) v = REPLY_MIN_DELAY_MS; if (v > 300000) v = 300000;
                     replyMaxDelayMs = v; } } catch (e) { replyMaxDelayMs = 7000; }
+            try {
+                const smin = localStorage.getItem(STORAGE.replyMinDelayMs);
+                if (smin && !isNaN(parseInt(smin))) {
+                    let v = parseInt(smin);
+                    if (v < 1000) v = 1000;
+                    if (v > replyMaxDelayMs) v = replyMaxDelayMs;
+                    replyMinDelayMs = v;
+                }
+            } catch (e) { replyMinDelayMs = 3000; }
             try { const sid = localStorage.getItem(STORAGE.replyInterMessageDelayMs); if (sid !== null && !isNaN(parseInt(
                 sid))) { let v = parseInt(sid); if (v < 0) v = 0; if (v > 15000) v = 15000;
                     replyInterMessageDelayMs = v; } } catch (e) { replyInterMessageDelayMs = 2500; }
@@ -4457,8 +4533,12 @@
             loadNotificationSetting();
             loadPatList();
             loadGroupChatSetting();
-            loadGroupMembers();     
-            loadGroupMomentsSetting(); 
+            loadGroupMembers();
+            loadGroupMomentsSetting();
+            if (localStorage.getItem(STORAGE.offlineGenerated) === 'true') {
+                localStorage.removeItem(STORAGE.offlineGenerated);
+                offlineGeneratedHandled = false;
+            }
             const ed = localStorage.getItem(STORAGE.emojiDisabled);
             emojiDisabled = ed === 'true';
             const id = localStorage.getItem(STORAGE.imgDisabled);
@@ -4469,7 +4549,7 @@
             startLetterChecker();
             processAllPendingLetters();
             loadCustomBubbleCSS();
-            loadCustomBackground();            
+            loadCustomBackground();
             loadPuzzleData();
             ensurePuzzleGridUpToDate();
             setTimeout(checkPuzzleConditions, 500);
@@ -4519,12 +4599,10 @@
             localStorage.setItem(MOMENTS_STORAGE_KEY, JSON.stringify(moments));
             updateMomentsBadge();
         }
-        
+
         function startInitialComments(moment) {
             let allowedCandidates = [];
             if (moment.authorId === 'meng' || moment.authorId === 'other') {
-                // 修改前：allowedCandidates = ['me', 'meng'];
-                // 修改后：去掉 'me'，只有梦自己评论
                 allowedCandidates = ['meng'];
             } else if (moment.authorId === 'me') {
                 if (groupMembersMomentsEnabled) {
@@ -4535,9 +4613,7 @@
                 }
                 if (!allowedCandidates.includes('meng')) allowedCandidates.push('meng');
             } else {
-                // 修改前：allowedCandidates = [authorId, 'me'];
-                // 修改后：去掉 'me'，只有动态作者自己评论
-                allowedCandidates = [authorId];
+                allowedCandidates = [moment.authorId];
             }
             const candidates = [];
             for (const authorId of allowedCandidates) {
@@ -4555,7 +4631,7 @@
                 candidates.push({ authorId, authorName: name, content: text, timestamp: Date.now() });
             }
             moment.comments = moment.comments || [];
-            const targetCount = Math.floor(Math.random() * 3);
+            const targetCount = Math.floor(Math.random() * 2);
             let addedCount = 0;
             function addNext() {
                 if (addedCount >= targetCount || !moments.find(m => m.id === moment.id)) return;
@@ -4582,7 +4658,7 @@
             }
             addNext();
         }
-        
+
         function postMoment(content, feeling, location, images) {
             const newMoment = {
                 id: 'mom_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6),
@@ -4620,7 +4696,7 @@
             const modal = document.createElement('div');
             modal.className = 'modal';
             modal.innerHTML = `<div class="modal-content" style="max-width:480px;">
-                <div class="settings-title">选择图片（可多选）</div>
+                <div class="settings-title"><i class="fa-solid fa-images"></i> 选择图片（可多选）</div>
                 <div id="momentImgPickerGrid" class="picker-grid"></div>
                 <div class="button-group"><button class="sec-btn" id="confirmMomentImgs">确认</button><button class="sec-btn sec-btn-outline" id="cancelMomentImgs">取消</button></div>
             </div>`;
@@ -4659,7 +4735,6 @@
             const container = document.getElementById('momentImgPreview');
             if (!container) return;
             container.innerHTML = selectedMomentImages.map(img => {
-                // 优先从缓存获取真实图片地址，解决刚上传的图片无法预览的问题
                 let src = img.url;
                 if (isImgIdRef(src)) {
                     src = avatarCache.get(src) || defaultAvatar();
@@ -4687,7 +4762,7 @@
             if (submit) submit.disabled = true;
         }
 
-        function generateRandomMoment(authorId = null) {
+        function generateRandomMoment(authorId = null, customTimestamp = null) {
             if (!authorId) {
                 const candidates = [];
                 if (groupMembersMomentsEnabled && groupMembers.some(m => m.enabled)) {
@@ -4718,7 +4793,7 @@
             const content = selectedSentences.join(' ');
             const imageProbability = 0.3;
             let images = [];
-            
+
             if (!imgDisabled && imgCardList.length > 0 && Math.random() < imageProbability) {
                 const randomImg = imgCardList[Math.floor(Math.random() * imgCardList.length)];
                 if (randomImg && randomImg.url) {
@@ -4730,7 +4805,7 @@
             const moment = {
                 id: 'mom_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6),
                 authorId, authorName, authorAvatar, content, images, feeling, location,
-                timestamp: Date.now(),
+                timestamp: customTimestamp || Date.now(),
                 likes: [],
                 comments: []
             };
@@ -4752,11 +4827,11 @@
             moment.likes = shuffledLikes.slice(0, likeCount);
             moments.unshift(moment);
             saveMoments();
-            
+
             if (moment.authorId !== 'me') {
                 showMomentPostNotification(moment);
             }
-            
+
             startInitialComments(moment);
             return moment;
         }
@@ -4829,7 +4904,7 @@
             momentPlanTimers.forEach(tid => clearTimeout(tid));
             momentPlanTimers = [];
         }
-        
+
         function startMomentsGenerator() {
             scheduleDailyMoments();
         }
@@ -4867,7 +4942,6 @@
                         let realUrl = imgUrl;
                         if (isImgIdRef(imgUrl)) {
                             realUrl = await resolveImageUrl(imgUrl);
-                            // 🔧 关键修复：如果解析后仍然是引用字符串（说明索引库中已无此图片），强制使用默认头像
                             if (!realUrl || isImgIdRef(realUrl)) {
                                 realUrl = defaultAvatar();
                             }
@@ -4895,14 +4969,14 @@
                                     <span class="comment-text">${escapeHtml(cmt.content)}</span>
                                 </div>
                                 <div class="comment-actions">
-                                    <button class="comment-reply-btn" data-comment-id="${cmt.id}" title="引用回复">回复</button>
-                                    <button class="comment-delete-btn" data-comment-id="${cmt.id}" title="删除">✕</button>
+                                    <button class="comment-reply-btn" data-comment-id="${cmt.id}" title="引用回复"><i class="fa-solid fa-reply"></i></button>
+                                    <button class="comment-delete-btn" data-comment-id="${cmt.id}" title="删除"><i class="fa-solid fa-xmark"></i></button>
                                 </div>
                             </div>`;
                     }
                     commentsHtml += '</div>';
                 }
-                const deleteBtnHtml = `<button class="moment-delete-btn" data-moment-id="${moment.id}" style="position:absolute; top:8px; right:10px; background:none; border:none; font-size:18px; cursor:pointer; color:var(--text-tertiary); padding:4px;" title="删除">删除</button>`;
+                const deleteBtnHtml = `<button class="moment-delete-btn" data-moment-id="${moment.id}" style="position:absolute; top:8px; right:10px; background:none; border:none; font-size:18px; cursor:pointer; color:var(--text-tertiary); padding:4px;" title="删除"><i class="fa-solid fa-trash-can"></i></button>`;
                 html += `
                     <div class="moment-card" data-moment-id="${moment.id}" style="position:relative;">
                         <div class="moment-header">
@@ -4921,17 +4995,17 @@
                         ${imagesHtml}
                         <div class="moment-actions">
                             <button class="moment-action-btn like-btn ${likedByMe ? 'liked' : ''}" data-moment-id="${moment.id}">
-                                ${likedByMe ? '❤️' : '🤍'} <span>${likeCount}</span>
+                                <i class="${likedByMe ? 'fa-solid' : 'fa-regular'} fa-heart"></i> <span>${likeCount}</span>
                             </button>
                             <button class="moment-action-btn comment-toggle-btn" data-moment-id="${moment.id}">
-                                💬 <span>${commentCount}</span>
+                                <i class="fa-regular fa-comment"></i> <span>${commentCount}</span>
                             </button>
                         </div>
                         <div class="comment-section" id="commentSection_${moment.id}" style="display:none;">
                             ${commentsHtml}
                             <div class="comment-input-row">
                                 <input type="text" class="comment-input" data-moment-id="${moment.id}" placeholder="说点什么吧...">
-                                <button class="send-comment-btn" data-moment-id="${moment.id}">发送</button>
+                                <button class="send-comment-btn" data-moment-id="${moment.id}"><i class="fa-solid fa-paper-plane"></i></button>
                             </div>
                         </div>
                     </div>`;
@@ -5144,8 +5218,8 @@
             modal.id = 'memberHistoryModal';
             let html = `<div class="modal-content" style="max-width:480px;max-height:75vh;">
                 <div class="moments-header" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-                    <div class="moments-title">👤 ${escapeHtml(authorName)} 的朋友圈</div>
-                    <button class="icon-btn" id="closeMemberHistory">✖️</button>
+                    <div class="moments-title"><i class="fa-solid fa-user"></i> ${escapeHtml(authorName)} 的朋友圈</div>
+                    <button class="icon-btn" id="closeMemberHistory"><i class="fa-solid fa-xmark"></i></button>
                 </div>
                 <div class="moments-list" id="memberHistoryList" style="max-height: calc(75vh - 100px); overflow-y: auto;">
                 <div class="moments-list" id="memberHistoryList">`;
@@ -5200,131 +5274,203 @@
         }
 
         function openMomentsPanel() {
+            // 清除悬浮通知
             const notifyCard = document.getElementById('momentNotifyCard');
             if (notifyCard) {
                 notifyCard.style.animation = 'momentNotifySlideOut 0.3s forwards';
                 setTimeout(() => notifyCard.remove(), 300);
             }
+        
             const existing = document.getElementById('momentsModal');
             if (existing) { existing.remove(); return; }
+        
             const modal = document.createElement('div');
             modal.className = 'modal';
             modal.id = 'momentsModal';
             modal.innerHTML = `
-                <div class="modal-content">
-                    <div class="moments-header" style="max-width:620px;max-height:95vh;">
-                        <div class="moments-title">🌏 朋友圈</div>
+                <div class="modal-content" style="max-width:620px; max-height:95vh;">
+                    <div class="moments-header">
+                        <div class="moments-title"><i class="fa-solid fa-globe"></i> 朋友圈</div>
                         <div style="display:flex; gap:8px;">
-                            <button class="icon-btn" id="postMomentBtn" title="发布动态">✏️</button>
-                            <button class="icon-btn" id="refreshMomentsBtn" title="刷新">🔄</button>
-                            <button class="icon-btn" id="closeMomentsModal" title="关闭">✖️</button>
-                        </div>
-                    </div>
-                    <div id="momentPostPanel" style="display:none; margin-bottom:16px;">
-                        <textarea id="momentContentInput" class="textarea-clean" placeholder="分享你的心情..." rows="3" style="background:var(--bg-body); border:1px solid var(--border-light); border-radius:16px; padding:10px; width:100%; resize:vertical;"></textarea>
-                        <div style="display:flex; gap:8px; margin-top:8px; align-items:center;">
-                            <input type="text" id="momentFeelingInput" class="msg-input" placeholder="此刻的心情（选填）" style="flex:1; background:var(--bg-body);">
-                            <input type="text" id="momentLocationInput" class="msg-input" placeholder="位置（选填）" style="flex:1; background:var(--bg-body);">
-                        </div>
-                        <div style="margin-top:8px; display:flex; gap:8px; align-items:center;">
-                            <button class="small-btn primary-outline" id="momentPickImgBtn">🖼️ 从图库选</button>
-                            <button class="small-btn primary-outline" id="momentUploadImgBtn">📤 上传图片</button>
-                            <input type="file" id="momentUploadImgInput" accept="image/*" multiple style="display:none;">
-                            <span id="momentImgCount" style="font-size:12px; color:var(--text-secondary);">0张</span>
-                        </div>
-                        <div id="momentImgPreview" style="display:flex; gap:8px; flex-wrap:wrap; margin-top:8px;"></div>
-                        <div class="button-group" style="margin-top:12px; justify-content:flex-end;">
-                            <button class="sec-btn sec-btn-outline" id="cancelPostMoment">取消</button>
-                            <button class="sec-btn" id="submitMomentBtn" disabled>发布</button>
+                            <button class="icon-btn" id="postMomentBtn" title="发布动态"><i class="fa-solid fa-pen-to-square"></i></button>
+                            <button class="icon-btn" id="refreshMomentsBtn" title="刷新"><i class="fa-solid fa-rotate"></i></button>
+                            <button class="icon-btn" id="closeMomentsModal" title="关闭"><i class="fa-solid fa-xmark"></i></button>
                         </div>
                     </div>
                     <div class="moments-list" id="momentsContainer"></div>
                 </div>`;
             document.body.appendChild(modal);
+        
+            // 发布动态 → 调用独立编辑弹窗
             document.getElementById('postMomentBtn').onclick = () => {
-                document.getElementById('momentPostPanel').style.display = 'block';
-                document.getElementById('momentContentInput').focus();
+                openMomentEditorPanel();
             };
+        
+            // 渲染朋友圈列表
+            renderMomentsList('momentsContainer');
+        
+            // 关闭 & 刷新按钮
+            document.getElementById('closeMomentsModal').onclick = () => modal.remove();
+            document.getElementById('refreshMomentsBtn').addEventListener('click', () => {
+                renderMomentsList('momentsContainer');
+            });
+        
+            // 点击遮罩关闭
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) modal.remove();
+            });
+        
+            // 红点更新
+            const badge = document.getElementById('momentsBadge');
+            if (badge) badge.classList.remove('active');
+        }
+
+        function openMomentEditorPanel() {
+            // 如果已有编辑弹窗则先关闭
+            const existing = document.getElementById('momentEditorModal');
+            if (existing) existing.remove();
+        
+            const modal = document.createElement('div');
+            modal.className = 'modal';
+            modal.id = 'momentEditorModal';
+            modal.innerHTML = `
+                <div class="modal-content" style="max-width:560px; padding:24px;">
+                    <div class="settings-title" style="margin-bottom:16px;">
+                        <i class="fa-solid fa-pen-to-square"></i> 发布新动态
+                    </div>
+                    <textarea id="momentContentInput" class="textarea-clean" placeholder="分享你的心情..." rows="3" 
+                              style="background:var(--bg-body); border:1px solid var(--border-light); border-radius:16px; padding:10px; width:100%; resize:vertical;"></textarea>
+                    <div style="display:flex; gap:8px; margin-top:8px; align-items:center;">
+                        <input type="text" id="momentFeelingInput" class="msg-input" placeholder="此刻的心情（选填）" style="flex:1; background:var(--bg-body);">
+                        <input type="text" id="momentLocationInput" class="msg-input" placeholder="位置（选填）" style="flex:1; background:var(--bg-body);">
+                    </div>
+                    <div style="margin-top:8px; display:flex; gap:8px; align-items:center;">
+                        <button class="small-btn primary-outline" id="momentPickImgBtn"><i class="fa-solid fa-images"></i> 从图库选</button>
+                        <button class="small-btn primary-outline" id="momentUploadImgBtn"><i class="fa-solid fa-upload"></i> 上传图片</button>
+                        <input type="file" id="momentUploadImgInput" accept="image/*" multiple style="display:none;">
+                        <span id="momentImgCount" style="font-size:12px; color:var(--text-secondary);">0张</span>
+                    </div>
+                    <div id="momentImgPreview" style="display:flex; gap:8px; flex-wrap:wrap; margin-top:8px;"></div>
+                    <div class="button-group" style="margin-top:16px; justify-content:flex-end;">
+                        <button class="sec-btn sec-btn-outline" id="cancelPostMoment">取消</button>
+                        <button class="sec-btn" id="submitMomentBtn" disabled>发布</button>
+                    </div>
+                </div>`;
+            document.body.appendChild(modal);
+        
+            // 重置选择图片状态
+            selectedMomentImages = [];
+            updateMomentImgPreview();
+            document.getElementById('momentContentInput').focus();
+        
+            // 绑定取消按钮
             document.getElementById('cancelPostMoment').onclick = () => {
-                document.getElementById('momentPostPanel').style.display = 'none';
+                modal.remove();
                 resetMomentEditor();
             };
+        
+            // 监听内容变化以启用/禁用发布按钮
             document.getElementById('momentContentInput').addEventListener('input', () => {
                 const hasText = document.getElementById('momentContentInput').value.trim().length > 0;
                 document.getElementById('submitMomentBtn').disabled = !hasText && selectedMomentImages.length === 0;
             });
-            // 方式一：从图片库选择（保留原有功能）
-            document.getElementById('momentPickImgBtn').onclick = async () => {
+        
+            // 图片选择（从图库）
+            document.getElementById('momentPickImgBtn').onclick = () => {
                 if (!imgCardList.length) {
-                    alert('图片库暂无图片，请先上传或使用"上传图片"按钮');
+                    alert('图片库暂无图片，请先上传或使用“上传图片”按钮');
                     return;
                 }
                 showImagePickerForMoment(selectedMomentImages, (newImgs) => {
                     selectedMomentImages = newImgs;
                     updateMomentImgPreview();
+                    // 刷新启用状态
+                    const hasText = document.getElementById('momentContentInput').value.trim().length > 0;
+                    document.getElementById('submitMomentBtn').disabled = !hasText && selectedMomentImages.length === 0;
                 });
             };
-            
-            // 方式二：直接上传本地图片（新增功能）
+        
+            // 上传图片
             document.getElementById('momentUploadImgBtn').onclick = () => {
                 document.getElementById('momentUploadImgInput').click();
             };
+            // ---------- 朋友圈上传图片（最多4张，自动压缩，不入图片库） ----------
+            const MAX_MOMENT_IMAGES = 4;
             
             document.getElementById('momentUploadImgInput').onchange = async (e) => {
                 const files = Array.from(e.target.files);
                 if (!files.length) return;
             
-                for (const file of files) {
-                    if (!file.type.startsWith('image/')) continue;
+                // ---- 数量检查 ----
+                const currentCount = selectedMomentImages.length;
+                const imageFiles = files.filter(f => f.type.startsWith('image/'));
+                if (currentCount + imageFiles.length > MAX_MOMENT_IMAGES) {
+                    alert(`📸 最多只能上传 ${MAX_MOMENT_IMAGES} 张图片，当前已有 ${currentCount} 张，还可以添加 ${MAX_MOMENT_IMAGES - currentCount} 张`);
+                    document.getElementById('momentUploadImgInput').value = '';
+                    return;
+                }
             
-                    // 读取文件为 base64
-                    const base64 = await new Promise((resolve, reject) => {
+                for (const file of imageFiles) {
+                    // ---- 先读为 Base64，再压缩，最后存入 IndexedDB ----
+                    const originalBase64 = await new Promise((resolve, reject) => {
                         const reader = new FileReader();
                         reader.onload = ev => resolve(ev.target.result);
                         reader.onerror = reject;
                         reader.readAsDataURL(file);
                     });
             
-                    // 生成唯一 ID 并保存到 IndexedDB
+                    // 压缩（最大宽度 1024px，JPEG 质量 0.8）
+                    const compressedBase64 = await compressImage(originalBase64, 1024, 0.8);
+                    
                     const imgId = makeImgId();
-                    await saveImageToDB(imgId, base64);
+                    try {
+                        await saveImageToDB(imgId, compressedBase64);
+                    } catch (err) {
+                        console.error('图片保存失败', err);
+                        alert('图片保存失败，可能是存储空间不足，请尝试清理缓存');
+                        continue;
+                    }
             
-                    // 构建图片引用
                     const imgRef = IMG_ID_PREFIX + imgId;
-                    avatarCache.set(imgRef, base64);
-            
-                    // 添加到当前选中的图片列表
+                    avatarCache.set(imgRef, compressedBase64);  // 缓存压缩后的图片
+                    
+                    // ★ 只加入朋友圈图片列表，不添加到 imgCardList
                     selectedMomentImages.push({ id: Date.now() + Math.random(), url: imgRef });
-            
-                    // 同步添加到图片库，方便以后使用
-                    imgCardList.push({ id: Date.now() + Math.random(), url: imgRef });
                 }
             
-                // 保存图片库并刷新预览
-                saveImgCards();
+                // 刷新界面
                 updateMomentImgPreview();
-                e.target.value = ''; // 清空 input，允许重复选择同一文件
+                document.getElementById('momentUploadImgInput').value = '';
+                const hasText = document.getElementById('momentContentInput').value.trim().length > 0;
+                document.getElementById('submitMomentBtn').disabled = !hasText && selectedMomentImages.length === 0;
             };
+        
+            // 提交发布
             document.getElementById('submitMomentBtn').onclick = () => {
                 const content = document.getElementById('momentContentInput').value.trim();
                 const feeling = document.getElementById('momentFeelingInput').value.trim();
                 const location = document.getElementById('momentLocationInput').value.trim();
-                if (!content && selectedMomentImages.length === 0) { alert('请输入内容或选择图片'); return; }
+                if (!content && selectedMomentImages.length === 0) {
+                    alert('请输入内容或选择图片');
+                    return;
+                }
                 postMoment(content, feeling, location, selectedMomentImages);
-                document.getElementById('momentPostPanel').style.display = 'none';
-                resetMomentEditor();
-                renderMomentsList('momentsContainer');
+                modal.remove();
+                resetMomentEditor(); // 清空临时的选择状态
+                // 重新刷新朋友圈列表（如果主面板还在）
+                const momentsContainer = document.getElementById('momentsContainer');
+                if (momentsContainer) renderMomentsList('momentsContainer');
             };
-            renderMomentsList('momentsContainer');
-            document.getElementById('closeMomentsModal').onclick = () => modal.remove();
-            document.getElementById('refreshMomentsBtn')?.addEventListener('click', () => {
-                renderMomentsList('momentsContainer');
+        
+            // 点击背景关闭（可选）
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.remove();
+                    resetMomentEditor();
+                }
             });
-            modal.addEventListener('click', (e) => { if (e.target === modal) modal.remove(); });
-            const badge = document.getElementById('momentsBadge');
-            if (badge) badge.classList.remove('active');
         }
-
+        
         function setTheme(mode, cidx) {
             currentThemeMode = VALID_THEMES.includes(mode) ? mode : 'light';
             currentColorIdx = (cidx >= 1 && cidx <= 7) ? cidx : 1;
@@ -5394,7 +5540,7 @@
                 .trim()) || 18;
             modal.innerHTML = `
                 <div class="modal-content" style="max-width:520px;">
-                    <div class="settings-title">🎨 万象调色盘 · 主题与字体</div>
+                    <div class="settings-title"><i class="fa-solid fa-palette"></i> 万象调色盘 · 主题与字体</div>
                     <div class="settings-section"><div style="font-weight:600;margin-bottom:8px;">🌈 肌肤主题</div><div class="theme-panel-theme-row" id="themePillRow">${themePillsHtml}</div></div>
                     <div class="settings-section"><div style="font-weight:600;margin-bottom:8px;">🎯 气泡色彩微调</div><div class="color-dot-row" id="colorDotRow">${colorDotsHtml}</div><div class="data-note">在日光/午夜主题下效果更明显</div></div>
                     <div class="settings-section"><div style="font-weight:600;margin-bottom:8px;">🔤 气泡字体大小</div><div class="font-slider-group"><span style="font-size:0.85rem;">🔠</span><input type="range" id="fontSizeSliderInPanel" min="12" max="28" step="1" value="${currentSize}"><span id="fontSizeBadgeInPanel" class="font-size-badge">${currentSize}px</span></div></div>
@@ -5423,7 +5569,7 @@
                 }
                 modal.remove();
             };
-            modal.querySelector('#closeThemePanelBtn').onclick = () => modal.remove();
+            document.getElementById('closeThemePanelBtn').onclick = () => modal.remove();
             modal.querySelector('#resetThemeDefaultsBtn').onclick = () => { resetThemeAndFontDefaults();
                 modal.querySelectorAll('.theme-pill-btn').forEach(b => b.classList.toggle('active', b.dataset
                     .themeVal === 'light'));
@@ -5647,7 +5793,7 @@
             const modalDiv = document.createElement('div');
             modalDiv.className = 'modal';
             const isMeng = targetType === 'meng';
-            modalDiv.innerHTML = `<div class="modal-content" style="max-width:400px;"><div class="settings-title">🖼️ ${isMeng?'修改 '+profile.mengNick+' 的头像':'修改 '+profile.myNick+' 的头像'}</div><div style="display:flex; gap:12px; justify-content:center; margin-bottom:12px;"><button class="sec-btn sec-btn-outline" id="uploadFileModeBtn">📁 文件</button><button class="sec-btn sec-btn-outline" id="pasteUrlModeBtn">🔗 链接</button></div><input type="file" id="avatarFileInput" accept="image/*" style="display:none;"><input type="text" id="avatarUrlInput" class="msg-input" placeholder="URL" style="display:none;"><div id="avatarPreviewArea" style="display:none;"><img id="avatarPreviewImg" style="max-width:100px;border-radius:50%;"></div><div class="button-group"><button class="sec-btn sec-btn-outline" id="cancelAvatarModal">取消</button><button class="sec-btn" id="confirmAvatarBtn" disabled>确认</button></div></div>`;
+            modalDiv.innerHTML = `<div class="modal-content" style="max-width:400px;"><div class="settings-title"><i class="fa-solid fa-image"></i> ${isMeng?'修改 '+profile.mengNick+' 的头像':'修改 '+profile.myNick+' 的头像'}</div><div style="display:flex; gap:12px; justify-content:center; margin-bottom:12px;"><button class="sec-btn sec-btn-outline" id="uploadFileModeBtn"><i class="fa-solid fa-folder-open"></i> 文件</button><button class="sec-btn sec-btn-outline" id="pasteUrlModeBtn"><i class="fa-solid fa-link"></i> 链接</button></div><input type="file" id="avatarFileInput" accept="image/*" style="display:none;"><input type="text" id="avatarUrlInput" class="msg-input" placeholder="URL" style="display:none;"><div id="avatarPreviewArea" style="display:none;"><img id="avatarPreviewImg" style="max-width:100px;border-radius:50%;"></div><div class="button-group"><button class="sec-btn sec-btn-outline" id="cancelAvatarModal">取消</button><button class="sec-btn" id="confirmAvatarBtn" disabled>确认</button></div></div>`;
             document.body.appendChild(modalDiv);
             let sel = null,
                 isB64 = false;
@@ -5707,7 +5853,7 @@
             const modal = document.createElement('div');
             modal.className = 'modal';
             modal.innerHTML =
-                `<div class="modal-content"><div class="settings-title">表情</div><div style="display:grid;grid-template-columns:repeat(5,1fr);gap:12px;">${emojiCardList.map(e=>`<button style="font-size:32px;padding:8px;background:var(--card-bg);border:none;border-radius:16px;cursor:pointer;">${e}</button>`).join('')}</div><button class="sec-btn" id="closeEmojiPanel">关闭</button></div>`;
+                `<div class="modal-content"><div class="settings-title"><i class="fa-regular fa-face-smile"></i> 表情</div><div style="display:grid;grid-template-columns:repeat(5,1fr);gap:12px;">${emojiCardList.map(e=>`<button style="font-size:32px;padding:8px;background:var(--card-bg);border:none;border-radius:16px;cursor:pointer;">${e}</button>`).join('')}</div><button class="sec-btn" id="closeEmojiPanel">关闭</button></div>`;
             document.body.appendChild(modal);
             modal.querySelectorAll('button:not(#closeEmojiPanel)').forEach(b => b.onclick = () => { document.getElementById(
                     'messageInput').value += b.innerText;
@@ -5718,7 +5864,7 @@
             const modal = document.createElement('div');
             modal.className = 'modal';
             modal.innerHTML =
-                `<div class="modal-content"><div class="settings-title">选择图片</div><div id="pickerGridContainer" class="picker-grid"></div><button class="sec-btn" id="closePickerModal">取消</button></div>`;
+                `<div class="modal-content"><div class="settings-title"><i class="fa-regular fa-image"></i> 选择图片</div><div id="pickerGridContainer" class="picker-grid"></div><button class="sec-btn" id="closePickerModal">取消</button></div>`;
             document.body.appendChild(modal);
             const render = async () => {
                 const c = document.getElementById('pickerGridContainer');
@@ -5745,7 +5891,7 @@
             const members = groupMembers.filter(m => m.enabled);
             if (members.length === 0) { alert('没有可用的群成员，请先启用成员');
                 modal.remove(); return; }
-            modal.innerHTML = `<div class="modal-content" style="max-width:400px;"><div class="settings-title">✉️ 选择收信人</div><div style="max-height:60vh;overflow-y:auto;">${members.map(m=>{const avatar=m.avatar||defaultAvatar();const isRef=isImgIdRef(avatar);const imgAttr=isRef?`data-img-ref="${escapeHtml(avatar)}" src="${defaultAvatar()}"`:`src="${avatar}"`;return`<div class="member-card" style="cursor:pointer;" data-member-id="${m.id}"><div class="member-avatar-wrap"><img ${imgAttr} alt="${escapeHtml(m.name)}"></div><div class="member-info"><strong>${escapeHtml(m.name)}</strong></div></div>`}).join('')}</div><button class="sec-btn sec-btn-outline" id="cancelLetterSelect">取消</button></div>`;
+            modal.innerHTML = `<div class="modal-content" style="max-width:400px;"><div class="settings-title"><i class="fa-solid fa-envelope"></i> 选择收信人</div><div style="max-height:60vh;overflow-y:auto;">${members.map(m=>{const avatar=m.avatar||defaultAvatar();const isRef=isImgIdRef(avatar);const imgAttr=isRef?`data-img-ref="${escapeHtml(avatar)}" src="${defaultAvatar()}"`:`src="${avatar}"`;return`<div class="member-card" style="cursor:pointer;" data-member-id="${m.id}"><div class="member-avatar-wrap"><img ${imgAttr} alt="${escapeHtml(m.name)}"></div><div class="member-info"><strong>${escapeHtml(m.name)}</strong></div></div>`}).join('')}</div><button class="sec-btn sec-btn-outline" id="cancelLetterSelect">取消</button></div>`;
             document.body.appendChild(modal);
             resolveImgElementsInContainer(modal);
             modal.querySelectorAll('.member-card').forEach(card => { card.addEventListener('click', () => { const memberId =
@@ -5765,68 +5911,41 @@
             }
             modal.innerHTML = `
                 <div class="modal-content" style="max-width:560px;">
-                    <div class="settings-title">✉️ 给 ${escapeHtml(targetName)} 的手写信</div>
-                    <div id="letterPaperWrapper" style="
-                        background: var(--card-bg);
-                        border-radius: 20px;
-                        border-left: 6px solid var(--accent-color);
-                        box-shadow: var(--shadow-sm);
-                        padding: 16px;
-                        margin-bottom: 12px;
-                        min-height: 280px;
-                        display: flex;
-                        flex-direction: column;
-                        position: relative;
-                        transition: background 0.3s ease, border-color 0.3s ease;
-                    ">
+                    <div class="settings-title"><i class="fa-solid fa-envelope"></i> 给 ${escapeHtml(targetName)} 的手写信</div>
+                    <div class="letter-card" style="padding:16px; margin-bottom:12px; min-height:200px; display:flex; flex-direction:column;">
                         <textarea id="letterContentModal"
                             class="textarea-clean"
-                            placeholder="每行一句，1~15句..."
+                            placeholder="写下你想说的话..."
                             style="
                                 background: transparent;
                                 border: none;
-                                resize: none;
+                                resize: vertical;
                                 width: 100%;
                                 flex: 1;
                                 font-size: 15px;
-                                line-height: 2;
-                                background-image: repeating-linear-gradient(
-                                    transparent, transparent 29px, rgba(128,128,128,0.1) 30px
-                                );
+                                line-height: 1.8;
                                 color: var(--text-primary);
                                 font-family: inherit;
                                 padding: 0;
                                 outline: none;
-                                box-shadow: none;
-                                min-height: 220px;
+                                min-height: 200px;
                             "></textarea>
-                        <div style="font-size: 11px; color: var(--text-tertiary); text-align: right; margin-top: 4px;">
-                            <span id="letterLineCount">0</span> / 15 句
-                        </div>
                     </div>
                     <div class="button-group">
                         <button class="sec-btn" id="sendLetterModal">寄出</button>
                         <button class="sec-btn sec-btn-outline" id="cancelLetterModal">取消</button>
                     </div>
                 </div>`;
-            document.body.appendChild(modal);
-            const textarea = document.getElementById('letterContentModal');
-            const lineCount = document.getElementById('letterLineCount');
-            function updateCount() {
-                const lines = (textarea.value || '').split(/\r?\n/).filter(l => l.trim());
-                if (lineCount) lineCount.textContent = lines.length;
-            }
-            textarea.addEventListener('input', updateCount);
-            updateCount();
+            document.body.appendChild(modal);           
             document.getElementById('sendLetterModal').onclick = () => {
-                const txt = textarea.value;
-                const lines = txt.split(/\r?\n/).filter(l => l.trim());
-                if (lines.length >= 1 && lines.length <= 15) {
-                    sendLetter(lines, targetMemberId);
-                    modal.remove();
-                } else {
-                    alert('需1~15句');
+                const text = textarea.value.trim();
+                if (!text) {
+                    alert('请写下你想说的话');
+                    return;
                 }
+                // 将整段文字作为一个整体句子发送（放在数组里以兼容原有信件格式）
+                sendLetter([text], targetMemberId);
+                modal.remove();
             };
             document.getElementById('cancelLetterModal').onclick = () => modal.remove();
         }
@@ -5855,8 +5974,8 @@
             const modal = document.createElement('div');
             modal.className = 'modal';
             const letterContentHtml = letter.sentences
-                .map(s => `<div style="margin-bottom:6px; line-height:1.8;">${escapeHtml(s)}</div>`)
-                .join('');
+            .map(s => `<div style="margin-bottom:6px; line-height:1.8; white-space: pre-wrap;">${escapeHtml(s)}</div>`)
+            .join('');
             let replyHtml = '';
             if (letter.status === 'completed' && letter.replyMessages?.length) {
                 const allTexts = letter.replyMessages
@@ -5888,7 +6007,7 @@
             }
             modal.innerHTML = `
                 <div class="modal-content" style="max-width:560px;">
-                    <div class="settings-title">📜 信件详情</div>
+                    <div class="settings-title"><i class="fa-solid fa-scroll"></i> 信件详情</div>
                     <div style="color:var(--text-secondary); font-size:13px;">📮 ${new Date(letter.sendTime).toLocaleString()}</div>
                     ${targetInfo}
                     <div class="letter-card" style="padding:16px; margin-top:12px; margin-bottom:0;">
@@ -5905,7 +6024,7 @@
             const modal = document.createElement('div');
             modal.className = 'modal';
             modal.innerHTML =
-                `<div class="modal-content"><div class="settings-title">📜 历史</div><div id="historyListModal" style="max-height:60vh;overflow-y:auto;"></div><button class="sec-btn" id="closeHistoryModal">关闭</button></div>`;
+                `<div class="modal-content"><div class="settings-title"><i class="fa-solid fa-clock-rotate-left"></i> 历史</div><div id="historyListModal" style="max-height:60vh;overflow-y:auto;"></div><button class="sec-btn" id="closeHistoryModal">关闭</button></div>`;
             document.body.appendChild(modal);
             const render = () => { const c = document.getElementById('historyListModal'); if (!c) return; if (!letters.length) { c
                         .innerHTML = '<div style="text-align:center;padding:20px;">暂无</div>'; return; }
@@ -5932,11 +6051,11 @@
             modalDiv.className = 'modal';
             modalDiv.innerHTML =
                 `<div class="modal-content" style="max-width:500px;">
-                    <div class="settings-title">👋 拍一拍</div>
+                    <div class="settings-title"><i class="fa-solid fa-hand"></i> 拍一拍</div>
                     <div style="display:flex;flex-direction:column;gap:8px;">
                         <textarea id="newPatInput" class="textarea-clean" rows="4" 
                                   placeholder="每行一句，批量添加…"></textarea>
-                        <button class="sec-btn" id="addPatBtn">➕ 批量添加</button>
+                        <button class="sec-btn" id="addPatBtn"><i class="fa-solid fa-plus"></i> 批量添加</button>
                     </div>
                     <div id="patListContainer" style="max-height:60vh;overflow-y:auto;"></div>
                     <button class="sec-btn sec-btn-outline" id="closePatModal">关闭</button>
@@ -5981,35 +6100,35 @@
             modalDiv.id = 'managePanelModal';
             modalDiv.innerHTML = `
             <div class="modal-content" style="max-width:580px; padding:12px 16px;">
-                <div class="settings-title" style="margin-bottom:12px;">⚙️ 设置管理</div>
-                <div class="manage-fold"><div class="manage-fold-header" onclick="this.parentElement.classList.toggle('open'); this.classList.toggle('open')"><span class="fold-arrow">▶</span> 👤 基础信息</div><div class="manage-fold-body"><div class="flex-between" style="margin-bottom:8px;"><span>我的昵称</span><input type="text" id="nickMyInput" value="${escapeHtml(profile.myNick)}" style="width:60%;background:var(--bg-body);border:1px solid var(--border-light);border-radius:20px;padding:6px 12px;"></div><div class="flex-between"><span>Ta的昵称</span><input type="text" id="nickMengInput" value="${escapeHtml(profile.mengNick)}" style="width:60%;background:var(--bg-body);border:1px solid var(--border-light);border-radius:20px;padding:6px 12px;"></div><button class="sec-btn" id="saveNicknamesBtn" style="margin-top:10px;width:100%;">保存昵称</button><div class="data-note" style="margin-top:4px;">💡 点击顶部头像可更换头像</div></div></div>
-                <div class="manage-fold"><div class="manage-fold-header" onclick="this.parentElement.classList.toggle('open'); this.classList.toggle('open')"><span class="fold-arrow">▶</span> 🎨 外观</div><div class="manage-fold-body"><div style="margin-bottom:6px;font-weight:500;">🖼️ 聊天背景更换</div><input type="file" id="bgUploadInput" accept="image/jpeg,image/jpg" style="margin-bottom:10px;"><div class="button-group"><button class="sec-btn" id="applyBgBtn">应用背景</button><button class="sec-btn sec-btn-outline" id="resetBgBtn">恢复默认</button></div><div style="margin-top:14px;margin-bottom:6px;font-weight:500;">🫧 气泡CSS</div><textarea id="bubbleCssTextarea" class="textarea-clean" rows="10"></textarea><div class="button-group" style="margin-top:6px;"><button class="sec-btn" id="applyBubbleCss">应用</button><button class="sec-btn sec-btn-outline" id="resetBubbleCss">恢复</button><button class="sec-btn sec-btn-outline" id="loadExampleCssBtn">示例</button></div></div></div>                
-                <div class="manage-fold"><div class="manage-fold-header" onclick="this.parentElement.classList.toggle('open'); this.classList.toggle('open')"><span class="fold-arrow">▶</span> 📂 内容库</div><div class="manage-fold-body">
+                <div class="settings-title" style="margin-bottom:12px;"><i class="fa-solid fa-gear"></i> 设置管理</div>
+                <div class="manage-fold"><div class="manage-fold-header" onclick="this.parentElement.classList.toggle('open'); this.classList.toggle('open')"><span class="fold-arrow">▶</span> <i class="fa-solid fa-user"></i> 基础信息</div><div class="manage-fold-body"><div class="flex-between" style="margin-bottom:8px;"><span>我的昵称</span><input type="text" id="nickMyInput" value="${escapeHtml(profile.myNick)}" style="width:60%;background:var(--bg-body);border:1px solid var(--border-light);border-radius:20px;padding:6px 12px;"></div><div class="flex-between"><span>Ta的昵称</span><input type="text" id="nickMengInput" value="${escapeHtml(profile.mengNick)}" style="width:60%;background:var(--bg-body);border:1px solid var(--border-light);border-radius:20px;padding:6px 12px;"></div><button class="sec-btn" id="saveNicknamesBtn" style="margin-top:10px;width:100%;">保存昵称</button><div class="data-note" style="margin-top:4px;">💡 点击顶部头像可更换头像</div></div></div>
+                <div class="manage-fold"><div class="manage-fold-header" onclick="this.parentElement.classList.toggle('open'); this.classList.toggle('open')"><span class="fold-arrow">▶</span> <i class="fa-solid fa-palette"></i> 外观</div><div class="manage-fold-body"><div style="margin-bottom:6px;font-weight:500;">🖼️ 聊天背景更换</div><input type="file" id="bgUploadInput" accept="image/jpeg" style="margin-bottom:10px;"><div class="button-group"><button class="sec-btn" id="applyBgBtn">应用背景</button><button class="sec-btn sec-btn-outline" id="resetBgBtn">恢复默认</button></div><div style="margin-top:14px;margin-bottom:6px;font-weight:500;">🫧 气泡CSS</div><textarea id="bubbleCssTextarea" class="textarea-clean" rows="10"></textarea><div class="button-group" style="margin-top:6px;"><button class="sec-btn" id="applyBubbleCss">应用</button><button class="sec-btn sec-btn-outline" id="resetBubbleCss">恢复</button><button class="sec-btn sec-btn-outline" id="loadExampleCssBtn">示例</button></div></div></div>                
+                <div class="manage-fold"><div class="manage-fold-header" onclick="this.parentElement.classList.toggle('open'); this.classList.toggle('open')"><span class="fold-arrow">▶</span> <i class="fa-solid fa-folder-open"></i> 内容库</div><div class="manage-fold-body">
                     <div style="margin-bottom:8px;display:flex;align-items:center;gap:6px;">
                         <span style="font-weight:500;">💬 字卡</span>
                         <button class="small-btn primary-outline" id="importGlobalAutoBtn"
                                 style="padding:3px 10px; font-size:11px; line-height:1;">
-                            📥 导入
+                            <i class="fa-solid fa-file-import"></i> 导入
                         </button>
                         <button class="small-btn primary-outline" id="exportGlobalTxtBtn"
                                 style="padding:3px 10px; font-size:11px; line-height:1;">
-                            📤 导出
+                            <i class="fa-solid fa-file-export"></i> 导出
                         </button>
                         <input type="file" id="globalImportFileInput" accept=".txt,.json" style="display:none;">
                     </div>
                     <div id="wordCountDisplay" style="font-size:12px;color:var(--text-secondary);margin-bottom:6px;">📝 当前 ${wordCardList.length} 条</div><textarea id="wordTextarea" class="textarea-clean" rows="10">${wordCardList.join('\n')}</textarea><div class="button-group" style="margin-top:6px;"><button class="sec-btn" id="batchAddWord">保存</button><button class="sec-btn sec-btn-outline" id="delAllWord">清空</button></div><div class="content-library-toggle-row"><span>😊 表情</span><label class="toggle-switch" style="width:44px;height:22px;"><input type="checkbox" id="emojiDisabledToggle" ${emojiDisabled?'':'checked'}><span class="slider" style="width:44px;height:22px;"></span></label></div><textarea id="emojiTextarea" class="textarea-clean" rows="10">${emojiCardList.join('\n')}</textarea><div class="button-group" style="margin-top:6px;"><button class="sec-btn" id="batchAddEmoji">保存</button><button class="sec-btn sec-btn-outline" id="delAllEmoji">清空</button></div><div class="content-library-toggle-row"><span>🖼️ 图片</span><label class="toggle-switch" style="width:44px;height:22px;"><input type="checkbox" id="imgDisabledToggle" ${imgDisabled?'':'checked'}><span class="slider" style="width:44px;height:22px;"></span></label></div><input type="file" id="uploadImages" multiple accept="image/*" style="margin-bottom:8px;"><div id="imgPreviewList" class="img-grid-fixed"></div><div class="button-group" style="flex-direction:column; gap:6px;"><button class="sec-btn sec-btn-outline" id="deleteSelectedImg" style="width:100%;">删除选中</button><button class="sec-btn sec-btn-outline" id="clearAllImgBtn" style="width:100%;">全部清空</button></div></div></div>
-                <div class="manage-fold"><div class="manage-fold-header" onclick="this.parentElement.classList.toggle('open'); this.classList.toggle('open')"><span class="fold-arrow">▶</span> 🔮 回复策略</div><div class="manage-fold-body"><div class="flex-between" style="margin-bottom:10px;"><span>已读不回</span><label class="toggle-switch"><input type="checkbox" id="mengIgnoreToggle" ${mengMaybeIgnore?'checked':''}><span class="slider"></span></label></div><div class="flex-between" style="margin-bottom:10px;"><span>主动发消息</span><label class="toggle-switch"><input type="checkbox" id="mengActiveTalkToggle" ${mengActiveTalkEnabled?'checked':''}><span class="slider"></span></label></div><div class="flex-between" style="margin-bottom:10px;"><span>引用回复</span><label class="toggle-switch"><input type="checkbox" id="mengQuoteToggle" ${mengQuoteEnabled?'checked':''}><span class="slider"></span></label></div>
+                <div class="manage-fold"><div class="manage-fold-header" onclick="this.parentElement.classList.toggle('open'); this.classList.toggle('open')"><span class="fold-arrow">▶</span> <i class="fa-solid fa-sliders"></i> 回复策略</div><div class="manage-fold-body"><div class="flex-between" style="margin-bottom:10px;"><span>已读不回</span><label class="toggle-switch"><input type="checkbox" id="mengIgnoreToggle" ${mengMaybeIgnore?'checked':''}><span class="slider"></span></label></div><div class="flex-between" style="margin-bottom:10px;"><span>主动发消息</span><label class="toggle-switch"><input type="checkbox" id="mengActiveTalkToggle" ${mengActiveTalkEnabled?'checked':''}><span class="slider"></span></label></div><div class="flex-between" style="margin-bottom:10px;"><span>引用回复</span><label class="toggle-switch"><input type="checkbox" id="mengQuoteToggle" ${mengQuoteEnabled?'checked':''}><span class="slider"></span></label></div>
                 <div class="flex-between" style="margin-bottom:10px;"><span>显示消息时间</span><label class="toggle-switch"><input type="checkbox" id="showTimeToggle" ${showMessageTimeEnabled?'checked':''}><span class="slider"></span></label></div>                    
                 <div class="flex-between" style="margin-bottom:10px;"><span>组合回复</span><label class="toggle-switch"><input type="checkbox" id="combineRepliesToggle" ${combineRepliesEnabled?'checked':''}><span class="slider"></span></label></div>
                 <div class="data-note" style="margin-bottom:10px;">💡 开启后多条字卡回复将合并为一条消息（换行分隔），减少消息刷屏</div>
+                <div style="margin-bottom:10px;"><span>⏱️ 最短等待：</span><strong id="replyMinSpeedValue">${Math.round(replyMinDelayMs/1000)}</strong>秒</div><input type="range" id="replyMinSpeedSlider" min="1" max="500"value="${Math.round(replyMinDelayMs/1000)}" style="width:100%;"><div class="data-note" style="margin-top:2px;">💡 实际回复时间将在最短～最长之间随机</div>
                 <div style="margin-bottom:10px;"><span>⏱️ 最大等待：</span><strong id="replySpeedValue">${Math.round(replyMaxDelayMs/1000)}</strong>秒</div><input type="range" id="replySpeedSlider" min="3" max="500" value="${Math.round(replyMaxDelayMs/1000)}" style="width:100%;"><div style="margin-top:10px;"><span>⏳ 消息间隔：</span><strong id="interDelayValue">${(replyInterMessageDelayMs/1000).toFixed(1)}</strong>秒</div><input type="range" id="interDelaySlider" min="0" max="15" step="0.5" value="${(replyInterMessageDelayMs/1000).toFixed(1)}" style="width:100%;"></div></div>
-                <div class="manage-fold"><div class="manage-fold-header" onclick="this.parentElement.classList.toggle('open'); this.classList.toggle('open')"><span class="fold-arrow">▶</span> 🔔 消息设置</div><div class="manage-fold-body"><div class="flex-between" style="margin-bottom:10px;"><span>推送通知</span><label class="toggle-switch"><input type="checkbox" id="notificationToggle" ${notificationEnabled?'checked':''}><span class="slider"></span></label></div><button class="sec-btn sec-btn-outline" id="requestNotifPermBtn" style="width:100%;margin-bottom:12px;">请求通知权限</button><div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;"><span style="flex-shrink:0;">我的提示音</span><input type="file" id="mySoundUpload" accept="audio/mpeg" style="flex:1;min-width:0;"><button class="small-btn" id="clearMySound">清除</button></div><div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;"><span style="flex-shrink:0;">Ta的提示音</span><input type="file" id="mengSoundUpload" accept="audio/mpeg" style="flex:1;min-width:0;"><button class="small-btn" id="clearMengSound">清除</button></div><div class="data-note" style="margin-top:4px;">导入的MP3音频文件小于1MB</div></div></div>               
+                <div class="manage-fold"><div class="manage-fold-header" onclick="this.parentElement.classList.toggle('open'); this.classList.toggle('open')"><span class="fold-arrow">▶</span> <i class="fa-solid fa-bell"></i> 消息设置</div><div class="manage-fold-body"><div class="flex-between" style="margin-bottom:10px;"><span>推送通知</span><label class="toggle-switch"><input type="checkbox" id="notificationToggle" ${notificationEnabled?'checked':''}><span class="slider"></span></label></div><button class="sec-btn sec-btn-outline" id="requestNotifPermBtn" style="width:100%;margin-bottom:12px;">请求通知权限</button><div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;"><span style="flex-shrink:0;">我的提示音</span><input type="file" id="mySoundUpload" accept="audio/mpeg" style="flex:1;min-width:0;"><button class="small-btn" id="clearMySound">清除</button></div><div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;"><span style="flex-shrink:0;">Ta的提示音</span><input type="file" id="mengSoundUpload" accept="audio/mpeg" style="flex:1;min-width:0;"><button class="small-btn" id="clearMengSound">清除</button></div><div class="data-note" style="margin-top:4px;">导入的MP3音频文件小于1MB</div></div></div>               
                 <div class="manage-fold" id="momentsManageFold">
                     <div class="manage-fold-header" onclick="this.parentElement.classList.toggle('open'); this.classList.toggle('open')">
-                        <span class="fold-arrow">▶</span> 🌏 朋友圈管理
+                        <span class="fold-arrow">▶</span> <i class="fa-solid fa-globe"></i> 朋友圈管理
                     </div>
                     <div class="manage-fold-body">
-                        
                         <div style="margin-bottom: 20px;">
                             <div style="font-weight:600; margin-bottom:8px;">📅 生成时间与条数</div>
                             <div style="display:flex; gap:10px; align-items:center; margin-bottom:8px;">
@@ -6028,9 +6147,7 @@
                             <div class="data-note" style="margin-bottom:6px;">💡 每个成员（包括Ta）每天随机发送的条数范围。</div>
                             <button class="sec-btn" id="saveMomentsScheduleBtn" style="width:100%;">保存并立即生效</button>
                         </div>
-                
                         <hr style="margin: 12px 0;">
-                
                         <div style="margin-bottom: 20px;">
                             <div style="font-weight:600; margin-bottom:8px;">💬 评论速度</div>
                             <div style="margin-bottom:12px; font-weight:500; font-size:13px;">初始评论（动态发布后）</div>
@@ -6054,25 +6171,32 @@
                             </div>
                             <div class="data-note">💡 初始评论会在发布后陆续出现，对回复速度的修改立即生效。</div>
                         </div>
-                
                         <hr style="margin: 12px 0;">
-                
                         <div>
                             <div style="font-weight:600; margin-bottom:8px;">📍 地点管理</div>
                             <div id="momentLocationsManager" style="max-height:180px;overflow-y:auto;margin-bottom:10px;"></div>
                             <div style="display:flex; gap:6px;">
                                 <input type="text" id="newLocationInput" placeholder="新地点名称" style="flex:1;background:var(--bg-body);border:1px solid var(--border-light);border-radius:20px;padding:6px 12px;">
-                                <button class="small-btn primary-outline" id="addLocationBtn">➕ 添加</button>
+                                <button class="small-btn primary-outline" id="addLocationBtn"><i class="fa-solid fa-plus"></i> 添加</button>
                             </div>
                             <div class="data-note" style="margin-top:6px;">💡 修改后立即生效，新动态将随机使用列表中的地点</div>
                         </div>
-                
                     </div>
                 </div>
-                <div class="manage-fold"><div class="manage-fold-header" onclick="this.parentElement.classList.toggle('open'); this.classList.toggle('open')"><span class="fold-arrow">▶</span> 💾 数据</div><div class="manage-fold-body"><div class="button-group"><button class="sec-btn" id="exportDataBtn">📤 导出备份</button><button class="sec-btn sec-btn-outline" id="importDataBtn">📥 导入备份</button></div></div></div>
+                <div class="manage-fold">
+                    <div class="manage-fold-header" onclick="this.parentElement.classList.toggle('open'); this.classList.toggle('open')">
+                        <span class="fold-arrow">▶</span> <i class="fa-solid fa-database"></i> 数据
+                    </div>
+                    <div class="manage-fold-body">
+                        <div class="button-group">
+                            <button class="sec-btn" id="exportDataBtn"><i class="fa-solid fa-file-export"></i> 导出备份</button>
+                            <button class="sec-btn sec-btn-outline" id="importDataBtn"><i class="fa-solid fa-file-import"></i> 导入备份</button>
+                            <button class="sec-btn sec-btn-outline" id="viewStorageBtn"><i class="fa-solid fa-hard-drive"></i> 查看储存</button>
+                        </div>
+                    </div>
+                </div>
                 <button class="sec-btn" id="closeManage" style="margin-top:12px;width:100%;">关闭</button></div>`;
             document.body.appendChild(modalDiv);
-
             async function ri() {
                 const c = document.getElementById('imgPreviewList');
                 if (!c) return;
@@ -6097,7 +6221,6 @@
                 saveProfile();
                 syncDefaultMemberWithProfile();
                 updateProfileUI();
-                renderMessages();
             };
             document.getElementById('batchAddWord').onclick = () => {
                 wordCardList = document.getElementById('wordTextarea').value.split(/\r?\n/).filter(l => l.trim());
@@ -6180,15 +6303,7 @@
                 await ri();
                 alert(`已清理未使用的图片，剩余 ${imgCardList.length} 张`);
             };
-            document.getElementById('exportDataBtn').onclick = () => { const keys = [STORAGE.messages, STORAGE.wordCards,
-                    STORAGE.emojiCards, STORAGE.imgCards, STORAGE.profile, STORAGE.todayCount, STORAGE.lastDate, STORAGE
-                        .letters, STORAGE.mengMaybeIgnore, STORAGE.customBubbleCSS, STORAGE.customBgImage, 'theme_mode',
-                        'theme_color', STORAGE.statusList, STORAGE.musicList, STORAGE.currentMusicIndex, STORAGE
-                        .mengActiveTalk, STORAGE.musicPlayMode, STORAGE.replyMaxDelayMs, STORAGE
-                        .replyInterMessageDelayMs, STORAGE.mengQuoteEnabled, STORAGE.myMessageSound, STORAGE
-                        .mengMessageSound, STORAGE.patList, STORAGE.groupChatEnabled, STORAGE.groupMembers,
-                        STORAGE.emojiDisabled, STORAGE.imgDisabled,MOMENTS_STORAGE_KEY
-                    ]; let exp = {};
+            document.getElementById('exportDataBtn').onclick = () => { const keys = [STORAGE.messages, STORAGE.wordCards, STORAGE.emojiCards, STORAGE.imgCards, STORAGE.profile, STORAGE.todayCount, STORAGE.lastDate, STORAGE.letters, STORAGE.mengMaybeIgnore, STORAGE.customBubbleCSS, STORAGE.customBgImage, 'theme_mode', 'theme_color', STORAGE.statusList, STORAGE.musicList, STORAGE.currentMusicIndex, STORAGE.mengActiveTalk, STORAGE.musicPlayMode, STORAGE.replyMaxDelayMs, STORAGE.replyMinDelayMs, STORAGE.replyInterMessageDelayMs, STORAGE.mengQuoteEnabled, STORAGE.myMessageSound, STORAGE.mengMessageSound, STORAGE.patList, STORAGE.groupChatEnabled, STORAGE.groupMembers, STORAGE.groupMembersMomentsEnabled, STORAGE.emojiDisabled, STORAGE.imgDisabled, STORAGE.showMessageTime, STORAGE.combineReplies, STORAGE.notificationEnabled, STORAGE.initialCommentIntervalMin, STORAGE.initialCommentIntervalMax, STORAGE.momentsCommentDelayMin, STORAGE.momentsCommentDelayMax, STORAGE.momentsTimeStart, STORAGE.momentsTimeEnd, STORAGE.momentsCountMin, STORAGE.momentsCountMax, 'moment_locations', 'puzzleData', 'lx_bubbleFontSize', 'xiayi_immersive_mode', MOMENTS_STORAGE_KEY]; let exp = {};
                     keys.forEach(k => { const v = localStorage.getItem(k); if (v !== null) exp[k] = v; }); const blob =
                         new Blob([JSON.stringify({ version: "2.1", timestamp: Date.now(), data: exp })], { type:
                             "application/json" }); const a = document.createElement('a');
@@ -6231,15 +6346,34 @@
                 resetBubbleCSS(); };
             const bgUp = document.getElementById('bgUploadInput');
             let pbg = null;
-            bgUp.onchange = e => { const f = e.target.files[0]; if (f && (f.type === 'image/jpeg' || f.type === 'image/jpg')) {
+            bgUp.onchange = e => {
+                const f = e.target.files[0];
+                // ✅ 只要是图片就读取
+                if (f && f.type.startsWith('image/')) {
                     const r = new FileReader();
                     r.onload = ev => { pbg = ev.target.result; };
-                    r.readAsDataURL(f); } };
-            document.getElementById('applyBgBtn').onclick = async () => { if (pbg) { const iid = 'bg_' + makeImgId();
+                    r.onerror = () => { alert('读取图片失败，请重试'); };
+                    r.readAsDataURL(f);
+                } else {
+                    alert('请选择 JPG 格式的图片');
+                }
+            };
+            document.getElementById('applyBgBtn').onclick = async () => {
+                if (!pbg) {
+                    showToast('请先选择一张图片', '⚠️');
+                    return;
+                }
+                try {
+                    const iid = 'bg_' + makeImgId();
                     await saveImageToDB(iid, pbg);
                     saveCustomBackground(IMG_ID_PREFIX + iid);
                     pbg = null;
-                    checkPuzzleConditions(); } else alert('请选择图片'); };
+                    showToast('背景已更换', '🖼️');
+                } catch (err) {
+                    console.error('背景保存失败', err);
+                    showToast('保存失败，可能是图片太大或存储满了，压缩到 2MB 再试', '❌');
+                }
+            };
             document.getElementById('resetBgBtn').onclick = () => { saveCustomBackground(null);
                 pbg = null; };
             function renderLocationList() {
@@ -6338,6 +6472,129 @@
                 alert('✅ 朋友圈生成计划已更新');
             };
             document.getElementById('closeManage').onclick = () => { modalDiv.remove(); };
+            // 在合适位置新增（例如在其他绑定事件之后）
+            document.getElementById('viewStorageBtn').onclick = async () => {
+                // 先显示加载弹窗
+                const modal = document.createElement('div');
+                modal.className = 'modal';
+                modal.innerHTML = `
+                    <div class="modal-content" style="max-width:420px; padding:20px; border-radius:28px; background:var(--input-bg);">
+                        <div class="settings-title" style="margin-bottom:12px;">
+                            <i class="fa-solid fa-hard-drive"></i> 储存空间
+                        </div>
+                        <div id="storageDetail" style="text-align:center; padding:20px 0; color:var(--text-secondary);">
+                            <i class="fa-solid fa-spinner fa-spin"></i> 正在计算...
+                        </div>
+                        <div class="button-group">
+                            <button class="sec-btn sec-btn-outline" id="closeStorageModal">关闭</button>
+                        </div>
+                    </div>`;
+                document.body.appendChild(modal);
+                document.getElementById('closeStorageModal').onclick = () => modal.remove();
+                modal.addEventListener('click', (e) => { if (e.target === modal) modal.remove(); });
+            
+                // 异步计算大小
+                try {
+                    // localStorage
+                    let localStorageSize = 0;
+                    for (let i = 0; i < localStorage.length; i++) {
+                        const key = localStorage.key(i);
+                        const value = localStorage.getItem(key);
+                        localStorageSize += value ? value.length : 0;
+                    }
+            
+                    // IndexedDB 图片
+                    let dbSize = 0;
+                    const db = await openImgDB();
+                    const tx = db.transaction(IMG_STORE_NAME, 'readonly');
+                    const store = tx.objectStore(IMG_STORE_NAME);
+                    const allRecords = await new Promise((resolve, reject) => {
+                        const req = store.getAll();
+                        req.onsuccess = () => resolve(req.result);
+                        req.onerror = () => reject(req.error);
+                    });
+                    allRecords.forEach(record => {
+                        if (record.base64) dbSize += record.base64.length;
+                    });
+            
+                    const format = (bytes) => {
+                        if (bytes < 1024) return bytes + ' B';
+                        if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(2) + ' KB';
+                        return (bytes / (1024 * 1024)).toFixed(2) + ' MB';
+                    };
+            
+                    const total = localStorageSize + dbSize;
+                    const maxLocalStorage = 5 * 1024 * 1024; // 5MB 典型限制
+                    const localStoragePercent = Math.min(100, (localStorageSize / maxLocalStorage) * 100).toFixed(1);
+                    const dbPercent = dbSize > 0 ? ((dbSize / total) * 100).toFixed(1) : 0;
+            
+                    const detailHTML = `
+                        <div style="display:flex; flex-direction:column; gap:16px;">
+                            <!-- 卡片1：文字设置 -->
+                            <div style="background:var(--card-bg); border-radius:20px; padding:14px; border:1px solid var(--border-light);">
+                                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                                    <span><i class="fa-solid fa-file-lines" style="color:var(--accent-color); margin-right:4px;"></i> 文字 & 设置</span>
+                                    <span style="font-weight:700;">${format(localStorageSize)}</span>
+                                </div>
+                                <div style="background:var(--bg-body); border-radius:10px; height:8px; overflow:hidden;">
+                                    <div style="width:${localStoragePercent}%; height:100%; background:linear-gradient(90deg, var(--accent-color), var(--accent-color)); opacity:0.9; border-radius:10px;"></div>
+                                </div>
+                                <div style="font-size:11px; color:var(--text-tertiary); margin-top:4px;">已用 ${localStoragePercent}% (上限约5MB)</div>
+                            </div>
+            
+                            <!-- 卡片2：图片 -->
+                            <div style="background:var(--card-bg); border-radius:20px; padding:14px; border:1px solid var(--border-light);">
+                                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                                    <span><i class="fa-solid fa-images" style="color:var(--accent-color); margin-right:4px;"></i> 图片 </span>
+                                    <span style="font-weight:700;">${format(dbSize)}</span>
+                                </div>
+                                <div style="background:var(--bg-body); border-radius:10px; height:8px; overflow:hidden;">
+                                    <div style="width:${dbPercent}%; height:100%; background:linear-gradient(90deg, #f39c12, #e67e22); border-radius:10px;"></div>
+                                </div>
+                                <div style="font-size:11px; color:var(--text-tertiary); margin-top:4px;">占总储存 ${dbPercent}%</div>
+                            </div>
+            
+                            <!-- 总计 -->
+                            <div style="text-align:center; padding:8px; background:var(--accent-light); border-radius:16px; font-weight:600; font-size:15px;">
+                                📦 合计已用：${format(total)}
+                            </div>
+                        </div>
+                    `;
+            
+                    // 更新弹窗内容，并添加清理按钮
+                    const detailContainer = document.getElementById('storageDetail');
+                    if (detailContainer) {
+                        detailContainer.innerHTML = detailHTML;
+            
+                        // 在按钮组前面插入清理按钮
+                        const btnGroup = modal.querySelector('.button-group');
+                        if (btnGroup) {
+                            const clearBtn = document.createElement('button');
+                            clearBtn.className = 'sec-btn';
+                            clearBtn.style.cssText = 'background:var(--danger-bg); color:var(--danger-color); margin-right:auto;';
+                            clearBtn.innerHTML = '<i class="fa-solid fa-broom"></i> 清理全部图片';
+                            clearBtn.onclick = async () => {
+                                if (confirm('⚠️ 确定要删除所有图片吗？\n（聊天记录、头像、背景中的图片可能会丢失，建议先导出备份）')) {
+                                    // 清空 IndexedDB 图片库
+                                    const db = await openImgDB();
+                                    const tx = db.transaction(IMG_STORE_NAME, 'readwrite');
+                                    tx.objectStore(IMG_STORE_NAME).clear();
+                                    tx.oncomplete = () => {
+                                        alert('✅ 图片已清理，建议刷新页面');
+                                        modal.remove();
+                                    };
+                                }
+                            };
+                            btnGroup.prepend(clearBtn);
+                        }
+                    }
+                } catch (err) {
+                    const detailContainer = document.getElementById('storageDetail');
+                    if (detailContainer) {
+                        detailContainer.innerHTML = `<div style="color:var(--danger-color);"><i class="fa-solid fa-triangle-exclamation"></i> 计算失败</div>`;
+                    }
+                }
+            };
             document.getElementById('loadExampleCssBtn').onclick = () => {
                 const exampleCSS =
                     `/* 灵犀对话气泡样式 */\n.bubble{background:#ffffff; color: #2a2a38;padding:10px 14px;border-radius:20px;font-size:18px;word-break:break-word;box-shadow:0 1px 3px rgba(140,100,180,0.1);}\n.message-row.me .bubble{background:#e2c9ff; color: #2a2a38;}\n.bubble.image-bubble{background:transparent!important;padding:0!important;box-shadow:none!important;}\n.quote-ref{font-size:12px;border-left:3px solid #bbaacc;padding-left:8px;margin-bottom:6px;opacity:0.7;}`;
@@ -6364,6 +6621,19 @@
                 replyMaxDelayMs = v;
                 localStorage.setItem(STORAGE.replyMaxDelayMs, v);
                 spv.innerText = Math.round(v / 1000); });
+            const minsps = document.getElementById('replyMinSpeedSlider'),
+                  minsv  = document.getElementById('replyMinSpeedValue');
+            if (minsps) {
+                minsps.addEventListener('input', () => {
+                    let v = parseInt(minsps.value) * 1000;
+                    if (v < 1000) v = 1000;
+                    if (v > replyMaxDelayMs) v = replyMaxDelayMs;
+                    replyMinDelayMs = v;
+                    localStorage.setItem(STORAGE.replyMinDelayMs, v);
+                    minsv.innerText = Math.round(v / 1000);
+                    minsps.value = Math.round(v / 1000);
+                });
+            }
             const idsl = document.getElementById('interDelaySlider'),
                 idv = document.getElementById('interDelayValue');
             if (idsl) idsl.addEventListener('input', () => { let v = parseFloat(idsl.value); if (v > 15) v = 15;
@@ -6384,12 +6654,12 @@
             };
             document.getElementById('exportGlobalTxtBtn').onclick = exportWordAndEmojiTxt;
         }
-        
+
         function openPuzzlePanel() {
             const modal = document.createElement('div');
             modal.className = 'modal';
             modal.innerHTML =
-                `<div class="modal-content" style="max-width:460px;"><div class="settings-title">🧩 我们的拼图</div><div class="puzzle-grid" id="puzzleGrid"></div><div style="text-align:center;margin:8px 0;font-size:13px;color:var(--accent-color);">已完成 ${puzzleData.unlockedCount}/${puzzleData.grid.length}</div><button class="sec-btn" id="closePuzzleModal" style="width:100%;">关闭</button></div>`;
+                `<div class="modal-content" style="max-width:460px;"><div class="settings-title"><i class="fa-solid fa-puzzle-piece"></i> 我们的拼图</div><div class="puzzle-grid" id="puzzleGrid"></div><div style="text-align:center;margin:8px 0;font-size:13px;color:var(--accent-color);">已完成 ${puzzleData.unlockedCount}/${puzzleData.grid.length}</div><button class="sec-btn" id="closePuzzleModal" style="width:100%;">关闭</button></div>`;
             document.body.appendChild(modal);
             const grid = modal.querySelector('#puzzleGrid');
             puzzleData.grid.forEach(cell => { const div = document.createElement('div');
@@ -6416,7 +6686,7 @@
             }
             modal.innerHTML = `
                 <div class="modal-content" style="max-width:600px;">
-                    <div class="settings-title" style="margin-bottom:12px;">📊 数据分析</div>
+                    <div class="settings-title" style="margin-bottom:12px;"><i class="fa-solid fa-chart-bar"></i> 数据分析</div>
                     ${showMemberSelect ? `<div style="margin-bottom:10px;"><select id="wfMemberSelect" class="wf-member-select">${memberOptions}</select></div>` : ''}
                     <div class="wf-panel">
                         <div class="wf-tabs">
@@ -6432,8 +6702,8 @@
                                 <option value="15">显示 15 条</option>
                                 <option value="20">显示 20 条</option>
                             </select>
-                            <button class="wf-btn primary" id="wfRefreshBtn">🔄 刷新</button>
-                            <button class="wf-btn" id="wfCopyBtn">📋 复制</button>
+                            <button class="wf-btn primary" id="wfRefreshBtn"><i class="fa-solid fa-rotate"></i> 刷新</button>
+                            <button class="wf-btn" id="wfCopyBtn"><i class="fa-solid fa-copy"></i> 复制</button>
                         </div>
                     </div>
                     <button class="sec-btn" style="width:100%;margin-top:12px;" id="closeWfModal">关闭</button>
@@ -6532,7 +6802,8 @@
                 "…" : (safeContent || "新消息"));
             let iconUrl = profile.mengAvatar || defaultAvatar(); if (isImgIdRef(iconUrl)) { iconUrl = avatarCache.get(iconUrl) ||
                     defaultAvatar(); } try { new Notification(`💜 ${profile.mengNick} 发来消息`, { body, icon: iconUrl }); } catch (
-            e) {} }
+            e) {}
+        }
 
         function loadNotificationSetting() { const s = localStorage.getItem(STORAGE.notificationEnabled);
             notificationEnabled = s === null ? true : s === 'true'; }
@@ -6608,14 +6879,13 @@
         function saveMusicPlayMode() { localStorage.setItem(STORAGE.musicPlayMode, musicPlayMode); }
 
         function getNextMusicIndex() { if (!musicList.length) return 0; switch (musicPlayMode) { case 'single': return
-                currentMusicIndex;
-            case 'order': return (currentMusicIndex + 1) % musicList.length; default: return Math.floor(Math.random() *
+                currentMusicIndex; case 'order': return (currentMusicIndex + 1) % musicList.length; default: return Math.floor(Math.random() *
                     musicList.length); } }
 
-        function updateMusicModeIcon() { const b = document.getElementById('musicModeBtn'); if (b) b.innerText = musicPlayMode ===
-                'random' ? '🔀' : musicPlayMode === 'single' ? '🔂' : '🔁'; }
+        function updateMusicModeIcon() { const b = document.getElementById('musicModeBtn'); if (b) b.innerHTML = musicPlayMode ===
+                'random' ? '<i class="fa-solid fa-shuffle"></i>' : musicPlayMode === 'single' ? '<i class="fa-solid fa-repeat"></i>' : '<i class="fa-solid fa-rotate"></i>'; }
 
-        function applyLoopByMode() { 
+        function applyLoopByMode() {
             if (audioPlayer) audioPlayer.loop = (musicPlayMode === 'single');
         }
         function handleSongEnd() { if (musicPlayMode !== 'single' && musicList.length) playMusic(getNextMusicIndex()); }
@@ -6658,14 +6928,14 @@
             audioPlayer.src = song.url;
             audioPlayer.play().catch(() => {});
             document.getElementById('musicTitle').innerText = song.name || '未知';
-            document.getElementById('playPauseMusicBtn').innerHTML = '⏸';
+            document.getElementById('playPauseMusicBtn').innerHTML = '<i class="fa-solid fa-pause"></i>';
             updateProgressUI();
             applyLoopByMode(); }
 
         function togglePlayPause() { if (!audioPlayer || !musicList.length) return; if (audioPlayer.paused) { audioPlayer.play()
                 .catch(() => {});
-                document.getElementById('playPauseMusicBtn').innerHTML = '⏸'; } else { audioPlayer.pause();
-                document.getElementById('playPauseMusicBtn').innerHTML = '▶'; } }
+                document.getElementById('playPauseMusicBtn').innerHTML = '<i class="fa-solid fa-pause"></i>'; } else { audioPlayer.pause();
+                document.getElementById('playPauseMusicBtn').innerHTML = '<i class="fa-solid fa-play"></i>'; } }
 
         function loadMusicList() { try { musicList = JSON.parse(localStorage.getItem(STORAGE.musicList) || '[]'); } catch (e) {
                 musicList = []; }
@@ -6684,7 +6954,7 @@
         function renderMusicListUI() { const c = document.getElementById('musicListContainer'); if (!c) return; if (!musicList
                 .length) { c.innerHTML = '<div class="data-note">暂无歌曲</div>'; return; }
             c.innerHTML = musicList.map((s, i) =>
-                `<div class="music-list-item"><div class="music-info">${batchDeleteMode?`<input type="checkbox" class="music-batch-check" data-idx="${i}">`:''}<span>🎵</span><div class="music-name">${escapeHtml(s.name.length>30?s.name.substring(0,30)+'...':s.name)}</div></div><div class="music-actions">${batchDeleteMode?'':`<button class="small-btn music-play-single" data-idx="${i}">▶</button><button class="small-btn danger music-del-single" data-idx="${i}">删除</button>`}</div></div>`
+                `<div class="music-list-item"><div class="music-info">${batchDeleteMode?`<input type="checkbox" class="music-batch-check" data-idx="${i}">`:''}<span><i class="fa-solid fa-music"></i></span><div class="music-name">${escapeHtml(s.name.length>30?s.name.substring(0,30)+'...':s.name)}</div></div><div class="music-actions">${batchDeleteMode?'':`<button class="small-btn music-play-single" data-idx="${i}"><i class="fa-solid fa-play"></i></button><button class="small-btn danger music-del-single" data-idx="${i}"><i class="fa-solid fa-trash-can"></i></button>`}</div></div>`
             ).join('');
             c.querySelectorAll('.music-play-single').forEach(b => b.addEventListener('click', e => { playMusic(parseInt(e
                     .currentTarget.dataset.idx));
@@ -6717,7 +6987,7 @@
             const m = document.getElementById('musicManageModal');
             if (!m) return;
             batchDeleteMode = false;
-            document.getElementById('batchDeleteMusicBtn').innerText = '🗑️ 批量删除';
+            document.getElementById('batchDeleteMusicBtn').innerHTML = '<i class="fa-solid fa-trash-can"></i> 批量删除';
             renderMusicListUI();
             m.classList.remove('hidden');
             document.getElementById('closeMusicManage').onclick = () => m.classList.add('hidden');
@@ -6737,7 +7007,7 @@
                 a.click(); };
             const bb = document.getElementById('batchDeleteMusicBtn');
             bb.onclick = () => { if (!batchDeleteMode) { batchDeleteMode = true;
-                    bb.innerText = '✅ 确认删除';
+                    bb.innerHTML = '<i class="fa-solid fa-check"></i> 确认删除';
                     renderMusicListUI(); } else { const checks = document.querySelectorAll('.music-batch-check:checked'); if (!checks
                         .length) return; if (!confirm(`删除 ${checks.length} 首？`)) return;
                     Array.from(checks).map(c => parseInt(c.dataset.idx)).sort((a, b) => b - a).forEach(i => musicList.splice(i,
@@ -6748,29 +7018,64 @@
                             playMusic(0); } else { if (audioPlayer && audioPlayer.src !== musicList[currentMusicIndex]?.url) {
                                 playMusic(currentMusicIndex); } } }
                     batchDeleteMode = false;
-                    bb.innerText = '🗑️ 批量删除';
+                    bb.innerHTML = '<i class="fa-solid fa-trash-can"></i> 批量删除';
                     renderMusicListUI(); } };
             setupMusicImportHandler();
             const neteaseBtn = document.getElementById('addNeteaseSongBtn');
             if (neteaseBtn && !neteaseBtn.dataset.bound) {
-                neteaseBtn.addEventListener('click', () => {
+                neteaseBtn.addEventListener('click', async () => {
                     const idInput = document.getElementById('neteaseSongId');
                     const nameInput = document.getElementById('neteaseSongName');
                     const rawId = idInput.value.trim();
-                    if (!rawId) { alert('请输入网易云音乐ID或链接'); return; }
-                    let songId = '';
-                    const match = rawId.match(/[?&]id=(\d+)/);
-                    if (match && match[1]) songId = match[1];
-                    else if (/^\d+$/.test(rawId)) songId = rawId;
-                    if (!songId) { alert('无法识别ID格式'); return; }
-                    const songName = nameInput.value.trim() || `网易云歌曲 ${songId}`;
+                    if (!rawId) {
+                        showToast('请输入网易云音乐ID或链接', '⚠️');
+                        return;
+                    }
+            
+                    // 智能 ID 提取
+                    let songId = null;
+                    const match = rawId.match(/[?&]id=(\d+)/) || rawId.match(/\/song\/(\d+)/);
+                    if (match && match[1]) {
+                        songId = match[1];
+                    } else {
+                        const numMatches = rawId.match(/\d{4,12}/g);
+                        if (numMatches && numMatches.length > 0) {
+                            songId = numMatches.reduce((a, b) => a.length >= b.length ? a : b);
+                        }
+                    }
+            
+                    if (!songId) {
+                        showToast('未识别到有效的歌曲ID，请检查输入', '❌');
+                        return;
+                    }
+            
                     const songUrl = `https://music.163.com/song/media/outer/url?id=${songId}.mp3`;
+            
+                    // 去重
+                    if (musicList.some(s => s.url === songUrl)) {
+                        showToast('歌曲已在列表中，无需重复添加', '⚠️');
+                        return;
+                    }
+            
+                    // 加载状态
+                    const btn = document.getElementById('addNeteaseSongBtn');
+                    const originalText = btn.innerHTML;
+                    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> 检测中...';
+                    btn.disabled = true;
+            
+                    // 可选预检（忽略错误）
+                    try { await fetch(songUrl, { method: 'HEAD', mode: 'no-cors' }); } catch(e) {}
+            
+                    btn.innerHTML = originalText;
+                    btn.disabled = false;
+            
+                    let songName = nameInput.value.trim() || `网易云音乐 - ${songId}`;
                     musicList.push({ name: songName, url: songUrl });
                     saveMusicList();
                     renderMusicListUI();
                     idInput.value = '';
                     nameInput.value = '';
-                    alert('✅ 已添加：' + songName);
+                    showToast(`✅ 已添加：${songName}`, '🎵');
                 });
                 neteaseBtn.dataset.bound = 'true';
             }
@@ -6860,10 +7165,21 @@
             startCountdownLoop();
             restartStatusTimer(); }
 
-        function openStatusEditor() { const md = document.createElement('div');
+        function openStatusEditor() {
+            const md = document.createElement('div');
             md.className = 'modal';
-            md.innerHTML =
-                `<div class="modal-content"><div class="settings-title">❤️ 状态库</div><textarea id="statusListEditor" class="textarea-clean" rows="10">${statusList.map(s=>escapeHtml(s)).join('\n')}</textarea><div class="button-group"><button class="sec-btn" id="saveStatusListBtn">保存</button><button class="sec-btn sec-btn-outline" id="clearStatusListBtn">清空</button><button class="sec-btn sec-btn-outline" id="cancelStatusEdit">取消</button></div></div>`;
+            md.innerHTML = `<div class="modal-content">
+                <div class="settings-title"><i class="fa-solid fa-heart"></i> 状态库</div>
+                <div class="data-note" style="margin: 4px 0 8px; color: var(--text-tertiary); font-size: 12px;">
+                    💡 Ta 的状态每 2 小时从列表中随机更换一次
+                </div>
+                <textarea id="statusListEditor" class="textarea-clean" rows="10">${statusList.map(s=>escapeHtml(s)).join('\n')}</textarea>
+                <div class="button-group">
+                    <button class="sec-btn" id="saveStatusListBtn">保存</button>
+                    <button class="sec-btn sec-btn-outline" id="clearStatusListBtn">清空</button>
+                    <button class="sec-btn sec-btn-outline" id="cancelStatusEdit">取消</button>
+                </div>
+            </div>`;
             document.body.appendChild(md);
             document.getElementById('saveStatusListBtn').onclick = () => { const lines = document.getElementById(
                     'statusListEditor').value.split(/\r?\n/).filter(l => l.trim()); if (!lines.length) statusList = [
@@ -6887,7 +7203,32 @@
 
         function cleanupStatusTimers() { if (statusUpdateInterval) clearInterval(statusUpdateInterval); if (countdownInterval)
                 clearInterval(countdownInterval); if (letterTimer) clearInterval(letterTimer); }
-        window.addEventListener('beforeunload', () => { cleanupStatusTimers(); stopActiveTalkTimer(); stopMomentsGenerator(); if (audioPlayer) audioPlayer.pause(); saveMessagesImmediately(); });
+
+        function saveLastActiveTime() {
+            localStorage.setItem(STORAGE.lastActiveTime, Date.now().toString());
+        }
+
+        function generateOfflineMomentsIfNeeded() {
+            if (offlineGeneratedHandled) return;
+            const lastActiveStr = localStorage.getItem(STORAGE.lastActiveTime);
+            if (!lastActiveStr) {
+                saveLastActiveTime();
+                return;
+            }
+            offlineGeneratedHandled = true;
+            saveLastActiveTime();
+        }
+
+        window.addEventListener('beforeunload', () => {
+            saveLastActiveTime();
+            cleanupStatusTimers();
+            stopActiveTalkTimer();
+            stopMomentsGenerator();
+            if (audioPlayer) audioPlayer.pause();
+            saveMessagesImmediately();
+        });
+
+        window.addEventListener('pagehide', saveLastActiveTime);
 
         function loadPuzzleData() { const saved = localStorage.getItem('puzzleData'); if (saved) puzzleData = JSON.parse(saved);
             else savePuzzleData(); }
@@ -7005,7 +7346,7 @@
                 updateMusicModeIcon();
                 applyLoopByMode(); };
             document.getElementById('immersiveToggleBtn').onclick = toggleImmersiveMode;
-            }
+        }
 
         function exportChatMessages() {
             if (!messages.length) { alert('暂无对话'); return; }
@@ -7046,19 +7387,19 @@
             localStorage.setItem('xiayi_immersive_mode', immersiveMode);
             applyImmersiveMode();
         }
-        
+
         function applyImmersiveMode() {
             const btn = document.getElementById('immersiveToggleBtn');
             if (immersiveMode) {
                 document.body.setAttribute('data-immersive', 'true');
                 if (btn) {
-                    btn.innerHTML = '▲';
+                    btn.innerHTML = '<i class="fa-solid fa-chevron-up"></i>';
                     btn.title = '退出沉浸式聊天';
                 }
             } else {
                 document.body.removeAttribute('data-immersive');
                 if (btn) {
-                    btn.innerHTML = '▼';
+                    btn.innerHTML = '<i class="fa-solid fa-chevron-down"></i>';
                     btn.title = '沉浸式聊天';
                 }
             }
@@ -7067,7 +7408,7 @@
                 setAppHeight();
             }, 400);
         }
-        
+
         window.onload = () => { setupLazyImageObserver();
             setAppHeight();
             loadData();
@@ -7082,8 +7423,9 @@
             initStatusSystem();
             startMomentsGenerator();
             if (moments.length === 0) {
-                for (let i = 0; i < 3; i++) {
-                    generateRandomMoment();
+                const count = Math.floor(Math.random() * 2) + 1; // 1 或 2
+                for (let i = 0; i < count; i++) {
+                    generateRandomMoment('meng');
                 }
             }
             updateMomentsBadge();
