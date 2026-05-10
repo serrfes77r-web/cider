@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>ta · 灵犀对话</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
             margin: 0;
@@ -2810,6 +2810,11 @@
             color: var(--text-tertiary);
             opacity: 1;
         }       
+        .music-list-item.playing {
+        background: var(--accent-light);
+        border-left: 4px solid var(--accent-color);
+        font-weight: 500;
+        }
     </style>
 </head>
 <body>
@@ -5936,7 +5941,11 @@
                         <button class="sec-btn sec-btn-outline" id="cancelLetterModal">取消</button>
                     </div>
                 </div>`;
-            document.body.appendChild(modal);           
+            document.body.appendChild(modal);
+        
+            // ✅ 关键修复：在此获取 textarea 元素引用，使其在后续回调中可用
+            const textarea = document.getElementById('letterContentModal');
+        
             document.getElementById('sendLetterModal').onclick = () => {
                 const text = textarea.value.trim();
                 if (!text) {
@@ -6953,18 +6962,49 @@
 
         function renderMusicListUI() { const c = document.getElementById('musicListContainer'); if (!c) return; if (!musicList
                 .length) { c.innerHTML = '<div class="data-note">暂无歌曲</div>'; return; }
-            c.innerHTML = musicList.map((s, i) =>
-                `<div class="music-list-item"><div class="music-info">${batchDeleteMode?`<input type="checkbox" class="music-batch-check" data-idx="${i}">`:''}<span><i class="fa-solid fa-music"></i></span><div class="music-name">${escapeHtml(s.name.length>30?s.name.substring(0,30)+'...':s.name)}</div></div><div class="music-actions">${batchDeleteMode?'':`<button class="small-btn music-play-single" data-idx="${i}"><i class="fa-solid fa-play"></i></button><button class="small-btn danger music-del-single" data-idx="${i}"><i class="fa-solid fa-trash-can"></i></button>`}</div></div>`
-            ).join('');
+            c.innerHTML = musicList.map((s, i) => {
+                const isPlaying = (i === currentMusicIndex);   // ← 关键行
+                return `<div class="music-list-item${isPlaying ? ' playing' : ''}">
+                    <div class="music-info">
+                        ${batchDeleteMode ? `<input type="checkbox" class="music-batch-check" data-idx="${i}">` : ''}
+                        <span><i class="fa-solid fa-music"></i></span>
+                        <div class="music-name">${escapeHtml(s.name.length > 30 ? s.name.substring(0,30) + '...' : s.name)}</div>
+                    </div>
+                    <div class="music-actions">
+                        ${batchDeleteMode ? '' : `
+                            <button class="small-btn music-play-single" data-idx="${i}"><i class="fa-solid fa-play"></i></button>
+                            <button class="small-btn danger music-del-single" data-idx="${i}"><i class="fa-solid fa-trash-can"></i></button>
+                        `}
+                    </div>
+                </div>`;
+            }).join('');
             c.querySelectorAll('.music-play-single').forEach(b => b.addEventListener('click', e => { playMusic(parseInt(e
                     .currentTarget.dataset.idx));
                 document.getElementById('musicControlPanel')?.classList.remove('hidden'); }));
-            c.querySelectorAll('.music-del-single').forEach(b => b.addEventListener('click', e => { if (confirm('删除？')) { const
-                        idx = parseInt(e.currentTarget.dataset.idx);
-                    musicList.splice(idx, 1);
-                    saveMusicList(); if (!musicList.length && audioPlayer) { audioPlayer.pause();
-                        audioPlayer.src = ''; } else if (currentMusicIndex >= musicList.length) playMusic(0);
-                    renderMusicListUI(); } }));
+            c.querySelectorAll('.music-del-single').forEach(b => b.addEventListener('click', e => {
+                if (confirm('删除？')) {
+                    const deletedIndex = parseInt(e.currentTarget.dataset.idx);
+                    musicList.splice(deletedIndex, 1);
+                    saveMusicList();
+                    if (!musicList.length && audioPlayer) {
+                        audioPlayer.pause();
+                        audioPlayer.src = '';
+                    } else {
+                        if (currentMusicIndex >= musicList.length) {
+                            currentMusicIndex = 0;
+                            playMusic(0);
+                        } else {
+                            if (deletedIndex < currentMusicIndex) {
+                                currentMusicIndex--;
+                            }
+                            if (audioPlayer && audioPlayer.src !== musicList[currentMusicIndex]?.url) {
+                                playMusic(currentMusicIndex);
+                            }
+                        }
+                    }
+                    renderMusicListUI();
+                }
+            }));
             const countBadge = document.getElementById('musicCount'); if (countBadge) { countBadge.innerText = musicList.length +
                 '首'; } }
 
@@ -7006,20 +7046,63 @@
                 a.download = 'music_backup.json';
                 a.click(); };
             const bb = document.getElementById('batchDeleteMusicBtn');
-            bb.onclick = () => { if (!batchDeleteMode) { batchDeleteMode = true;
+            bb.onclick = () => {
+                if (!batchDeleteMode) {
+                    batchDeleteMode = true;
                     bb.innerHTML = '<i class="fa-solid fa-check"></i> 确认删除';
-                    renderMusicListUI(); } else { const checks = document.querySelectorAll('.music-batch-check:checked'); if (!checks
-                        .length) return; if (!confirm(`删除 ${checks.length} 首？`)) return;
-                    Array.from(checks).map(c => parseInt(c.dataset.idx)).sort((a, b) => b - a).forEach(i => musicList.splice(i,
-                        1));
-                    saveMusicList(); if (musicList.length === 0) { if (audioPlayer) { audioPlayer.pause();
-                            audioPlayer.src = ''; }
-                        currentMusicIndex = 0; } else { if (currentMusicIndex >= musicList.length) { currentMusicIndex = 0;
-                            playMusic(0); } else { if (audioPlayer && audioPlayer.src !== musicList[currentMusicIndex]?.url) {
-                                playMusic(currentMusicIndex); } } }
+                    renderMusicListUI();
+                } else {
+                    const checks = document.querySelectorAll('.music-batch-check:checked');
+                    if (!checks.length) return;
+                    if (!confirm(`删除 ${checks.length} 首？`)) return;
+            
+                    // 1. 获取所有待删除索引，并从高到低排序
+                    const indicesToDelete = Array.from(checks)
+                        .map(c => parseInt(c.dataset.idx))
+                        .sort((a, b) => b - a);
+            
+                    // 2. 在删除前，确定当前播放的歌曲是否会被影响
+                    const wasCurrentPlayingDeleted = indicesToDelete.includes(currentMusicIndex);
+            
+                    // 3. 执行删除
+                    indicesToDelete.forEach(i => musicList.splice(i, 1));
+                    saveMusicList();
+            
+                    // 4. 根据删除情况调整 currentMusicIndex
+                    if (musicList.length === 0) {
+                        // 全部歌曲被删
+                        if (audioPlayer) {
+                            audioPlayer.pause();
+                            audioPlayer.src = '';
+                        }
+                        currentMusicIndex = 0;
+                    } else {
+                        if (wasCurrentPlayingDeleted) {
+                            // 正在播放的歌曲被删除了，重新计算新位置
+                            const songsBeforeCurrent = indicesToDelete.filter(i => i < currentMusicIndex).length;
+                            currentMusicIndex -= songsBeforeCurrent;
+                            // 如果新索引超出范围（删的是最后一首），则回到开头
+                            if (currentMusicIndex >= musicList.length) {
+                                currentMusicIndex = 0;
+                            }
+                            playMusic(currentMusicIndex);
+                        } else {
+                            // 未删除当前歌曲，只需要前移索引（因为删除了前面的歌曲）
+                            const songsBefore = indicesToDelete.filter(i => i < currentMusicIndex).length;
+                            currentMusicIndex -= songsBefore;
+                            // 此时仍应指向同一首歌，无需重新播放
+                            // 但如果当前 src 与列表不匹配（极端情况），则重新播放
+                            if (audioPlayer && audioPlayer.src !== musicList[currentMusicIndex]?.url) {
+                                playMusic(currentMusicIndex);
+                            }
+                        }
+                    }
+            
                     batchDeleteMode = false;
                     bb.innerHTML = '<i class="fa-solid fa-trash-can"></i> 批量删除';
-                    renderMusicListUI(); } };
+                    renderMusicListUI();
+                }
+            };
             setupMusicImportHandler();
             const neteaseBtn = document.getElementById('addNeteaseSongBtn');
             if (neteaseBtn && !neteaseBtn.dataset.bound) {
