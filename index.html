@@ -1632,23 +1632,18 @@
             font-family: inherit;
             transition: background 0.3s ease, color 0.3s ease;
         }
-        /* 输入框 + 内嵌按钮容器 */
         .msg-input-wrapper {
             position: relative;
             display: flex;
             flex: 1;
             align-items: center;
-            min-width: 0;               /* 防止 flex 溢出 */
+            min-width: 0;             
         }
-        
-        /* 输入框调整：撑满容器，右侧留出按钮空间 */
         .msg-input-wrapper .msg-input {
             width: 100%;
-            padding-right: 40px;        /* 为内嵌按钮留出空间 */
+            padding-right: 40px;       
             margin: 0;
         }
-        
-        /* 内嵌主动键样式 */
         .active-send-inline {
             position: absolute;
             right: 6px;
@@ -3391,11 +3386,11 @@
             <div class="image-picker-btn" id="imagePickerBtn" title="图片"><i class="fa-regular fa-image"></i></div>
             <button class="call-input-btn" id="callBtn" title="语音/视频通话"><i class="fa-solid fa-phone"></i></button>
             <div class="pat-btn" id="patBtn" title="拍一拍"><i class="fa-solid fa-hand"></i></div>
+            <!-- 发送键在输入框内部，主动键在外部 -->
             <div class="msg-input-wrapper">
-                <input type="text" id="messageInput" class="msg-input" placeholder="和ta聊天..." autocomplete="off">
-                <button class="send-small active-send-inline" id="activeSendBtn"><i class="fa-solid fa-bolt"></i></button>
-            </div>
-            <button class="send-small" id="sendBtn"><i class="fa-solid fa-paper-plane"></i></button>
+            <input type="text" id="messageInput" class="msg-input" placeholder="和ta聊天..." autocomplete="off">
+            <button class="send-small active-send-inline" id="sendBtn"><i class="fa-solid fa-paper-plane"></i></button></div>
+            <button class="send-small" id="activeSendBtn"><i class="fa-solid fa-bolt"></i></button>
         </div>
         <button class="immersive-toggle" id="immersiveToggleBtn" title="沉浸式聊天"><i class="fa-solid fa-chevron-down"></i></button>
         <div id="musicFloatBtn" class="music-float-btn hidden"><i class="fa-solid fa-music"></i></div>
@@ -3765,6 +3760,7 @@
             let mengMessageSoundUrl = null;
             let patList = [];
             const DEFAULT_PAT_LIST = ["拍了拍你的头", "拍了拍你的肩膀", "戳了戳你的脸", "轻轻拍了拍你", "捏了捏你的脸", "拍了拍你的背"];
+            const DEFAULT_MEMBER_WORD_CARDS = [];
             let notificationEnabled = true;
             let emojiDisabled = false;
             let imgDisabled = false;
@@ -3864,6 +3860,8 @@
                 if (window.__offlineGenerating) return;
                 if (document.getElementById('momentsModal')) return;
                 const now = Date.now();
+                // ★ 缩短冷却时间，避免提醒太稀疏（单位毫秒）
+                const MOMENT_NOTIFY_COOLDOWN = 15000; // 原 35000
                 if (now - lastMomentNotifyTime < MOMENT_NOTIFY_COOLDOWN) {
                     momentNotificationQueue.push(moment);
                     if (!momentNotificationQueue._timer) {
@@ -3876,31 +3874,88 @@
                 lastMomentNotifyTime = now;
                 const existing = document.getElementById('momentNotifyCard');
                 if (existing) existing.remove();
+            
                 let avatarUrl = getAuthorAvatar(moment.authorId) || moment.authorAvatar || defaultAvatar();
                 if (isImgIdRef(avatarUrl)) { avatarUrl = avatarCache.get(avatarUrl) || defaultAvatar(); }
                 let preview = (moment.content || '').trim();
                 if (preview.length > 30) preview = preview.substring(0, 30) + '…';
                 if (!preview && moment.images && moment.images.length) preview = '📷 分享了图片';
                 if (!preview) preview = '分享了新动态';
+            
                 const card = document.createElement('div');
                 card.id = 'momentNotifyCard';
-                card.style.cssText =
-                    `position:fixed;top:calc(var(--safe-top,0px)+60px);left:50%;transform:translateX(-50%) translateY(-120px);background:var(--card-bg,#fff);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-radius:20px;padding:12px 16px;display:flex;align-items:center;gap:12px;box-shadow:0 8px 32px rgba(0,0,0,0.18),0 0 0 1px var(--border-light,rgba(180,150,220,0.3));z-index:9998;cursor:pointer;max-width:90vw;width:auto;min-width:280px;transition:transform 0.35s cubic-bezier(0.22,0.61,0.36,1);animation:momentNotifySlideIn 0.35s cubic-bezier(0.22,0.61,0.36,1) forwards;`;
-                if (!document.getElementById('momentNotifyStyle')) {
+                // ★★★ 核心：增强视觉醒目度 ★★★
+                card.style.cssText = `
+                  position:fixed;
+                  top:calc(var(--safe-top, 0px) + 50px);  /* 改为 top 定位 */
+                  left:50%;
+                  transform:translateX(-50%) translateY(-120px); /* 初始位于屏幕外上方 */
+                  background:linear-gradient(135deg, var(--accent-color,#8b6fcc) 0%, #f7b681 100%);
+                  backdrop-filter:blur(24px);
+                  -webkit-backdrop-filter:blur(24px);
+                  border-radius:24px;
+                  padding:14px 20px;
+                  display:flex;
+                  align-items:center;
+                  gap:14px;
+                  box-shadow:0 12px 40px rgba(139,111,204,0.45), 0 0 0 2px rgba(255,255,255,0.4), 0 0 30px rgba(255,180,120,0.5);
+                  z-index:9998;  /* 确保最高层级 */
+                  cursor:pointer;
+                  max-width:92vw;
+                  width:auto;
+                  min-width:300px;
+                  color:#fff;
+                  transition:transform 0.35s cubic-bezier(0.22,0.61,0.36,1), box-shadow 0.3s;
+                  animation:momentNotifySlideIn 0.35s cubic-bezier(0.22,0.61,0.36,1) forwards, notifyGlowPulse 2s ease-in-out infinite;
+                `;
+            
+                // 增加一个持续闪烁的动画
+                if (!document.getElementById('momentNotifyExtraStyle')) {
                     const styleEl = document.createElement('style');
-                    styleEl.id = 'momentNotifyStyle';
-                    styleEl.textContent =
-                        `@keyframes momentNotifySlideIn{from{transform:translateX(-50%) translateY(-120px);opacity:0;}to{transform:translateX(-50%) translateY(0);opacity:1;}}@keyframes momentNotifySlideOut{from{transform:translateX(-50%) translateY(0);opacity:1;}to{transform:translateX(-50%) translateY(-120px);opacity:0;}}`;
+                    styleEl.id = 'momentNotifyExtraStyle';
+                    styleEl.textContent = `
+                        @keyframes momentNotifySlideIn { 
+                            from { transform:translateX(-50%) translateY(-220px); opacity:0; } 
+                            to { transform:translateX(-50%) translateY(0); opacity:1; } 
+                        }
+                        @keyframes momentNotifySlideOut { 
+                            from { transform:translateX(-50%) translateY(0); opacity:1; } 
+                            to { transform:translateX(-50%) translateY(-150px); opacity:0; } 
+                        }
+                        @keyframes notifyGlowPulse { 
+                            0%,100% { box-shadow:0 12px 40px rgba(139,111,204,0.45), 0 0 0 2px rgba(255,255,255,0.4), 0 0 30px rgba(255,180,120,0.5); } 
+                            50% { box-shadow:0 12px 50px rgba(255,180,120,0.7), 0 0 0 4px rgba(255,255,255,0.6), 0 0 50px rgba(139,111,204,0.8); } 
+                        }
+                    `;
                     document.head.appendChild(styleEl);
                 }
-                card.innerHTML = `<img src="${avatarUrl}" style="width:44px;height:44px;border-radius:50%;object-fit:cover;flex-shrink:0;border:2px solid var(--accent-color);" alt="${escapeHtml(moment.authorName)}"><div style="flex:1;min-width:0;"><div style="font-weight:600;font-size:14px;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escapeHtml(moment.authorName)} 发布了新动态</div><div style="font-size:12px;color:var(--text-secondary);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escapeHtml(preview)}</div></div><div style="background:var(--accent-color);color:#fff;padding:6px 14px;border-radius:20px;font-size:12px;font-weight:600;flex-shrink:0;white-space:nowrap;">去看看</div>`;
-                card.addEventListener('click', () => { card.style.animation = 'momentNotifySlideOut 0.3s forwards';
-                    setTimeout(() => { card.remove();
-                        openMomentsPanel(); }, 300); });
+            
+                card.innerHTML = `
+                    <div style="position:relative;">
+                        <img src="${avatarUrl}" style="width:48px;height:48px;border-radius:50%;object-fit:cover;flex-shrink:0;border:2px solid #fff;">
+                        <div style="position:absolute;bottom:-2px;right:-2px;background:#ff6b6b;color:#fff;border-radius:50%;width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-size:12px;">🔔</div>
+                    </div>
+                    <div style="flex:1;min-width:0;">
+                        <div style="font-weight:700;font-size:16px;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escapeHtml(moment.authorName)} 发布了新动态</div>
+                        <div style="font-size:13px;color:rgba(255,255,255,0.85);margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escapeHtml(preview)}</div>
+                    </div>
+                    <div style="background:#fff;color:var(--accent-color,#8b6fcc);padding:8px 18px;border-radius:30px;font-size:13px;font-weight:700;flex-shrink:0;white-space:nowrap;box-shadow:0 4px 15px rgba(0,0,0,0.15);">去看看</div>
+                `;
+            
+                card.addEventListener('click', () => {
+                    card.style.animation = 'momentNotifySlideOut 0.3s forwards';
+                    setTimeout(() => { card.remove(); openMomentsPanel(); }, 300);
+                });
                 document.body.appendChild(card);
-                setTimeout(() => { if (document.getElementById('momentNotifyCard')) { card.style.animation =
-                            'momentNotifySlideOut 0.4s forwards';
-                        setTimeout(() => card.remove(), 400); } }, 50000);
+            
+                // 可选：轻微的震动反馈（仅在支持的设备上）
+                if (navigator.vibrate) {
+                    try { navigator.vibrate(100); } catch (e) {}
+                }
+            
+                // ★ 显示时间延长至8秒
+                setTimeout(() => { if (document.getElementById('momentNotifyCard')) { card.style.animation = 'momentNotifySlideOut 0.4s forwards';
+                        setTimeout(() => card.remove(), 400); } }, 12000);
             }
 
             function formatMsgTime(timestamp) {
@@ -4129,107 +4184,197 @@
 
             async function sendGroupReplies(forceQuoteMsg = null) {
                 const activeMembers = getActiveMembers().filter(m => getMemberEffectiveTextPool(m).length > 0);
-                if (!activeMembers.length) return;
-                if (patList.length > 0 && Math.random() < 0.03) { isTyping = true; const rm = activeMembers[Math.floor(Math
-                        .random() * activeMembers.length)]; const pc = patList[Math.floor(Math.random() * patList.length)];
-                    showTypingIndicator(true, '群成员正在输入...'); const am = Math.max(REPLY_MIN_DELAY_MS, replyMaxDelayMs); const
-                        delay = REPLY_MIN_DELAY_MS + Math.random() * (am - REPLY_MIN_DELAY_MS); await new Promise(r => setTimeout(r,
-                            delay));
-                    showTypingIndicator(false);
-                    sendPatMessage(pc, rm.id, false);
-                    markMyMessagesRead();
-                    isTyping = false; return; }
+                if (!activeMembers.length) {
+                    return;
+                }
+            
+                // 拍一拍分支：不再显示“正在输入”动画，直接发送
+                if (patList.length > 0 && Math.random() < 0.05) {
+                    markMyMessagesRead();                              // 先标记已读
+                    const rm = activeMembers[Math.floor(Math.random() * activeMembers.length)];
+                    const pc = patList[Math.floor(Math.random() * patList.length)];
+                    sendPatMessage(pc, rm.id, false);                  // 直接拍一拍，无动画
+                    isTyping = false;
+                    return;
+                }
+            
                 isTyping = true;
-                showTypingIndicator(true, '群成员正在输入...'); const actMin = Math.min(replyMinDelayMs, replyMaxDelayMs); const actMax =
-                    Math.max(replyMinDelayMs, replyMaxDelayMs); const delay = actMin + Math.random() * (actMax - actMin); await new Promise(
-                        r => setTimeout(r, delay));
+            
+                // 先标记已读，再显示“正在输入…”
+                markMyMessagesRead();
+            
+                showTypingIndicator(true, '群成员正在输入...');
+                const actMin = Math.min(replyMinDelayMs, replyMaxDelayMs);
+                const actMax = Math.max(replyMinDelayMs, replyMaxDelayMs);
+                const delay = actMin + Math.random() * (actMax - actMin);
+                await new Promise(r => setTimeout(r, delay));
                 showTypingIndicator(false);
-                markMyMessagesRead(); const rmc = Math.min(activeMembers.length, getWeightedReplyCount()); const shuffled = [
-                    ...activeMembers].sort(() => Math.random() - 0.5); const replying = shuffled.slice(0, rmc);
-                for (let mi = 0; mi < replying.length; mi++) { const member = replying[mi]; const wcc = getWeightedReplyCount();
-                    let useQuote = null; if (mengQuoteEnabled) { if (mi === 0 && forceQuoteMsg !== null) { useQuote =
-                            forceQuoteMsg; } else if (Math.random() < 0.3) {
-                                let myMs = messages.filter(m => m.sender === 'me' && m.quote).slice(-20);
-                                if (myMs.length === 0) {
-                                    myMs = messages.filter(m => m.sender === 'me').slice(-10);
-                                }
-                                if (myMs.length) useQuote = myMs[Math.floor(Math.random() * myMs.length)]; } } if (
-                        combineRepliesEnabled && wcc >= 2) { const cc = []; for (let j = 0; j < wcc; j++) { cc.push(
-                            getRandomReplyForMember(member).content); } const ct = cc.join(' ');
+            
+                const rmc = Math.min(activeMembers.length, getWeightedReplyCount());
+                const shuffled = [...activeMembers].sort(() => Math.random() - 0.5);
+                const replying = shuffled.slice(0, rmc);
+            
+                for (let mi = 0; mi < replying.length; mi++) {
+                    const member = replying[mi];
+                    const wcc = getWeightedReplyCount();
+                    let useQuote = null;
+            
+                    if (mengQuoteEnabled) {
+                        if (mi === 0 && forceQuoteMsg !== null) {
+                            useQuote = forceQuoteMsg;
+                        } else if (Math.random() < 0.3) {
+                            // ✅ 直接取我（用户）最近的 20 条消息随机引用
+                            let myMs = messages.filter(m => m.sender === 'me').slice(-10);
+                            if (myMs.length) useQuote = myMs[Math.floor(Math.random() * myMs.length)];
+                        }
+                    }
+            
+                    if (combineRepliesEnabled && wcc >= 2) {
+                        const cc = [];
+                        for (let j = 0; j < wcc; j++) {
+                            cc.push(getRandomReplyForMember(member).content);
+                        }
+                        const ct = cc.join(' ');
                         addMessageWithSender(member.id, member.name, member.avatar || defaultAvatar(), ct, 'text', useQuote);
-                        playSound('meng'); if (!emojiDisabled && emojiCardList.length > 0 && Math.random() < 0.3) { await new Promise(
-                                r => setTimeout(r, replyInterMessageDelayMs)); const re = emojiCardList[Math.floor(Math.random() *
-                                emojiCardList.length)];
+                        playSound('meng');
+            
+                        if (!emojiDisabled && emojiCardList.length > 0 && Math.random() < 0.3) {
+                            await new Promise(r => setTimeout(r, replyInterMessageDelayMs));
+                            const re = emojiCardList[Math.floor(Math.random() * emojiCardList.length)];
                             addMessageWithSender(member.id, member.name, member.avatar || defaultAvatar(), re, 'text', null);
-                            playSound('meng'); } if (!imgDisabled && imgCardList.length > 0 && Math.random() < 0.3) { const vi =
-                                imgCardList.filter(img => img && img.url && img.url.trim()); if (vi.length > 0) { await new Promise(
-                                    r => setTimeout(r, replyInterMessageDelayMs)); const ri = vi[Math.floor(Math.random() *
-                                    vi.length)];
-                                addMessageWithSender(member.id, member.name, member.avatar || defaultAvatar(), null, 'image',
-                                    null, ri.url);
-                                playSound('meng'); } } } else { for (let j = 0; j < wcc; j++) { const { content } =
-                                getRandomReplyForMember(member); const quote = (j === 0) ? useQuote : null;
-                            addMessageWithSender(member.id, member.name, member.avatar || defaultAvatar(), content, 'text',
-                                quote);
-                            playSound('meng'); if (!emojiDisabled && emojiCardList.length > 0 && Math.random() < 0.3) { await new
-                                    Promise(r => setTimeout(r, replyInterMessageDelayMs)); const re = emojiCardList[Math.floor(
-                                        Math.random() * emojiCardList.length)];
-                                addMessageWithSender(member.id, member.name, member.avatar || defaultAvatar(), re, 'text',
-                                null);
-                                playSound('meng'); } if (j < wcc - 1) { await new Promise(r => setTimeout(r,
-                                replyInterMessageDelayMs)); } } if (!imgDisabled && imgCardList.length > 0 && Math.random() <
-                            0.2) { const vi = imgCardList.filter(img => img && img.url && img.url.trim()); if (vi.length >
-                            0) { await new Promise(r => setTimeout(r, replyInterMessageDelayMs)); const ri = vi[Math.floor(
-                                    Math.random() * vi.length)];
-                            addMessageWithSender(member.id, member.name, member.avatar || defaultAvatar(), null, 'image',
-                            null, ri.url);
-                            playSound('meng'); } } } if (mi < replying.length - 1) { await new Promise(r => setTimeout(r,
-                    replyInterMessageDelayMs)); } }
+                            playSound('meng');
+                        }
+                        if (!imgDisabled && imgCardList.length > 0 && Math.random() < 0.3) {
+                            const vi = imgCardList.filter(img => img && img.url && img.url.trim());
+                            if (vi.length > 0) {
+                                await new Promise(r => setTimeout(r, replyInterMessageDelayMs));
+                                const ri = vi[Math.floor(Math.random() * vi.length)];
+                                addMessageWithSender(member.id, member.name, member.avatar || defaultAvatar(), null, 'image', null, ri.url);
+                                playSound('meng');
+                            }
+                        }
+                    } else {
+                        for (let j = 0; j < wcc; j++) {
+                            const { content } = getRandomReplyForMember(member);
+                            const quote = (j === 0) ? useQuote : null;
+                            addMessageWithSender(member.id, member.name, member.avatar || defaultAvatar(), content, 'text', quote);
+                            playSound('meng');
+            
+                            if (!emojiDisabled && emojiCardList.length > 0 && Math.random() < 0.3) {
+                                await new Promise(r => setTimeout(r, replyInterMessageDelayMs));
+                                const re = emojiCardList[Math.floor(Math.random() * emojiCardList.length)];
+                                addMessageWithSender(member.id, member.name, member.avatar || defaultAvatar(), re, 'text', null);
+                                playSound('meng');
+                            }
+                            if (j < wcc - 1) {
+                                await new Promise(r => setTimeout(r, replyInterMessageDelayMs));
+                            }
+                        }
+                        if (!imgDisabled && imgCardList.length > 0 && Math.random() < 0.2) {
+                            const vi = imgCardList.filter(img => img && img.url && img.url.trim());
+                            if (vi.length > 0) {
+                                await new Promise(r => setTimeout(r, replyInterMessageDelayMs));
+                                const ri = vi[Math.floor(Math.random() * vi.length)];
+                                addMessageWithSender(member.id, member.name, member.avatar || defaultAvatar(), null, 'image', null, ri.url);
+                                playSound('meng');
+                            }
+                        }
+                    }
+            
+                    if (mi < replying.length - 1) {
+                        await new Promise(r => setTimeout(r, replyInterMessageDelayMs));
+                    }
+                }
+            
                 isTyping = false;
             }
 
-            async function sendMengRepliesLegacy(forceQuoteMsg = null) { if (isTyping) return; if (patList.length > 0 && Math
-                    .random() < 0.03) { isTyping = true;
-                    showTypingIndicator(true); await new Promise(r => setTimeout(r, 1000 + Math.random() * 2000)); await
-                        sendRandomPat();
-                    showTypingIndicator(false);
-                    markMyMessagesRead();
-                    isTyping = false; return; }
+            async function sendMengRepliesLegacy(forceQuoteMsg = null) {
+                if (isTyping) return;
+            
+                // 拍一拍分支：不再显示“正在输入”动画，直接发送
+                if (patList.length > 0 && Math.random() < 0.05) {
+                    markMyMessagesRead();                              // 先标记已读
+                    await sendRandomPat();                             // 直接拍一拍，无动画
+                    isTyping = false;
+                    return;
+                }
+            
                 isTyping = true;
-                showTypingIndicator(true); const actMin = Math.min(replyMinDelayMs, replyMaxDelayMs); const actMax = Math.max(
-                    replyMinDelayMs, replyMaxDelayMs); const delay = actMin + Math.random() * (actMax - actMin); await new Promise(
-                    r => setTimeout(r, delay));
+            
+                // 先标记已读，再显示“正在输入…”
+                markMyMessagesRead();
+            
+                showTypingIndicator(true);
+                const actMin = Math.min(replyMinDelayMs, replyMaxDelayMs);
+                const actMax = Math.max(replyMinDelayMs, replyMaxDelayMs);
+                const delay = actMin + Math.random() * (actMax - actMin);
+                await new Promise(r => setTimeout(r, delay));
                 showTypingIndicator(false);
-                markMyMessagesRead(); const wcc = getWeightedReplyCount(); let useQuote = null; if (
-                mengQuoteEnabled) { if (forceQuoteMsg !== null) { useQuote = forceQuoteMsg; } else if (Math.random() < 0.3) { const
-                        myMs = messages.filter(m => m.sender === 'me').slice(-10); if (myMs.length) useQuote = myMs[Math.floor(Math
-                            .random() * myMs.length)]; } } if (combineRepliesEnabled && wcc >= 2) { const cc = []; for (let i = 0; i <
-                        wcc; i++) { cc.push(wordCardList.length ? wordCardList[Math.floor(Math.random() * wordCardList.length)] :
-                            '💜'); } const ct = cc.join(' ');
+            
+                const wcc = getWeightedReplyCount();
+                let useQuote = null;
+                if (mengQuoteEnabled) {
+                    if (forceQuoteMsg !== null) {
+                        useQuote = forceQuoteMsg;
+                    } else if (Math.random() < 0.3) {
+                        const myMs = messages.filter(m => m.sender === 'me').slice(-10);
+                        if (myMs.length) useQuote = myMs[Math.floor(Math.random() * myMs.length)];
+                    }
+                }
+            
+                if (combineRepliesEnabled && wcc >= 2) {
+                    const cc = [];
+                    for (let i = 0; i < wcc; i++) {
+                        cc.push(wordCardList.length ? wordCardList[Math.floor(Math.random() * wordCardList.length)] : '💜');
+                    }
+                    const ct = cc.join(' ');
                     addMessage('meng', ct, 'text', useQuote);
-                    playSound('meng'); if (!emojiDisabled && emojiCardList.length > 0 && Math.random() < 0.3) { await new Promise(
-                            r => setTimeout(r, replyInterMessageDelayMs)); const re = emojiCardList[Math.floor(Math.random() *
-                        emojiCardList.length)];
+                    playSound('meng');
+            
+                    if (!emojiDisabled && emojiCardList.length > 0 && Math.random() < 0.3) {
+                        await new Promise(r => setTimeout(r, replyInterMessageDelayMs));
+                        const re = emojiCardList[Math.floor(Math.random() * emojiCardList.length)];
                         addMessage('meng', re, 'text', null);
-                        playSound('meng'); } if (!imgDisabled && imgCardList.length > 0 && Math.random() < 0.3) { const vi =
-                            imgCardList.filter(img => img && img.url && img.url.trim()); if (vi.length > 0) { await new Promise(r =>
-                                setTimeout(r, replyInterMessageDelayMs)); const ri = vi[Math.floor(Math.random() * vi.length)];
+                        playSound('meng');
+                    }
+                    if (!imgDisabled && imgCardList.length > 0 && Math.random() < 0.3) {
+                        const vi = imgCardList.filter(img => img && img.url && img.url.trim());
+                        if (vi.length > 0) {
+                            await new Promise(r => setTimeout(r, replyInterMessageDelayMs));
+                            const ri = vi[Math.floor(Math.random() * vi.length)];
                             addMessage('meng', null, 'image', null, ri.url);
-                            playSound('meng'); } } } else { for (let i = 0; i < wcc; i++) { const content = wordCardList.length ?
-                            wordCardList[Math.floor(Math.random() * wordCardList.length)] : '💜'; const quote = (i === 0) ?
-                            useQuote : null;
+                            playSound('meng');
+                        }
+                    }
+                } else {
+                    for (let i = 0; i < wcc; i++) {
+                        const content = wordCardList.length ? wordCardList[Math.floor(Math.random() * wordCardList.length)] : '💜';
+                        const quote = (i === 0) ? useQuote : null;
                         addMessage('meng', content, 'text', quote);
-                        playSound('meng'); if (!emojiDisabled && emojiCardList.length > 0 && Math.random() < 0.3) { await new
-                                Promise(r => setTimeout(r, replyInterMessageDelayMs)); const re = emojiCardList[Math.floor(Math
-                                    .random() * emojiCardList.length)];
+                        playSound('meng');
+            
+                        if (!emojiDisabled && emojiCardList.length > 0 && Math.random() < 0.3) {
+                            await new Promise(r => setTimeout(r, replyInterMessageDelayMs));
+                            const re = emojiCardList[Math.floor(Math.random() * emojiCardList.length)];
                             addMessage('meng', re, 'text', null);
-                            playSound('meng'); } if (i < wcc - 1) { await new Promise(r => setTimeout(r,
-                        replyInterMessageDelayMs)); } } if (!imgDisabled && imgCardList.length > 0 && Math.random() < 0.3) { const
-                            vi = imgCardList.filter(img => img && img.url && img.url.trim()); if (vi.length > 0) { await new Promise(
-                                    r => setTimeout(r, replyInterMessageDelayMs)); const ri = vi[Math.floor(Math.random() * vi
-                                    .length)];
+                            playSound('meng');
+                        }
+                        if (i < wcc - 1) {
+                            await new Promise(r => setTimeout(r, replyInterMessageDelayMs));
+                        }
+                    }
+                    if (!imgDisabled && imgCardList.length > 0 && Math.random() < 0.3) {
+                        const vi = imgCardList.filter(img => img && img.url && img.url.trim());
+                        if (vi.length > 0) {
+                            await new Promise(r => setTimeout(r, replyInterMessageDelayMs));
+                            const ri = vi[Math.floor(Math.random() * vi.length)];
                             addMessage('meng', null, 'image', null, ri.url);
-                            playSound('meng'); } } }
+                            playSound('meng');
+                        }
+                    }
+                }
+            
                 isTyping = false;
             }
 
@@ -4237,18 +4382,100 @@
                 forceQuoteMsg = null; if (groupChatEnabled) await sendGroupReplies(forceQuoteMsg); else await
                 sendMengRepliesLegacy(forceQuoteMsg); }
 
-            function showTypingIndicator(show, customText = null) { let td = document.getElementById('typingDiv'); if (show && !td) { const
-                        div = document.createElement('div');
-                    div.id = 'typingDiv';
-                    div.className = 'message-row'; let avSrc = groupChatEnabled ? (getActiveMembers().length > 0 ? getActiveMembers()[
-                        0].avatar : (groupMembers[0]?.avatar || profile.mengAvatar)) || defaultAvatar() : (profile.mengAvatar ||
-                        defaultAvatar()); const avAttr = isImgIdRef(avSrc) ?
-                        `data-img-ref="${escapeHtml(avSrc)}" src="${defaultAvatar()}"` : `src="${avSrc}"`;
-                    div.innerHTML =
-                        `<div class="msg-avatar"><img ${avAttr} alt="头像"></div><div class="bubble-wrapper"><div class="typing-indicator"><span style="font-size:11px;color:var(--text-secondary);margin-right:6px;">${customText||'正在输入...'}</span><span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span></div></div>`;
-                    document.getElementById('chatMessages').appendChild(div);
-                    resolveImgElementsInContainer(div);
-                    scrollToBottom(); } else if (!show && td) { td.remove(); } }
+            let groupTypingTimer = null;            
+            function showTypingIndicator(show, customText = null) {
+                // 清除轮换定时器
+                if (groupTypingTimer) {
+                    clearInterval(groupTypingTimer);
+                    groupTypingTimer = null;
+                }
+            
+                let td = document.getElementById('typingDiv');
+                if (!show) {
+                    if (td) td.remove();
+                    return;
+                }
+            
+                // 如果已有输入动画先移除（防重）
+                if (td) td.remove();
+            
+                const activeMembers = groupChatEnabled ? getActiveMembers() : [];
+                const useGroupAnimation = groupChatEnabled && activeMembers.length > 1; // 多于1人才需要轮换
+            
+                // 构建初始内容，如果群聊动画，先取第一个成员
+                let firstMember = null;
+                if (groupChatEnabled && activeMembers.length > 0) {
+                    firstMember = activeMembers[0];
+                } else if (!groupChatEnabled) {
+                    // 单人模式用Ta的信息
+                    firstMember = {
+                        name: profile.mengNick || 'ta',
+                        avatar: profile.mengAvatar || defaultAvatar()
+                    };
+                } else {
+                    // 无活跃成员兜底
+                    firstMember = {
+                        name: '群成员',
+                        avatar: defaultAvatar()
+                    };
+                }
+            
+                const firstAvatar = firstMember.avatar || defaultAvatar();
+                const firstTexture = isImgIdRef(firstAvatar)
+                    ? `data-img-ref="${escapeHtml(firstAvatar)}" src="${defaultAvatar()}"`
+                    : `src="${firstAvatar || defaultAvatar()}"`;
+            
+                const nameText = customText || (useGroupAnimation ? `${firstMember.name} 正在输入...` : '正在输入...');
+            
+                td = document.createElement('div');
+                td.id = 'typingDiv';
+                td.className = 'message-row';
+                td.innerHTML = `
+                    <div class="msg-avatar">
+                        <img id="typingAvatarImg" ${firstTexture} alt="头像">
+                    </div>
+                    <div class="bubble-wrapper">
+                        <div class="typing-indicator">
+                            <span id="typingNameText" style="font-size:11px;color:var(--text-secondary);margin-right:6px;">${escapeHtml(nameText)}</span>
+                            <span class="typing-dot"></span>
+                            <span class="typing-dot"></span>
+                            <span class="typing-dot"></span>
+                        </div>
+                    </div>`;
+            
+                document.getElementById('chatMessages').appendChild(td);
+                resolveImgElementsInContainer(td);
+                scrollToBottom();
+            
+                // 如果群聊动画模式，启动头像轮换定时器
+                if (useGroupAnimation) {
+                    groupTypingTimer = setInterval(async () => {
+                        const members = getActiveMembers(); // 重新获取最新活跃名单
+                        if (members.length === 0) return;
+                        const randomMember = members[Math.floor(Math.random() * members.length)];
+            
+                        const imgEl = document.getElementById('typingAvatarImg');
+                        const nameEl = document.getElementById('typingNameText');
+            
+                        if (nameEl) {
+                            nameEl.textContent = `${randomMember.name} 正在输入...`;
+                        }
+            
+                        if (imgEl) {
+                            const av = randomMember.avatar || defaultAvatar();
+                            if (isImgIdRef(av)) {
+                                // 使用 data-img-ref 让 lazyload 处理，但也可直接加载
+                                imgEl.setAttribute('data-img-ref', av);
+                                imgEl.src = defaultAvatar();
+                                await loadImgElement(imgEl, av);
+                            } else {
+                                imgEl.src = av || defaultAvatar();
+                                imgEl.removeAttribute('data-img-ref');
+                            }
+                        }
+                    }, 1500); // 每1.8秒切换
+                }
+            }
 
             function sendMyMessage() { const inp = document.getElementById('messageInput'); const text = inp.value.trim(); if (!text)
                     return; const quote = currentQuoteMsg;
@@ -4270,18 +4497,59 @@
                 scheduleMengReply(400);
                 maybeTriggerIncomingCall(); }
 
-            function sendPatMessage(content, sender = 'me', triggerReply = true) { if (!content || !content.trim()) return; const msg = {
-                    id: Date.now() + Math.random(), sender, senderName: sender === 'me' ? (profile.myNick || '我') : (profile
-                        .mengNick || 'ta'), senderAvatar: sender === 'me' ? (profile.myAvatar || defaultAvatar()) : (profile
-                        .mengAvatar || defaultAvatar()), type: 'pat', content: content.trim(), timestamp: Date.now(), read: sender ===
-                        'me' ? false : true, quote: null };
+            function sendPatMessage(content, sender = 'me', triggerReply = true) {
+                if (!content || !content.trim()) return;
+                let senderName, senderAvatar;
+                if (sender === 'me') {
+                    senderName = profile.myNick || '我';
+                    senderAvatar = profile.myAvatar || defaultAvatar();
+                } else if (sender === 'meng') {
+                    senderName = profile.mengNick || 'ta';
+                    senderAvatar = profile.mengAvatar || defaultAvatar();
+                } else {
+                    const member = groupMembers.find(m => m.id === sender);
+                    if (member) {
+                        senderName = member.name;
+                        senderAvatar = member.avatar || defaultAvatar();
+                    } else {
+                        senderName = profile.mengNick || 'ta';
+                        senderAvatar = profile.mengAvatar || defaultAvatar();
+                    }
+                }
+            
+                const msg = {
+                    id: Date.now() + Math.random(),
+                    sender,
+                    senderName,
+                    senderAvatar,
+                    type: 'pat',
+                    content: content.trim(),
+                    timestamp: Date.now(),
+                    read: sender === 'me' ? false : true,
+                    quote: null
+                };
+            
                 messages.push(msg);
                 saveMessagesImmediately();
-                appendMessageToDOM(msg); if (sender === 'me') { playSound('me');
-                    checkPuzzleConditions(); if (triggerReply) { if (!groupChatEnabled && mengMaybeIgnore && Math.random() < 0.7) {
-                            markMyMessagesRead(); return; }
-                        scheduleMengReply(400); } } else { playSound('meng'); }
-                scrollToBottom(); return msg; }
+                appendMessageToDOM(msg);
+            
+                if (sender === 'me') {
+                    playSound('me');
+                    checkPuzzleConditions();
+                    if (triggerReply) {
+                        if (!groupChatEnabled && mengMaybeIgnore && Math.random() < 0.7) {
+                            markMyMessagesRead();
+                            return;
+                        }
+                        scheduleMengReply(400);
+                    }
+                } else {
+                    playSound('meng');
+                }
+            
+                scrollToBottom();
+                return msg;
+            }
             async function sendRandomPat() { if (!patList.length) return;
                 sendPatMessage(patList[Math.floor(Math.random() * patList.length)], 'meng', false); await new Promise(r =>
                     setTimeout(r, 800)); }
@@ -4490,34 +4758,120 @@
                     .getElementById('momentLocationInput'); if (loc) loc.value = ''; const submit = document.getElementById(
                         'submitMomentBtn'); if (submit) submit.disabled = true; }
 
-            function generateRandomMoment(authorId = null, customTimestamp = null) { if (!authorId) { const candidates = []; if (
-                        groupMembersMomentsEnabled && groupMembers.some(m => m.enabled)) { candidates.push(...groupMembers.filter(m =>
-                            m.enabled).map(m => m.id)); } if (candidates.length === 0) { candidates.push('meng'); }
-                    authorId = candidates[Math.floor(Math.random() * candidates.length)]; } let authorName, authorAvatar; if (
-                    authorId === 'meng' || authorId === 'other') { authorName = profile.mengNick || 'ta';
-                    authorAvatar = profile.mengAvatar || defaultAvatar(); } else { const member = groupMembers.find(m => m.id ===
-                        authorId); if (!member) return null;
+            function generateRandomMoment(authorId = null, customTimestamp = null) {
+                if (!authorId) {
+                    const candidates = [];
+                    if (groupMembersMomentsEnabled && groupMembers.some(m => m.enabled)) {
+                        candidates.push(...groupMembers.filter(m => m.enabled).map(m => m.id));
+                    }
+                    if (candidates.length === 0) {
+                        candidates.push('meng');
+                    }
+                    authorId = candidates[Math.floor(Math.random() * candidates.length)];
+                }
+            
+                let authorName, authorAvatar;
+                if (authorId === 'meng' || authorId === 'other') {
+                    authorName = profile.mengNick || 'ta';
+                    authorAvatar = profile.mengAvatar || defaultAvatar();
+                } else {
+                    const member = groupMembers.find(m => m.id === authorId);
+                    if (!member) return null;
                     authorName = member.name;
-                    authorAvatar = member.avatar || defaultAvatar(); } const textPool = getMomentTextPool(authorId); const
-                    sentenceCount = Math.floor(Math.random() * 3) + 1; const selectedSentences = []; for (let i = 0; i < sentenceCount; i++) { const
-                        s = textPool[Math.floor(Math.random() * textPool.length)]; if (!selectedSentences.includes(s))
-                        selectedSentences.push(s); } const content = selectedSentences.join(' '); const imageProbability = 0.3; let
-                    images = []; if (!imgDisabled && imgCardList.length > 0 && Math.random() < imageProbability) { const randomImg =
-                            imgCardList[Math.floor(Math.random() * imgCardList.length)]; if (randomImg && randomImg.url) { images.push(
-                                randomImg.url); } } const feeling = statusList.length ? statusList[Math.floor(Math.random() * statusList
-                            .length)] : '✨ 温柔'; const location = MOMENT_LOCATIONS[Math.floor(Math.random() * MOMENT_LOCATIONS
-                        .length)]; const moment = { id: 'mom_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6),
-                        authorId, authorName, authorAvatar, content, images, feeling, location, timestamp: customTimestamp || Date
-                            .now(), likes: [], comments: [] }; const interactCandidates = []; if (authorId === 'meng') {
-                        interactCandidates.push('me'); } else if (authorId === 'me') { const enabledMembers = groupMembers.filter(m =>
-                            m.enabled).map(m => m.id); if (enabledMembers.length) { interactCandidates.push(...enabledMembers); } else {
-                            interactCandidates.push('meng'); } } else { interactCandidates.push('me'); } const likeCount = Math.min(
-                        interactCandidates.length, Math.floor(Math.random() * 5)); const shuffledLikes = [...interactCandidates]
-                    .sort(() => Math.random() - 0.5);
+                    authorAvatar = member.avatar || defaultAvatar();
+                }
+                          
+                const textPool = getMomentTextPool(authorId);
+                let sentenceCount = 1;
+                const rand = Math.random();
+                if (rand < 0.75) {
+                    sentenceCount = 1;
+                } else if (rand < 0.95) {
+                    sentenceCount = 2;
+                } else {
+                    sentenceCount = 3;
+                }
+                
+                // 从字卡池中随机选择指定数量的句子（不重复）
+                const selected = [];
+                const tempPool = [...textPool];
+                for (let i = 0; i < sentenceCount && tempPool.length > 0; i++) {
+                    const idx = Math.floor(Math.random() * tempPool.length);
+                    selected.push(tempPool.splice(idx, 1)[0]);
+                }
+                const content = selected.join('\n');
+            
+                // ★ 修改点：20% 概率附加表情或图片
+                let extraEmoji = '';
+                let images = [];
+                if (Math.random() < 0.2) {
+                    if (Math.random() < 0.5) {
+                        // 添加随机表情
+                        if (emojiCardList.length > 0 && !emojiDisabled) {
+                            extraEmoji = emojiCardList[Math.floor(Math.random() * emojiCardList.length)];
+                        }
+                    } else {
+                        // 添加随机图片
+                        if (!imgDisabled && imgCardList.length > 0) {
+                            const randomImg = imgCardList[Math.floor(Math.random() * imgCardList.length)];
+                            if (randomImg && randomImg.url) {
+                                images.push(randomImg.url);
+                            }
+                        } else if (emojiCardList.length > 0 && !emojiDisabled) {
+                            // 若无可用图片则降级为表情
+                            extraEmoji = emojiCardList[Math.floor(Math.random() * emojiCardList.length)];
+                        }
+                    }
+                }
+            
+                const finalContent = extraEmoji ? `${content} ${extraEmoji}` : content;
+            
+                const feeling = statusList.length
+                    ? statusList[Math.floor(Math.random() * statusList.length)]
+                    : '✨ 温柔';
+                const location = MOMENT_LOCATIONS[Math.floor(Math.random() * MOMENT_LOCATIONS.length)];
+            
+                const moment = {
+                    id: 'mom_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6),
+                    authorId,
+                    authorName,
+                    authorAvatar,
+                    content: finalContent,
+                    images,
+                    feeling,
+                    location,
+                    timestamp: customTimestamp || Date.now(),
+                    likes: [],
+                    comments: []
+                };
+            
+                const interactCandidates = [];
+                if (authorId === 'meng') {
+                    interactCandidates.push('me');
+                } else if (authorId === 'me') {
+                    const enabledMembers = groupMembers.filter(m => m.enabled).map(m => m.id);
+                    if (enabledMembers.length) {
+                        interactCandidates.push(...enabledMembers);
+                    } else {
+                        interactCandidates.push('meng');
+                    }
+                } else {
+                    interactCandidates.push('me');
+                }
+                const likeCount = Math.min(interactCandidates.length, Math.floor(Math.random() * 5));
+                const shuffledLikes = [...interactCandidates].sort(() => Math.random() - 0.5);
                 moment.likes = shuffledLikes.slice(0, likeCount);
+            
                 moments.unshift(moment);
-                saveMoments(); if (moment.authorId !== 'me') { showMomentPostNotification(moment); }
-                startInitialComments(moment); return moment; }
+                saveMoments();
+            
+                if (moment.authorId !== 'me') {
+                    showMomentPostNotification(moment);
+                }
+            
+                startInitialComments(moment);
+                return moment;
+            }
             let momentPlanTimers = [];
 
             function scheduleDailyMoments() { stopMomentsGenerator(); const now = new Date(); const todayEnd = new Date(now);
@@ -4898,7 +5252,6 @@
                     if (!mengActiveTalkEnabled || isTyping || replyScheduled || document.hidden) return;
                     if (pendingReplyTimer || isTyping) return;
                     activeMengTalkManual();
-                    // 👇 梦角主动发消息后，同样有 10% 的概率主动来电
                     maybeTriggerIncomingCall();
                 }, 45000 + Math.random() * 75000); }
 
@@ -5116,7 +5469,7 @@
                 modalDiv.className = 'modal';
                 modalDiv.id = 'managePanelModal';
                 modalDiv.innerHTML =
-                    `<div class="modal-content" style="max-width:580px;padding:12px 16px;"><div class="settings-title" style="margin-bottom:12px;"><i class="fa-solid fa-gear"></i> 设置管理</div><div class="manage-fold"><div class="manage-fold-header" onclick="this.parentElement.classList.toggle('open');this.classList.toggle('open')"><span class="fold-arrow">▶</span> <i class="fa-solid fa-user"></i> 基础信息</div><div class="manage-fold-body"><div class="flex-between" style="margin-bottom:8px;"><span>我的昵称</span><input type="text" id="nickMyInput" value="${escapeHtml(profile.myNick)}" style="width:60%;background:var(--bg-body);border:1px solid var(--border-light);border-radius:20px;padding:6px 12px;"></div><div class="flex-between"><span>Ta的昵称</span><input type="text" id="nickMengInput" value="${escapeHtml(profile.mengNick)}" style="width:60%;background:var(--bg-body);border:1px solid var(--border-light);border-radius:20px;padding:6px 12px;"></div><button class="sec-btn" id="saveNicknamesBtn" style="margin-top:10px;width:100%;">保存昵称</button><div class="data-note" style="margin-top:4px;">💡 点击顶部头像可更换头像</div></div></div><div class="manage-fold"><div class="manage-fold-header" onclick="this.parentElement.classList.toggle('open');this.classList.toggle('open')"><span class="fold-arrow">▶</span> <i class="fa-solid fa-palette"></i> 外观</div><div class="manage-fold-body"><div style="margin-bottom:6px;font-weight:500;">🖼️ 聊天背景更换</div><input type="file" id="bgUploadInput" accept="image/jpeg" style="margin-bottom:10px;"><div class="button-group"><button class="sec-btn" id="applyBgBtn">应用背景</button><button class="sec-btn sec-btn-outline" id="resetBgBtn">恢复默认</button></div><div style="margin-top:14px;margin-bottom:6px;font-weight:500;">🫧 气泡CSS</div><textarea id="bubbleCssTextarea" class="textarea-clean" rows="10"></textarea><div class="button-group" style="margin-top:6px;"><button class="sec-btn" id="applyBubbleCss">应用</button><button class="sec-btn sec-btn-outline" id="resetBubbleCss">恢复</button><button class="sec-btn sec-btn-outline" id="loadExampleCssBtn">示例</button></div></div></div><div class="manage-fold"><div class="manage-fold-header" onclick="this.parentElement.classList.toggle('open');this.classList.toggle('open')"><span class="fold-arrow">▶</span> <i class="fa-solid fa-folder-open"></i> 内容库</div><div class="manage-fold-body"><div style="margin-bottom:8px;display:flex;align-items:center;gap:6px;"><span style="font-weight:500;">💬 字卡</span><button class="small-btn primary-outline" id="importGlobalAutoBtn" style="padding:3px 10px;font-size:11px;line-height:1;"><i class="fa-solid fa-file-import"></i> 导入</button><button class="small-btn primary-outline" id="exportGlobalTxtBtn" style="padding:3px 10px;font-size:11px;line-height:1;"><i class="fa-solid fa-file-export"></i> 导出</button><input type="file" id="globalImportFileInput" accept=".txt,.json" style="display:none;"></div><div id="wordCountDisplay" style="font-size:12px;color:var(--text-secondary);margin-bottom:6px;">📝 当前 ${wordCardList.length} 条</div><textarea id="wordTextarea" class="textarea-clean" rows="10">${wordCardList.join('\n')}</textarea><div class="button-group" style="margin-top:6px;"><button class="sec-btn" id="batchAddWord">保存</button><button class="sec-btn sec-btn-outline" id="delAllWord">清空</button></div><div class="content-library-toggle-row"><span>😊 表情</span><label class="toggle-switch" style="width:44px;height:22px;"><input type="checkbox" id="emojiDisabledToggle" ${emojiDisabled?'':'checked'}><span class="slider" style="width:44px;height:22px;"></span></label></div><textarea id="emojiTextarea" class="textarea-clean" rows="10">${emojiCardList.join('\n')}</textarea><div class="button-group" style="margin-top:6px;"><button class="sec-btn" id="batchAddEmoji">保存</button><button class="sec-btn sec-btn-outline" id="delAllEmoji">清空</button></div><div class="content-library-toggle-row"><span>🖼️ 图片</span><label class="toggle-switch" style="width:44px;height:22px;"><input type="checkbox" id="imgDisabledToggle" ${imgDisabled?'':'checked'}><span class="slider" style="width:44px;height:22px;"></span></label></div><input type="file" id="uploadImages" multiple accept="image/*" style="margin-bottom:8px;"><div id="imgPreviewList" class="img-grid-fixed"></div><div class="button-group" style="flex-direction:column;gap:6px;"><button class="sec-btn sec-btn-outline" id="deleteSelectedImg" style="width:100%;">删除选中</button><button class="sec-btn sec-btn-outline" id="clearAllImgBtn" style="width:100%;">全部清空</button></div></div></div><div class="manage-fold"><div class="manage-fold-header" onclick="this.parentElement.classList.toggle('open');this.classList.toggle('open')"><span class="fold-arrow">▶</span> <i class="fa-solid fa-sliders"></i> 回复策略</div><div class="manage-fold-body"><div class="flex-between" style="margin-bottom:10px;"><span>已读不回</span><label class="toggle-switch"><input type="checkbox" id="mengIgnoreToggle" ${mengMaybeIgnore?'checked':''}><span class="slider"></span></label></div><div class="flex-between" style="margin-bottom:10px;"><span>主动发消息</span><label class="toggle-switch"><input type="checkbox" id="mengActiveTalkToggle" ${mengActiveTalkEnabled?'checked':''}><span class="slider"></span></label></div><div class="flex-between" style="margin-bottom:10px;"><span>引用回复</span><label class="toggle-switch"><input type="checkbox" id="mengQuoteToggle" ${mengQuoteEnabled?'checked':''}><span class="slider"></span></label></div><div class="flex-between" style="margin-bottom:10px;"><span>显示消息时间</span><label class="toggle-switch"><input type="checkbox" id="showTimeToggle" ${showMessageTimeEnabled?'checked':''}><span class="slider"></span></label></div><div class="flex-between" style="margin-bottom:10px;"><span>组合回复</span><label class="toggle-switch"><input type="checkbox" id="combineRepliesToggle" ${combineRepliesEnabled?'checked':''}><span class="slider"></span></label></div><div class="data-note" style="margin-bottom:10px;">💡 开启后多条字卡回复将合并为一条消息（换行分隔），减少消息刷屏</div><div style="margin-bottom:10px;"><span>⏱️ 最短等待：</span><strong id="replyMinSpeedValue">${Math.round(replyMinDelayMs/1000)}</strong>秒</div><input type="range" id="replyMinSpeedSlider" min="1" max="500" value="${Math.round(replyMinDelayMs/1000)}" style="width:100%;"><div class="data-note" style="margin-top:2px;">💡 实际回复时间将在最短～最长之间随机</div><div style="margin-bottom:10px;"><span>⏱️ 最大等待：</span><strong id="replySpeedValue">${Math.round(replyMaxDelayMs/1000)}</strong>秒</div><input type="range" id="replySpeedSlider" min="3" max="500" value="${Math.round(replyMaxDelayMs/1000)}" style="width:100%;"><div style="margin-top:10px;"><span>⏳ 消息间隔：</span><strong id="interDelayValue">${(replyInterMessageDelayMs/1000).toFixed(1)}</strong>秒</div><input type="range" id="interDelaySlider" min="0" max="15" step="0.5" value="${(replyInterMessageDelayMs/1000).toFixed(1)}" style="width:100%;"></div></div><div class="manage-fold"><div class="manage-fold-header" onclick="this.parentElement.classList.toggle('open');this.classList.toggle('open')"><span class="fold-arrow">▶</span> <i class="fa-solid fa-bell"></i> 消息设置</div><div class="manage-fold-body"><div class="flex-between" style="margin-bottom:10px;"><span>推送通知</span><label class="toggle-switch"><input type="checkbox" id="notificationToggle" ${notificationEnabled?'checked':''}><span class="slider"></span></label></div><button class="sec-btn sec-btn-outline" id="requestNotifPermBtn" style="width:100%;margin-bottom:12px;">请求通知权限</button><div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;"><span style="flex-shrink:0;">我的提示音</span><input type="file" id="mySoundUpload" accept="audio/mpeg" style="flex:1;min-width:0;"><button class="small-btn" id="clearMySound">清除</button></div><div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;"><span style="flex-shrink:0;">Ta的提示音</span><input type="file" id="mengSoundUpload" accept="audio/mpeg" style="flex:1;min-width:0;"><button class="small-btn" id="clearMengSound">清除</button></div><div class="data-note" style="margin-top:4px;">导入的MP3音频文件小于1MB</div></div></div><div class="manage-fold" id="momentsManageFold"><div class="manage-fold-header" onclick="this.parentElement.classList.toggle('open');this.classList.toggle('open')"><span class="fold-arrow">▶</span> <i class="fa-solid fa-globe"></i> 朋友圈管理</div><div class="manage-fold-body"><div style="margin-bottom:20px;"><div style="font-weight:600;margin-bottom:8px;">📅 生成时间与条数</div><div style="display:flex;gap:10px;align-items:center;margin-bottom:8px;"><label>开始时间：</label><input type="time" id="momentsTimeStartInput" value="${momentsTimeStart}" style="background:var(--bg-body);border:1px solid var(--border-light);border-radius:20px;padding:6px;"><label style="margin-left:12px;">结束时间：</label><input type="time" id="momentsTimeEndInput" value="${momentsTimeEnd}" style="background:var(--bg-body);border:1px solid var(--border-light);border-radius:20px;padding:6px;"></div><div class="data-note" style="margin-bottom:12px;">💡 设置每天允许发朋友圈的时间段（在此范围内随机分布）。若开始时间晚于结束时间，视为跨夜。</div><div style="display:flex;gap:10px;align-items:center;margin-bottom:8px;"><label>每人最少条数：</label><input type="number" id="momentsCountMinInput" min="1" max="10" value="${momentsCountMin}" style="width:70px;background:var(--bg-body);border:1px solid var(--border-light);border-radius:20px;padding:6px;"><label style="margin-left:12px;">最多条数：</label><input type="number" id="momentsCountMaxInput" min="1" max="10" value="${momentsCountMax}" style="width:70px;background:var(--bg-body);border:1px solid var(--border-light);border-radius:20px;padding:6px;"></div><div class="data-note" style="margin-bottom:6px;">💡 每个成员（包括Ta）每天随机发送的条数范围。</div><button class="sec-btn" id="saveMomentsScheduleBtn" style="width:100%;">保存并立即生效</button></div><hr style="margin:12px 0;"><div style="margin-bottom:20px;"><div style="font-weight:600;margin-bottom:8px;">💬 评论速度</div><div style="margin-bottom:12px;font-weight:500;font-size:13px;">初始评论（动态发布后）</div><div style="margin-bottom:8px;"><span>最快间隔：</span><strong id="icMinValue">${initialCommentIntervalMin}</strong> 秒<input type="range" id="icMinSlider" min="1" max="60" value="${initialCommentIntervalMin}" style="width:100%;"></div><div style="margin-bottom:8px;"><span>最慢间隔：</span><strong id="icMaxValue">${initialCommentIntervalMax}</strong> 秒<input type="range" id="icMaxSlider" min="1" max="120" value="${initialCommentIntervalMax}" style="width:100%;"></div><hr style="margin:12px 0;"><div style="margin-bottom:12px;font-weight:500;font-size:13px;">回复速度（你评论后Ta的回复）</div><div style="margin-bottom:8px;"><span>最小延迟：</span><strong id="replyMinValue">${momentsCommentDelayMin}</strong> 秒<input type="range" id="replyMinSlider" min="2" max="60" value="${momentsCommentDelayMin}" style="width:100%;"></div><div style="margin-bottom:8px;"><span>最大延迟：</span><strong id="replyMaxValue">${momentsCommentDelayMax}</strong> 秒<input type="range" id="replyMaxSlider" min="2" max="120" value="${momentsCommentDelayMax}" style="width:100%;"></div><div class="data-note">💡 初始评论会在发布后陆续出现，对回复速度的修改立即生效。</div></div><hr style="margin:12px 0;"><div><div style="font-weight:600;margin-bottom:8px;">📍 地点管理</div><div id="momentLocationsManager" style="max-height:180px;overflow-y:auto;margin-bottom:10px;"></div><div style="display:flex;gap:6px;"><input type="text" id="newLocationInput" placeholder="新地点名称" style="flex:1;background:var(--bg-body);border:1px solid var(--border-light);border-radius:20px;padding:6px 12px;"><button class="small-btn primary-outline" id="addLocationBtn"><i class="fa-solid fa-plus"></i> 添加</button></div><div class="data-note" style="margin-top:6px;">💡 修改后立即生效，新动态将随机使用列表中的地点</div></div></div></div><div class="manage-fold"><div class="manage-fold-header" onclick="this.parentElement.classList.toggle('open');this.classList.toggle('open')"><span class="fold-arrow">▶</span> <i class="fa-solid fa-database"></i> 数据</div><div class="manage-fold-body"><div class="button-group"><button class="sec-btn" id="exportDataBtn"><i class="fa-solid fa-file-export"></i> 导出备份</button><button class="sec-btn sec-btn-outline" id="importDataBtn"><i class="fa-solid fa-file-import"></i> 导入备份</button><button class="sec-btn sec-btn-outline" id="viewStorageBtn"><i class="fa-solid fa-hard-drive"></i> 查看储存</button><button class="sec-btn sec-btn-outline" id="resetAllDataBtn" style="background: var(--danger-bg); color: var(--danger-color);"><i class="fa-solid fa-skull-crossbones"></i> 重置所有数据</button></div></div></div><button class="sec-btn" id="closeManage" style="margin-top:12px;width:100%;">关闭</button></div>`;
+                    `<div class="modal-content" style="max-width:580px;padding:12px 16px;"><div class="settings-title" style="margin-bottom:12px;"><i class="fa-solid fa-gear"></i> 设置管理</div><div class="manage-fold"><div class="manage-fold-header" onclick="this.parentElement.classList.toggle('open');this.classList.toggle('open')"><span class="fold-arrow">▶</span> <i class="fa-solid fa-user"></i> 基础信息</div><div class="manage-fold-body"><div class="flex-between" style="margin-bottom:8px;"><span>我的昵称</span><input type="text" id="nickMyInput" value="${escapeHtml(profile.myNick)}" style="width:60%;background:var(--bg-body);border:1px solid var(--border-light);border-radius:20px;padding:6px 12px;"></div><div class="flex-between"><span>Ta的昵称</span><input type="text" id="nickMengInput" value="${escapeHtml(profile.mengNick)}" style="width:60%;background:var(--bg-body);border:1px solid var(--border-light);border-radius:20px;padding:6px 12px;"></div><button class="sec-btn" id="saveNicknamesBtn" style="margin-top:10px;width:100%;">保存昵称</button><div class="data-note" style="margin-top:4px;">💡 点击顶部头像可更换头像</div></div></div><div class="manage-fold"><div class="manage-fold-header" onclick="this.parentElement.classList.toggle('open');this.classList.toggle('open')"><span class="fold-arrow">▶</span> <i class="fa-solid fa-palette"></i> 外观</div><div class="manage-fold-body"><div style="margin-bottom:6px;font-weight:500;">🖼️ 聊天背景更换</div><input type="file" id="bgUploadInput" accept="image/jpeg" style="margin-bottom:10px;"><div class="button-group"><button class="sec-btn" id="applyBgBtn">应用背景</button><button class="sec-btn sec-btn-outline" id="resetBgBtn">恢复默认</button></div><div style="margin-top:14px;margin-bottom:6px;font-weight:500;">🫧 气泡CSS</div><textarea id="bubbleCssTextarea" class="textarea-clean" rows="10"></textarea><div class="button-group" style="margin-top:6px;"><button class="sec-btn" id="applyBubbleCss">应用</button><button class="sec-btn sec-btn-outline" id="resetBubbleCss">恢复</button><button class="sec-btn sec-btn-outline" id="loadExampleCssBtn">示例</button></div></div></div><div class="manage-fold"><div class="manage-fold-header" onclick="this.parentElement.classList.toggle('open');this.classList.toggle('open')"><span class="fold-arrow">▶</span> <i class="fa-solid fa-folder-open"></i> 内容库</div><div class="manage-fold-body"><div style="margin-bottom:8px;display:flex;align-items:center;gap:6px;"><span style="font-weight:500;">💬 字卡</span><button class="small-btn primary-outline" id="importGlobalAutoBtn" style="padding:3px 10px;font-size:11px;line-height:1;"><i class="fa-solid fa-file-import"></i> 导入</button><button class="small-btn primary-outline" id="exportGlobalTxtBtn" style="padding:3px 10px;font-size:11px;line-height:1;"><i class="fa-solid fa-file-export"></i> 导出</button><input type="file" id="globalImportFileInput" accept=".txt,.json" style="display:none;"></div><div id="wordCountDisplay" style="font-size:12px;color:var(--text-secondary);margin-bottom:6px;">📝 当前 ${wordCardList.length} 条</div><textarea id="wordTextarea" class="textarea-clean" rows="10">${wordCardList.join('\n')}</textarea><div class="button-group" style="margin-top:6px;"><button class="sec-btn" id="batchAddWord">保存</button><button class="sec-btn sec-btn-outline" id="delAllWord">清空</button></div><div class="content-library-toggle-row"><span>😊 表情</span><label class="toggle-switch" style="width:44px;height:22px;"><input type="checkbox" id="emojiDisabledToggle" ${emojiDisabled?'':'checked'}><span class="slider" style="width:44px;height:22px;"></span></label></div><textarea id="emojiTextarea" class="textarea-clean" rows="10">${emojiCardList.join('\n')}</textarea><div class="button-group" style="margin-top:6px;"><button class="sec-btn" id="batchAddEmoji">保存</button><button class="sec-btn sec-btn-outline" id="delAllEmoji">清空</button></div><div class="content-library-toggle-row"><span>🖼️ 图片</span><label class="toggle-switch" style="width:44px;height:22px;"><input type="checkbox" id="imgDisabledToggle" ${imgDisabled?'':'checked'}><span class="slider" style="width:44px;height:22px;"></span></label></div><input type="file" id="uploadImages" multiple accept="image/*" style="margin-bottom:8px;"><div id="imgPreviewList" class="img-grid-fixed"></div><div class="button-group" style="flex-direction:column;gap:6px;"><button class="sec-btn sec-btn-outline" id="deleteSelectedImg" style="width:100%;">删除选中</button><button class="sec-btn sec-btn-outline" id="clearAllImgBtn" style="width:100%;">全部清空</button></div></div></div><div class="manage-fold"><div class="manage-fold-header" onclick="this.parentElement.classList.toggle('open');this.classList.toggle('open')"><span class="fold-arrow">▶</span> <i class="fa-solid fa-sliders"></i> 回复策略</div><div class="manage-fold-body"><div class="flex-between" style="margin-bottom:10px;"><span>已读不回</span><label class="toggle-switch"><input type="checkbox" id="mengIgnoreToggle" ${mengMaybeIgnore?'checked':''}><span class="slider"></span></label></div><div class="flex-between" style="margin-bottom:10px;"><span>主动发消息</span><label class="toggle-switch"><input type="checkbox" id="mengActiveTalkToggle" ${mengActiveTalkEnabled?'checked':''}><span class="slider"></span></label></div><div class="flex-between" style="margin-bottom:10px;"><span>引用回复</span><label class="toggle-switch"><input type="checkbox" id="mengQuoteToggle" ${mengQuoteEnabled?'checked':''}><span class="slider"></span></label></div><div class="flex-between" style="margin-bottom:10px;"><span>显示消息时间</span><label class="toggle-switch"><input type="checkbox" id="showTimeToggle" ${showMessageTimeEnabled?'checked':''}><span class="slider"></span></label></div><div class="flex-between" style="margin-bottom:10px;"><span>组合回复</span><label class="toggle-switch"><input type="checkbox" id="combineRepliesToggle" ${combineRepliesEnabled?'checked':''}><span class="slider"></span></label></div><div class="data-note" style="margin-bottom:10px;">💡 开启后多条字卡回复将合并为一条消息（换行分隔），减少消息刷屏</div><div style="margin-bottom:10px;"><span>⏱️ 最短等待：</span><strong id="replyMinSpeedValue">${Math.round(replyMinDelayMs/1000)}</strong>秒</div><input type="range" id="replyMinSpeedSlider" min="1" max="180" value="${Math.round(replyMinDelayMs/1000)}" style="width:100%;"><div class="data-note" style="margin-top:2px;">💡 实际回复时间将在最短～最长之间随机</div><div style="margin-bottom:10px;"><span>⏱️ 最大等待：</span><strong id="replySpeedValue">${Math.round(replyMaxDelayMs/1000)}</strong>秒</div><input type="range" id="replySpeedSlider" min="3" max="180" value="${Math.round(replyMaxDelayMs/1000)}" style="width:100%;"><div style="margin-top:10px;"><span>⏳ 消息间隔：</span><strong id="interDelayValue">${(replyInterMessageDelayMs/1000).toFixed(1)}</strong>秒</div><input type="range" id="interDelaySlider" min="0" max="15" step="0.5" value="${(replyInterMessageDelayMs/1000).toFixed(1)}" style="width:100%;"></div></div><div class="manage-fold"><div class="manage-fold-header" onclick="this.parentElement.classList.toggle('open');this.classList.toggle('open')"><span class="fold-arrow">▶</span> <i class="fa-solid fa-bell"></i> 消息设置</div><div class="manage-fold-body"><div class="flex-between" style="margin-bottom:10px;"><span>推送通知</span><label class="toggle-switch"><input type="checkbox" id="notificationToggle" ${notificationEnabled?'checked':''}><span class="slider"></span></label></div><button class="sec-btn sec-btn-outline" id="requestNotifPermBtn" style="width:100%;margin-bottom:12px;">请求通知权限</button><div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;"><span style="flex-shrink:0;">我的提示音</span><input type="file" id="mySoundUpload" accept="audio/mpeg" style="flex:1;min-width:0;"><button class="small-btn" id="clearMySound">清除</button></div><div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;"><span style="flex-shrink:0;">Ta的提示音</span><input type="file" id="mengSoundUpload" accept="audio/mpeg" style="flex:1;min-width:0;"><button class="small-btn" id="clearMengSound">清除</button></div><div class="data-note" style="margin-top:4px;">导入的MP3音频文件小于1MB</div></div></div><div class="manage-fold" id="momentsManageFold"><div class="manage-fold-header" onclick="this.parentElement.classList.toggle('open');this.classList.toggle('open')"><span class="fold-arrow">▶</span> <i class="fa-solid fa-globe"></i> 朋友圈管理</div><div class="manage-fold-body"><div style="margin-bottom:20px;"><div style="font-weight:600;margin-bottom:8px;">📅 生成时间与条数</div><div style="display:flex;gap:10px;align-items:center;margin-bottom:8px;"><label>开始时间：</label><input type="time" id="momentsTimeStartInput" value="${momentsTimeStart}" style="background:var(--bg-body);border:1px solid var(--border-light);border-radius:20px;padding:6px;"><label style="margin-left:12px;">结束时间：</label><input type="time" id="momentsTimeEndInput" value="${momentsTimeEnd}" style="background:var(--bg-body);border:1px solid var(--border-light);border-radius:20px;padding:6px;"></div><div class="data-note" style="margin-bottom:12px;">💡 设置每天允许发朋友圈的时间段（在此范围内随机分布）。若开始时间晚于结束时间，视为跨夜。</div><div style="display:flex;gap:10px;align-items:center;margin-bottom:8px;"><label>每人最少条数：</label><input type="number" id="momentsCountMinInput" min="1" max="10" value="${momentsCountMin}" style="width:70px;background:var(--bg-body);border:1px solid var(--border-light);border-radius:20px;padding:6px;"><label style="margin-left:12px;">最多条数：</label><input type="number" id="momentsCountMaxInput" min="1" max="10" value="${momentsCountMax}" style="width:70px;background:var(--bg-body);border:1px solid var(--border-light);border-radius:20px;padding:6px;"></div><div class="data-note" style="margin-bottom:6px;">💡 每个成员（包括Ta）每天随机发送的条数范围。</div><button class="sec-btn" id="saveMomentsScheduleBtn" style="width:100%;">保存并立即生效</button></div><hr style="margin:12px 0;"><div style="margin-bottom:20px;"><div style="font-weight:600;margin-bottom:8px;">💬 评论速度</div><div style="margin-bottom:12px;font-weight:500;font-size:13px;">初始评论（动态发布后）</div><div style="margin-bottom:8px;"><span>最快间隔：</span><strong id="icMinValue">${initialCommentIntervalMin}</strong> 秒<input type="range" id="icMinSlider" min="1" max="60" value="${initialCommentIntervalMin}" style="width:100%;"></div><div style="margin-bottom:8px;"><span>最慢间隔：</span><strong id="icMaxValue">${initialCommentIntervalMax}</strong> 秒<input type="range" id="icMaxSlider" min="1" max="120" value="${initialCommentIntervalMax}" style="width:100%;"></div><hr style="margin:12px 0;"><div style="margin-bottom:12px;font-weight:500;font-size:13px;">回复速度（你评论后Ta的回复）</div><div style="margin-bottom:8px;"><span>最小延迟：</span><strong id="replyMinValue">${momentsCommentDelayMin}</strong> 秒<input type="range" id="replyMinSlider" min="2" max="60" value="${momentsCommentDelayMin}" style="width:100%;"></div><div style="margin-bottom:8px;"><span>最大延迟：</span><strong id="replyMaxValue">${momentsCommentDelayMax}</strong> 秒<input type="range" id="replyMaxSlider" min="2" max="120" value="${momentsCommentDelayMax}" style="width:100%;"></div><div class="data-note">💡 初始评论会在发布后陆续出现，对回复速度的修改立即生效。</div></div><hr style="margin:12px 0;"><div><div style="font-weight:600;margin-bottom:8px;">📍 地点管理</div><div id="momentLocationsManager" style="max-height:180px;overflow-y:auto;margin-bottom:10px;"></div><div style="display:flex;gap:6px;"><input type="text" id="newLocationInput" placeholder="新地点名称" style="flex:1;background:var(--bg-body);border:1px solid var(--border-light);border-radius:20px;padding:6px 12px;"><button class="small-btn primary-outline" id="addLocationBtn"><i class="fa-solid fa-plus"></i> 添加</button></div><div class="data-note" style="margin-top:6px;">💡 修改后立即生效，新动态将随机使用列表中的地点</div></div></div></div><div class="manage-fold"><div class="manage-fold-header" onclick="this.parentElement.classList.toggle('open');this.classList.toggle('open')"><span class="fold-arrow">▶</span> <i class="fa-solid fa-database"></i> 数据</div><div class="manage-fold-body"><div class="button-group"><button class="sec-btn" id="exportDataBtn"><i class="fa-solid fa-file-export"></i> 导出备份</button><button class="sec-btn sec-btn-outline" id="importDataBtn"><i class="fa-solid fa-file-import"></i> 导入备份</button><button class="sec-btn sec-btn-outline" id="viewStorageBtn"><i class="fa-solid fa-hard-drive"></i> 查看储存</button><button class="sec-btn sec-btn-outline" id="resetAllDataBtn" style="background: var(--danger-bg); color: var(--danger-color);"><i class="fa-solid fa-skull-crossbones"></i> 重置所有数据</button></div></div></div><button class="sec-btn" id="closeManage" style="margin-top:12px;width:100%;">关闭</button></div>`;
                 document.body.appendChild(modalDiv);
                 async function ri() { const c = document.getElementById('imgPreviewList'); if (!c) return; if (!imgCardList
                         .length) { c.innerHTML =
@@ -5221,7 +5574,6 @@
                         if (v !== null) exp[k] = v;
                     });
                 
-                    // 收集 IndexedDB 中的所有图片
                     exp.images = {};
                     try {
                         const db = await openImgDB();
@@ -5249,7 +5601,7 @@
                     }
                 
                     const blob = new Blob([JSON.stringify({
-                        version: "3.0",  // 新版本号，含图片
+                        version: "3.0",  
                         timestamp: Date.now(),
                         data: exp
                     })], { type: "application/json" });
@@ -5275,8 +5627,7 @@
                         try {
                             const d = JSON.parse(ev.target.result),
                                   p = d.data || d;
-                
-                            // 如果有图片数据，先写入 IndexedDB
+               
                             if (p.images && typeof p.images === 'object') {
                                 const imgIds = Object.keys(p.images);
                                 if (imgIds.length) {
@@ -5288,7 +5639,6 @@
                                         for (const imgId of imgIds) {
                                             const base64 = p.images[imgId];
                                             let blob;
-                                            // 将 base64 转为 Blob
                                             if (typeof base64 === 'string' && base64.startsWith('data:')) {
                                                 const parts = base64.split(',');
                                                 const mime = parts[0].match(/:(.*?);/)?.[1] || 'image/png';
@@ -5298,7 +5648,7 @@
                                                 for (let i = 0; i < binary.length; i++) ia[i] = binary.charCodeAt(i);
                                                 blob = new Blob([ab], { type: mime });
                                             } else {
-                                                blob = base64;  // 兼容非 data URL
+                                                blob = base64;  
                                             }
                                             store.put({ id: imgId, blob });
                                         }
@@ -5312,10 +5662,9 @@
                                         alert('⚠️ 部分图片导入失败，文字数据将继续导入');
                                     }
                                 }
-                                delete p.images;  // 不需要写入 localStorage
+                                delete p.images;  
                             }
                 
-                            // 恢复 localStorage 数据
                             for (let k in p) {
                                 if (p.hasOwnProperty(k) && k !== 'images') {
                                     localStorage.setItem(k, p[k]);
@@ -5483,16 +5832,12 @@
                         .type === 'audio/mpeg' && f.size <= 1048576) { const r = new FileReader();
                         r.onload = ev => saveMyMessageSound(ev.target.result);
                         r.readAsDataURL(f); } });
-                // 新增：重置所有数据按钮
                 document.getElementById('resetAllDataBtn').onclick = async () => {
                     if (!confirm('⚠️ 确定要重置所有数据吗？\n\n此操作将清空所有对话记录、设置、音乐库、朋友圈、图片等所有数据，且不可恢复！\n\n建议先导出备份。')) return;
                     if (!confirm('再次确认：重置后页面将刷新，所有数据永久丢失！')) return;
                 
                     try {
-                        // 清空 localStorage 全部数据
                         localStorage.clear();
-                
-                        // 清空 IndexedDB 中的图片数据库
                         const db = await openImgDB();
                         const tx = db.transaction(IMG_STORE_NAME, 'readwrite');
                         tx.objectStore(IMG_STORE_NAME).clear();
@@ -5503,8 +5848,6 @@
                     } catch (e) {
                         console.error('重置数据时出错:', e);
                     }
-                
-                    // 刷新页面，让所有变量重新初始化
                     location.reload();
                 };
                 document.getElementById('mengSoundUpload')?.addEventListener('change', e => { const f = e.target.files[0]; if (f && f
@@ -5970,10 +6313,7 @@
                 cleanupStatusTimers();
                 stopActiveTalkTimer();
                 stopMomentsGenerator(); if (audioPlayer) audioPlayer.pause();
-                saveMessagesImmediately(); });
-            window.addEventListener('pagehide', () => { saveLastActiveTime();
-                updateLastOnlineTime(); });
-
+                saveMessagesImmediately(); });            
             function loadPuzzleData() { const saved = localStorage.getItem('puzzleData'); if (saved) puzzleData = JSON.parse(saved);
                 else savePuzzleData(); }
 
@@ -6089,7 +6429,7 @@
                     });
                 });
                 const sorted = [...freqMap.entries()].filter(([_, count]) => count > 0).sort((a, b) => b[1] - a[1]);
-                const top = sorted.slice(0, topN);   // ✅ 直接使用参数 topN
+                const top = sorted.slice(0, topN);   
                 return { totalMessages: targetMessages.length, uniqueWords: sorted.length, topWords: top };
             }
             function getSizeClass(count, maxCount) { const ratio = count / maxCount; if (ratio >= 0.8) return 'size-xl'; if (ratio >=
@@ -6101,10 +6441,23 @@
                     /^(\p{Extended_Pictographic}|\p{Emoji_Component}|\s|[\u200D\uFE0F])+$/u; const symbolOnly =
                     /^[^\p{L}\p{N}]+$/u; return emojiPattern.test(trimmed) || symbolOnly.test(trimmed); }
 
-            function extractAllStrings(obj) { const results = []; if (typeof obj === 'string') { results.push(obj); } else if (Array
-                    .isArray(obj)) { for (const item of obj) { results.push(...extractAllStrings(item)); } } else if (obj && typeof obj ===
-                    'object') { for (const val of Object.values(obj)) { results.push(...extractAllStrings(val)); } } return results; }
-
+            function extractAllStrings(obj) {
+                const results = [];
+                if (typeof obj === 'string') {
+                    results.push(obj);
+                } else if (Array.isArray(obj)) {
+                    for (const item of obj) {
+                        results.push(...extractAllStrings(item));
+                    }
+                } else if (obj && typeof obj === 'object') {
+                    // 只提取值中的字符串，忽略键名
+                    for (const val of Object.values(obj)) {
+                        results.push(...extractAllStrings(val));
+                    }
+                }
+                return results;
+            }
+            
             function cleanLineQuotes(line) { let str = line.trim(); while (str.length >= 2) { const first = str[0]; const last = str[
                         str.length - 1]; const isDoubleQuote = (first === '"' && last === '"'); const isSingleQuote = (first === "'" &&
                         last === "'"); const isLeftRightQuote = (first === '“' && last === '”'); if (isDoubleQuote || isSingleQuote ||
@@ -6209,13 +6562,13 @@
                 callState.isMinimized = false;
                 if (callBtnEl) callBtnEl.classList.remove('call-active');
                 if (callMiniWindowEl) {
-                    callMiniWindowEl.style.display = 'none';       // ★ 强制隐藏悬浮窗
-                    callMiniWindowEl.classList.add('hidden');
-                    callMiniWindowEl.classList.remove('closing-mini');
+                    callMiniWindowEl.classList.remove('closing-mini', 'hidden');
+                    callMiniWindowEl.style.display = 'none';
                 }
                 if (callOverlayEl) {
-                    callOverlayEl.style.display = 'none';         // ★ 强制隐藏覆盖层
-                    callOverlayEl.classList.remove('closing');
+                    // ✅ 强制移除所有残留的关闭动画类，确保下次打开清洁
+                    callOverlayEl.classList.remove('closing', 'hidden');
+                    callOverlayEl.style.display = 'none';
                 }
             }
 
@@ -6237,7 +6590,7 @@
             function getCallDuration() { if (!callState.startTime) return '00:00'; return formatCallTimer(Math.floor((Date.now() -
                     callState.startTime) / 1000)); }
 
-            function showCallConnectedUI() {
+            function showCallConnectedUI(startTimer = true) {   
                 const callStatusText = document.getElementById('callStatusText');
                 const callTimerText = document.getElementById('callTimerText');
                 const callAvatarRing = document.getElementById('callAvatarRing');
@@ -6250,9 +6603,16 @@
                 const callVideoArea = document.getElementById('callVideoArea');
                 const callSelfCam = document.getElementById('callSelfCam');
                 const callVideoToggleBtn = document.getElementById('callVideoToggleBtn');
+            
                 if (callStatusText) callStatusText.classList.add('hidden');
-                if (callTimerText) { callTimerText.classList.remove('hidden');
-                    callTimerText.textContent = '00:00'; }
+                if (callTimerText) {
+                    callTimerText.classList.remove('hidden');
+                    if (startTimer) {
+                        callTimerText.textContent = '00:00';
+                    } else {
+                        callTimerText.textContent = getCallDuration();
+                    }
+                }
                 if (callAvatarRing) { callAvatarRing.className = 'call-avatar-ring call-avatar-ring-connected'; }
                 if (callWaveBars) callWaveBars.classList.remove('hidden');
                 if (callRedialBtn) callRedialBtn.classList.add('hidden');
@@ -6260,15 +6620,24 @@
                 document.querySelectorAll('.call-action-btn').forEach(b => b.classList.remove('hidden'));
                 if (callMinimizeBtn) callMinimizeBtn.classList.remove('hidden');
                 if (callAnswerBtn) callAnswerBtn.classList.add('hidden');
-                if (callState.mode === 'video') { if (callAvatarArea) callAvatarArea.classList.add('hidden'); if (callVideoArea)
-                        callVideoArea.classList.remove('hidden'); if (callSelfCam) callSelfCam.classList.remove('hidden'); if (
-                        callWaveBars) callWaveBars.classList.add('hidden'); if (callVideoToggleBtn) callVideoToggleBtn.querySelector(
-                        'i').className = 'fa-solid fa-phone'; } else { if (callAvatarArea) callAvatarArea.classList.remove(
-                        'hidden'); if (callVideoArea) callVideoArea.classList.add('hidden'); if (callSelfCam) callSelfCam.classList
-                        .add('hidden'); if (callWaveBars) callWaveBars.classList.remove('hidden'); if (callVideoToggleBtn)
-                        callVideoToggleBtn.querySelector('i').className = 'fa-solid fa-video'; }
+            
+                if (callState.mode === 'video') {
+                    if (callAvatarArea) callAvatarArea.classList.add('hidden');
+                    if (callVideoArea) callVideoArea.classList.remove('hidden');
+                    if (callSelfCam) callSelfCam.classList.remove('hidden');
+                    if (callWaveBars) callWaveBars.classList.add('hidden');
+                    if (callVideoToggleBtn) callVideoToggleBtn.querySelector('i').className = 'fa-solid fa-phone';
+                } else {
+                    if (callAvatarArea) callAvatarArea.classList.remove('hidden');
+                    if (callVideoArea) callVideoArea.classList.add('hidden');
+                    if (callSelfCam) callSelfCam.classList.add('hidden');
+                    if (callWaveBars) callWaveBars.classList.remove('hidden');
+                    if (callVideoToggleBtn) callVideoToggleBtn.querySelector('i').className = 'fa-solid fa-video';
+                }
                 updateMuteSpeakerUI();
-                startCallTimer();
+                if (startTimer) {
+                    startCallTimer();
+                }
             }
 
             function updateMuteSpeakerUI() {
@@ -6327,7 +6696,6 @@
                 const callBtnEl = document.getElementById('callBtn');
                 if (callState.status === 'calling' || callState.status === 'connected') {
                     if (callState.isMinimized) {
-                        // 如果是 calling 且最小化，直接显示覆盖层而非调用 restoreCallFromMini
                         if (callState.status === 'calling') {
                             callState.isMinimized = false;
                             const callMiniEl = document.getElementById('callMiniWindow');
@@ -6350,11 +6718,11 @@
                 callState.status = 'calling';
                 callState.isMinimized = false;
                 if (callMiniWindowEl) {
-                    callMiniWindowEl.style.display = 'none';   // 确保悬浮窗隐藏
+                    callMiniWindowEl.style.display = 'none';  
                     callMiniWindowEl.classList.add('hidden');
                 }
                 if (callOverlayEl) {
-                    callOverlayEl.style.display = 'flex';   // 确保覆盖层可见
+                    callOverlayEl.style.display = 'flex';   
                     callOverlayEl.classList.remove('hidden', 'closing');
                 }
                 const callStatusText = document.getElementById('callStatusText');
@@ -6377,12 +6745,12 @@
                 const decisionDelay = 1200 + Math.random() * 2000;
                 callState.decisionTimeout = setTimeout(() => {
                     const roll = Math.random();
-                    if (roll < 0.7) {
+                    if (roll < 0.8) {
                         callState.status = 'connected';
                         showCallConnectedUI();
                         if (callBtnEl) callBtnEl.classList.add('call-active');
                         showToast('对方已接通 ✨', '📞');
-                    } else if (roll < 0.95) {
+                    } else if (roll < 0.85) {
                         showCallRejectedUI('对方正在忙...');
                         if (callBtnEl) callBtnEl.classList.remove('call-active');
                         addCallSystemMessage('对方正在忙');
@@ -6414,7 +6782,7 @@
                 const callHangupBtn = document.getElementById('callHangupBtn');
                 const callBtnEl = document.getElementById('callBtn');
                 if (callOverlayEl) {
-                    callOverlayEl.style.display = 'flex';   // 关键：显示覆盖层
+                    callOverlayEl.style.display = 'flex'; 
                     callOverlayEl.classList.remove('hidden', 'closing');
                 }
                 if (callStatusText) {
@@ -6472,17 +6840,16 @@
                 const callMiniWindowEl = document.getElementById('callMiniWindow');
                 const callOverlayEl = document.getElementById('callOverlay');
                 if (callBtnEl) callBtnEl.classList.remove('call-active');
-                // 彻底隐藏悬浮窗
+                
                 if (callMiniWindowEl) {
                     callMiniWindowEl.style.display = 'none';
                     callMiniWindowEl.classList.add('hidden');
                     callMiniWindowEl.classList.remove('closing-mini');
                 }
-                // 动画关闭覆盖层，动画结束后彻底隐藏
                 if (callOverlayEl && !callOverlayEl.classList.contains('hidden')) {
                     callOverlayEl.classList.add('closing');
                     setTimeout(() => {
-                        callOverlayEl.style.display = 'none';   // 关键：动画后隐藏
+                        callOverlayEl.style.display = 'none';  
                         callOverlayEl.classList.add('hidden');
                         callOverlayEl.classList.remove('closing');
                         resetCallUI();
@@ -6500,11 +6867,11 @@
                 const callMiniWindowEl = document.getElementById('callMiniWindow');
                 const callMiniTimer = document.getElementById('callMiniTimer');
                 if (callOverlayEl) {
-                    callOverlayEl.style.display = 'none';   // 隐藏覆盖层
+                    callOverlayEl.style.display = 'none';  
                     callOverlayEl.classList.add('hidden');
                 }
                 if (callMiniWindowEl) {
-                    callMiniWindowEl.style.display = 'flex'; // 关键：显示悬浮窗
+                    callMiniWindowEl.style.display = 'flex'; 
                     callMiniWindowEl.classList.remove('hidden', 'closing-mini');
                     callMiniWindowEl.style.left = 'auto';
                     callMiniWindowEl.style.right = '12px';
@@ -6518,14 +6885,13 @@
             }
             
             function restoreCallFromMini() {
-                // 只有已接通状态才允许从悬浮窗恢复
                 if (callState.status !== 'connected') return;
-                
+            
                 callState.isMinimized = false;
                 const callMiniWindowEl = document.getElementById('callMiniWindow');
                 const callOverlayEl = document.getElementById('callOverlay');
                 const callTimerText = document.getElementById('callTimerText');
-                
+            
                 if (callMiniWindowEl) {
                     callMiniWindowEl.style.display = 'none';
                     callMiniWindowEl.classList.add('hidden');
@@ -6536,7 +6902,7 @@
                 }
                 if (callTimerText) callTimerText.textContent = getCallDuration();
                 updateCallUI();
-                showCallConnectedUI();       // ✅ 此时确认是 connected 状态
+                showCallConnectedUI(false);
             }
 
             function toggleVideoMode() { if (callState.status !== 'connected') return;
@@ -6573,7 +6939,7 @@
             let isMiniDragging = false,
                 miniDragMoved = false,
                 miniDragStartX, miniDragStartY, miniStartLeft, miniStartTop;
-            let rafId = null;   // 用于 requestAnimationFrame
+            let rafId = null;   
             const callMiniWindowEl = document.getElementById('callMiniWindow');
             if (callMiniWindowEl) {
                 callMiniWindowEl.addEventListener('pointerdown', function(e) {
@@ -6597,14 +6963,14 @@
                 });
                 window.addEventListener('pointermove', function(e) {
                     if (!isMiniDragging) return;
-                    e.preventDefault();                         // 防止页面滚动，跟手性更好
+                    e.preventDefault();                         
                 
                     if (rafId) cancelAnimationFrame(rafId);
                     rafId = requestAnimationFrame(() => {
                         const dx = e.clientX - miniDragStartX;
                         const dy = e.clientY - miniDragStartY;
                 
-                        // 提高阈值到 6px，降低点击误判
+
                         if (Math.abs(dx) > 6 || Math.abs(dy) > 6) {
                             miniDragMoved = true;
                         }
@@ -6621,7 +6987,6 @@
                     }
                 
                     callMiniWindowEl.style.willChange = 'auto';
-                    // 为后续位置吸附增加回弹动画
                     callMiniWindowEl.style.transition = 'box-shadow 0.2s ease, transform 0.2s ease';
                 
                     const finalLeft = miniStartLeft + (e.clientX - miniDragStartX);
@@ -6632,7 +6997,6 @@
                     const clampedTop = Math.max(40, Math.min(finalTop, window.innerHeight - miniHeight - 20));
                 
                     if (!miniDragMoved) {
-                        // 点击恢复全屏：先缩再放，视觉更流畅
                         callMiniWindowEl.style.transition = 'transform 0.2s cubic-bezier(0.4, 0, 0.2, 1)';
                         callMiniWindowEl.style.transform = 'scale(0.9)';
                         setTimeout(() => {
@@ -6640,7 +7004,6 @@
                             restoreCallFromMini();
                         }, 150);
                     } else {
-                        // 拖拽结束：平滑吸附到最终位置
                         callMiniWindowEl.style.transition = 'left 0.3s cubic-bezier(0.25, 0.8, 0.25, 1.2), top 0.3s cubic-bezier(0.25, 0.8, 0.25, 1.2)';
                         callMiniWindowEl.style.left = clampedLeft + 'px';
                         callMiniWindowEl.style.top = clampedTop + 'px';
@@ -6732,15 +7095,13 @@
                         clearCallClosingTimeout(); if (callOverlayEl) callOverlayEl.classList.remove('closing');
                         callState.status = 'idle';
                         initiateCall(); } else { initiateCall(); } };
-                // 通话悬浮窗：点击直接恢复全屏（排除挂断按钮）
                 if (callMiniWindowEl) {
                     callMiniWindowEl.addEventListener('click', function(e) {
-                        // 如果点击的是挂断按钮，不处理
                         if (e.target === document.getElementById('callMiniHangup') ||
                             document.getElementById('callMiniHangup')?.contains(e.target)) {
                             return;
                         }
-                        // 通话中才允许恢复
+                       
                         if (callState.status === 'connected' && callState.isMinimized) {
                             restoreCallFromMini();
                         }
@@ -7061,6 +7422,8 @@
                     }
                 lastOnlineTime = parseFloat(localStorage.getItem('xiayi_lastOnlineTime') || '0');
                 updateLastOnlineTime();
+                // ✅ 启动时处理离线期间的朋友圈生成
+                generateOfflineMomentsIfNeeded();
             };
             window.addEventListener('beforeunload', () => { updateLastOnlineTime(); });
         })();
