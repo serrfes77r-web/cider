@@ -3490,9 +3490,9 @@
             border-radius: 30px !important;
         }
         #smartWordManagerModal .theme-pill-btn {
-            padding: 8px 8px !important;      /* 增大内边距 → 按钮更宽更高 */
-            font-size: 14px !important;         /* 字体变大（约16px） */
-            border-radius: 20px !important;     /* 保持圆润气泡感 */
+            padding: 8px 8px !important;      
+            font-size: 14px !important;         
+            border-radius: 20px !important;     
             /* 若想缩小，可使用 padding: 6px 12px; font-size: 0.75rem; */
         }
         .smart-card-item.batch-selected {
@@ -3929,15 +3929,19 @@
                         const usedInMengAvatar = (profile.mengAvatar && extractImgId(profile.mengAvatar) === imgId);
                         const usedInMyAvatar = (profile.myAvatar && extractImgId(profile.myAvatar) === imgId);
                         const usedInMemberAvatar = groupMembers.some(m => m.avatar && extractImgId(m.avatar) === imgId);
-                        if (!usedInOtherMessages && !usedInImgCards && !usedInBg && !usedInMengAvatar && !usedInMyAvatar && !
-                            usedInMemberAvatar) { await deleteImageFromDB(imgId); }
+                        const usedInMoments = moments.some(m => 
+                            m.images && m.images.some(img => extractImgId(img) === imgId)
+                        );
+                        if (!usedInOtherMessages && !usedInImgCards && !usedInBg && !usedInMengAvatar && !usedInMyAvatar && !usedInMemberAvatar && !usedInMoments) {
+                            await deleteImageFromDB(imgId);
+                        }
                     }
                     messages = messages.filter(m => m.id != msgId);
                     saveMessagesImmediately();
                     renderMessages();
                 }
             }
-            async function clearAllMessagesSafe() {
+            async function clearAllMessagesSafe() {=
                 const imgRefCount = new Map();
                 for (const msg of messages) {
                     if (msg.type === 'image' && isImgIdRef(msg.content)) {
@@ -3945,6 +3949,7 @@
                         imgRefCount.set(id, (imgRefCount.get(id) || 0) + 1);
                     }
                 }
+           
                 for (const [imgId, count] of imgRefCount.entries()) {
                     const usedInImgCards = imgCardList.some(card => extractImgId(card.url) === imgId);
                     const customBg = localStorage.getItem(STORAGE.customBgImage);
@@ -3952,9 +3957,15 @@
                     const usedInMengAvatar = (profile.mengAvatar && extractImgId(profile.mengAvatar) === imgId);
                     const usedInMyAvatar = (profile.myAvatar && extractImgId(profile.myAvatar) === imgId);
                     const usedInMemberAvatar = groupMembers.some(m => m.avatar && extractImgId(m.avatar) === imgId);
-                    if (!usedInImgCards && !usedInBg && !usedInMengAvatar && !usedInMyAvatar && !usedInMemberAvatar) { await
-                            deleteImageFromDB(imgId); }
+                    const usedInMoments = moments.some(m =>
+                        m.images && m.images.some(img => extractImgId(img) === imgId)
+                    );
+            
+                    if (!usedInImgCards && !usedInBg && !usedInMengAvatar && !usedInMyAvatar && !usedInMemberAvatar && !usedInMoments) {
+                        await deleteImageFromDB(imgId);
+                    }
                 }
+            
                 messages = [];
                 saveMessagesImmediately();
                 renderMessages();
@@ -4078,6 +4089,10 @@
                 currentMusicIndex = 0,
                 audioPlayer = null;
             let moments = [];
+            let audioStallTimer = null;
+            let audioRetryCount = 0;          
+            const MAX_RETRY_PER_SONG = 2;     
+            let isRecoveringFromStall = false;  
             const MOMENTS_STORAGE_KEY = 'xiayi_moments';
             let MOMENT_LOCATIONS = (() => {
                 const saved = localStorage.getItem('moment_locations');
@@ -5042,7 +5057,7 @@
                     for (let i = 0; i < wcc; i++) {
                         const globalGroups = getGlobalGroupsConfig();
                         const enabledWordCards = filterEnabledCards(wordCardList, globalGroups);
-                        const finalWordCards = enabledWordCards.length ? enabledWordCards : wordCardList; // 兜底
+                        const finalWordCards = enabledWordCards.length ? enabledWordCards : wordCardList; 
                         const content = finalWordCards.length ? finalWordCards[Math.floor(Math.random() * finalWordCards.length)] : '💜';
                         const quote = (i === 0) ? useQuote : null;
                         addMessage('meng', content, 'text', quote);
@@ -5489,21 +5504,33 @@
                     authorAvatar = member.avatar || defaultAvatar();
                 }
                 const textPool = getMomentTextPool(authorId);
-                const sentenceCount = Math.floor(Math.random() * 3) + 1;
+            
+                let sentenceCount;
+                const rand = Math.random();
+                if (rand < 0.85) sentenceCount = 1;
+                else if (rand < 0.95) sentenceCount = 2;
+                else sentenceCount = 3;
+            
                 const selectedSentences = [];
                 for (let i = 0; i < sentenceCount; i++) {
                     const s = textPool[Math.floor(Math.random() * textPool.length)];
                     if (!selectedSentences.includes(s)) selectedSentences.push(s);
                 }
-                const content = selectedSentences.join(' ');
-                const imageProbability = 0.3;
-                let images = [];
-                if (!imgDisabled && imgCardList.length > 0 && Math.random() < imageProbability) {
-                    const randomImg = imgCardList[Math.floor(Math.random() * imgCardList.length)];
-                    if (randomImg && randomImg.url) {
-                        images.push(randomImg.url);
-                    }
+                let content = selectedSentences.join(' ');
+            
+                if (Math.random() < 0.3) {
+                    const emojiList = emojiCardList.length ? emojiCardList : ["😊", "✨", "💫", "🌟", "🌸", "🌙", "💜", "🌌"];
+                    const randomEmoji = emojiList[Math.floor(Math.random() * emojiList.length)];
+                    const insertPos = Math.floor(Math.random() * (content.length + 1));
+                    content = content.slice(0, insertPos) + randomEmoji + content.slice(insertPos);
                 }
+            
+                let images = [];
+                if (!imgDisabled && imgCardList.length > 0 && Math.random() < 0.3) {
+                    const randomImg = imgCardList[Math.floor(Math.random() * imgCardList.length)];
+                    if (randomImg && randomImg.url) images.push(randomImg.url);
+                }
+            
                 const feeling = statusList.length ? statusList[Math.floor(Math.random() * statusList.length)] : '✨ 温柔';
                 const location = MOMENT_LOCATIONS[Math.floor(Math.random() * MOMENT_LOCATIONS.length)];
                 const moment = {
@@ -5623,30 +5650,96 @@
             }
             
             async function renderMomentsList(containerId) {
-                const container = document.getElementById(containerId); if (!container) return; if (!moments.length) { container
-                        .innerHTML = '<div class="moment-empty">🍃 世界很安静，还没有人发过朋友圈呢。</div>'; return; } const sorted = [...moments]
-                    .sort((a, b) => b.timestamp - a.timestamp); let html = ''; for (const moment of sorted) { const avatarUrl =
-                        getAuthorAvatar(moment.authorId) || moment.authorAvatar || defaultAvatar(); const avatarSrc =
-                        isImgIdRef(avatarUrl) ? (avatarCache.get(avatarUrl) || defaultAvatar()) : avatarUrl; let imagesHtml =
-                        ''; if (moment.images && moment.images.length) { imagesHtml = '<div class="moment-images">'; for (const
-                            imgUrl of moment.images) { let realUrl = imgUrl; if (isImgIdRef(imgUrl)) { realUrl = await
-                                resolveImageUrl(imgUrl); if (!realUrl || isImgIdRef(realUrl)) { realUrl =
-    defaultAvatar(); } }
-                            imagesHtml +=
-                                `<img src="${realUrl}" class="moment-img-clickable" data-full-img="${realUrl}" alt="朋友圈图片">`; }
-                        imagesHtml += '</div>'; } const likedByMe = moment.likes.includes('me'); const likeCount = moment.likes
-                        .length; const commentCount = moment.comments.length; let commentsHtml = ''; if (moment.comments && moment
-                            .comments.length) { commentsHtml = '<div class="moment-comments">'; for (const cmt of moment.comments) {
-                            let quoteHtml = ''; if (cmt.quoteCommentId) { quoteHtml =
-                                    `<div class="comment-quote">↪ 回复 <b>${escapeHtml(cmt.quoteAuthorName)}</b>：${escapeHtml(cmt.quoteContent?.substring(0,30))}…</div>`; }
-                            commentsHtml +=
-                                `<div class="comment-item" data-comment-id="${cmt.id}"><div class="comment-body">${quoteHtml}<span class="comment-author">${escapeHtml(cmt.authorName)}：</span><span class="comment-text">${escapeHtml(cmt.content)}</span></div><div class="comment-actions"><button class="comment-reply-btn" data-comment-id="${cmt.id}" title="引用回复"><i class="fa-solid fa-reply"></i></button><button class="comment-delete-btn" data-comment-id="${cmt.id}" title="删除"><i class="fa-solid fa-xmark"></i></button></div></div>`; }
-                        commentsHtml += '</div>'; } const deleteBtnHtml =
-                        `<button class="moment-delete-btn" data-moment-id="${moment.id}" style="position:absolute;top:8px;right:10px;background:none;border:none;font-size:18px;cursor:pointer;color:var(--text-tertiary);padding:4px;" title="删除"><i class="fa-solid fa-trash-can"></i></button>`;
-                    html +=
-                        `<div class="moment-card" data-moment-id="${moment.id}" style="position:relative;"><div class="moment-header"><img src="${avatarSrc}" alt="${escapeHtml(moment.authorName)}"><div class="moment-author"><span class="moment-author-name">${escapeHtml(moment.authorName)}</span><span class="moment-time-loc"><span>${formatMsgTime(moment.timestamp)}</span>${moment.location?`<span>· ${escapeHtml(moment.location)}</span>`:''}</span></div></div>${deleteBtnHtml}<div class="moment-content">${escapeHtml(moment.content)}</div>${moment.feeling?`<span class="moment-feeling">${escapeHtml(moment.feeling)}</span>`:''}${imagesHtml}<div class="moment-actions"><button class="moment-action-btn like-btn ${likedByMe?'liked':''}" data-moment-id="${moment.id}"><i class="${likedByMe?'fa-solid':'fa-regular'} fa-heart"></i> <span>${likeCount}</span></button><button class="moment-action-btn comment-toggle-btn" data-moment-id="${moment.id}"><i class="fa-regular fa-comment"></i> <span>${commentCount}</span></button></div><div class="comment-section" id="commentSection_${moment.id}" style="display:none;">${commentsHtml}<div class="comment-input-row"><input type="text" class="comment-input" data-moment-id="${moment.id}" placeholder="说点什么吧..."><button class="send-comment-btn" data-moment-id="${moment.id}"><i class="fa-solid fa-paper-plane"></i></button></div></div></div>`; }
+                const container = document.getElementById(containerId);
+                if (!container) return;
+                if (!moments.length) {
+                    container.innerHTML = '<div class="moment-empty">🍃 世界很安静，还没有人发过朋友圈呢。</div>';
+                    return;
+                }
+                const sorted = [...moments].sort((a, b) => b.timestamp - a.timestamp);
+                let html = '';
+                for (const moment of sorted) {
+                    const avatarUrl = getAuthorAvatar(moment.authorId) || moment.authorAvatar || defaultAvatar();
+                    const avatarSrc = isImgIdRef(avatarUrl) ? (avatarCache.get(avatarUrl) || defaultAvatar()) : avatarUrl;
+                    
+                    let imagesHtml = '';
+                    if (moment.images && moment.images.length) {
+                        const imagePromises = moment.images.map(async (imgUrl) => {
+                            let realUrl = imgUrl;
+                            if (isImgIdRef(imgUrl)) {
+                                realUrl = await resolveImageUrl(imgUrl);
+                                if (!realUrl || isImgIdRef(realUrl)) {
+                                    realUrl = defaultAvatar();
+                                }
+                            }
+                            return `<img src="${realUrl}" class="moment-img-clickable" data-full-img="${imgUrl}" alt="朋友圈图片">`;
+                        });
+                        const imageTags = await Promise.all(imagePromises);
+                        imagesHtml = `<div class="moment-images">${imageTags.join('')}</div>`;
+                    }
+                    
+                    const likedByMe = moment.likes.includes('me');
+                    const likeCount = moment.likes.length;
+                    const commentCount = moment.comments.length;
+                    let commentsHtml = '';
+                    if (moment.comments && moment.comments.length) {
+                        commentsHtml = '<div class="moment-comments">';
+                        for (const cmt of moment.comments) {
+                            let quoteHtml = '';
+                            if (cmt.quoteCommentId) {
+                                quoteHtml = `<div class="comment-quote">↪ 回复 <b>${escapeHtml(cmt.quoteAuthorName)}</b>：${escapeHtml(cmt.quoteContent?.substring(0,30))}…</div>`;
+                            }
+                            commentsHtml += `<div class="comment-item" data-comment-id="${cmt.id}">
+                                                <div class="comment-body">
+                                                    ${quoteHtml}
+                                                    <span class="comment-author">${escapeHtml(cmt.authorName)}：</span>
+                                                    <span class="comment-text">${escapeHtml(cmt.content)}</span>
+                                                </div>
+                                                <div class="comment-actions">
+                                                    <button class="comment-reply-btn" data-comment-id="${cmt.id}" title="引用回复"><i class="fa-solid fa-reply"></i></button>
+                                                    <button class="comment-delete-btn" data-comment-id="${cmt.id}" title="删除"><i class="fa-solid fa-xmark"></i></button>
+                                                </div>
+                                            </div>`;
+                        }
+                        commentsHtml += '</div>';
+                    }
+                    
+                    const deleteBtnHtml = `<button class="moment-delete-btn" data-moment-id="${moment.id}" style="position:absolute;top:8px;right:10px;background:none;border:none;font-size:18px;cursor:pointer;color:var(--text-tertiary);padding:4px;" title="删除"><i class="fa-solid fa-trash-can"></i></button>`;
+                    html += `<div class="moment-card" data-moment-id="${moment.id}" style="position:relative;">
+                                <div class="moment-header">
+                                    <img src="${avatarSrc}" alt="${escapeHtml(moment.authorName)}">
+                                    <div class="moment-author">
+                                        <span class="moment-author-name">${escapeHtml(moment.authorName)}</span>
+                                        <span class="moment-time-loc">
+                                            <span>${formatMsgTime(moment.timestamp)}</span>
+                                            ${moment.location ? `<span>· ${escapeHtml(moment.location)}</span>` : ''}
+                                        </span>
+                                    </div>
+                                </div>
+                                ${deleteBtnHtml}
+                                <div class="moment-content">${escapeHtml(moment.content)}</div>
+                                ${moment.feeling ? `<span class="moment-feeling">${escapeHtml(moment.feeling)}</span>` : ''}
+                                ${imagesHtml}
+                                <div class="moment-actions">
+                                    <button class="moment-action-btn like-btn ${likedByMe ? 'liked' : ''}" data-moment-id="${moment.id}">
+                                        <i class="${likedByMe ? 'fa-solid' : 'fa-regular'} fa-heart"></i> <span>${likeCount}</span>
+                                    </button>
+                                    <button class="moment-action-btn comment-toggle-btn" data-moment-id="${moment.id}">
+                                        <i class="fa-regular fa-comment"></i> <span>${commentCount}</span>
+                                    </button>
+                                </div>
+                                <div class="comment-section" id="commentSection_${moment.id}" style="display:none;">
+                                    ${commentsHtml}
+                                    <div class="comment-input-row">
+                                        <input type="text" class="comment-input" data-moment-id="${moment.id}" placeholder="说点什么吧...">
+                                        <button class="send-comment-btn" data-moment-id="${moment.id}"><i class="fa-solid fa-paper-plane"></i></button>
+                                    </div>
+                                </div>
+                            </div>`;
+                }
                 container.innerHTML = html;
-                bindMomentEvents(container); }
+                bindMomentEvents(container);
+            }
 
             function bindMomentEvents(container) { let replyQuote = null;
                 container.querySelectorAll('.like-btn').forEach(btn => { btn.addEventListener('click', () => { const momentId =
@@ -6145,7 +6238,6 @@
                     padding-left: 8px;
                     opacity: 0.8;
                 }
-                /* 适配深色模式（确保黑白分明不受主题变量干扰） */
                 body[data-theme="night"] .bubble:not(.message-row.me .bubble) {
                     background: #ffffff;
                     color: #000000;
@@ -6732,7 +6824,7 @@
                     alert("请填写信件内容");
                     return false;
                 }
-                const delay = 2 + Math.random() * 3;
+                const delay = 2 + Math.random() * 6;
                 const due = Date.now() + delay * 3600 * 1000;
                 const nl = {
                     id: Date.now() + Math.random(),
@@ -7640,33 +7732,150 @@
                         d = audioPlayer.duration;
                     ds.innerText = d && isFinite(d) ? formatTime(d) : "0:00"; } }
 
+
+            let audioInitialized = false; 
+
             function initAudioPlayer() {
+                if (audioInitialized) return;   
                 if (!audioPlayer) {
                     audioPlayer = new Audio();
-                    audioPlayer.addEventListener('timeupdate', updateProgressUI);
-                    audioPlayer.addEventListener('loadedmetadata', () => {
-                        updateDurationUI();
-                        const ps = document.getElementById('musicProgress');
-                        if (ps && audioPlayer.duration && isFinite(audioPlayer.duration)) {
-                            ps.max = audioPlayer.duration;
-                        }
-                        updateProgressUI();
-                    });
-                    audioPlayer.addEventListener('ended', handleSongEnd);
-                    audioPlayer.onerror = () => {
-                        const t = document.getElementById('musicTitle');
-                        if (t && musicList[currentMusicIndex]) 
-                            t.innerText = '播放失败: ' + musicList[currentMusicIndex].name;
-                        if (musicList.length > 1) {
-                            setTimeout(() => {
-                                const nextIndex = getNextMusicIndex();
-                                if (nextIndex !== currentMusicIndex) {
-                                    playMusic(nextIndex);
-                                }
-                            }, 1000);
-                        }
-                    };
                 }
+                
+                audioPlayer.addEventListener('timeupdate', updateProgressUI);
+                audioPlayer.addEventListener('loadedmetadata', () => {
+                    updateDurationUI();
+                    const ps = document.getElementById('musicProgress');
+                    if (ps && audioPlayer.duration && isFinite(audioPlayer.duration)) {
+                        ps.max = audioPlayer.duration;
+                    }
+                    updateProgressUI();
+                    audioRetryCount = 0;
+                });
+                audioPlayer.addEventListener('ended', handleSongEnd);
+                
+                audioPlayer.addEventListener('waiting', () => {
+                    if (audioStallTimer) clearTimeout(audioStallTimer);
+                    const titleEl = document.getElementById('musicTitle');
+                    if (titleEl && musicList[currentMusicIndex]) {
+                        titleEl.innerText = musicList[currentMusicIndex].name + ' (缓冲中...)';
+                    }
+                    audioStallTimer = setTimeout(() => handleAudioStall(), 5000);
+                });
+                
+                audioPlayer.addEventListener('stalled', () => {
+                    if (audioStallTimer) clearTimeout(audioStallTimer);
+                    const titleEl = document.getElementById('musicTitle');
+                    if (titleEl && musicList[currentMusicIndex]) {
+                        titleEl.innerText = musicList[currentMusicIndex].name + ' (连接中断...)';
+                    }
+                    audioStallTimer = setTimeout(() => handleAudioStall(), 6000);
+                });
+                
+                audioPlayer.onerror = (e) => {
+                    console.error('音频播放错误', e);
+                };
+                
+                audioInitialized = true;   
+                applyLoopByMode();
+            }
+            
+            function handleAudioStall() {
+                if (isRecoveringFromStall) return;
+                if (!audioPlayer || !musicList.length) return;
+                if (audioPlayer.readyState === 4) {
+                    if (audioPlayer.paused) {
+                        audioPlayer.play().catch(e => console.warn('恢复播放失败', e));
+                    }
+                    return;
+                }
+                isRecoveringFromStall = true;
+                
+                const currentSong = musicList[currentMusicIndex];
+                if (!currentSong) return;
+                
+                const wasPlaying = !audioPlayer.paused;
+                const currentTime = audioPlayer.currentTime || 0;
+                
+                audioPlayer.src = currentSong.url;
+                audioPlayer.load();
+                audioPlayer.addEventListener('canplay', function onCanPlay() {
+                    audioPlayer.removeEventListener('canplay', onCanPlay);
+                    if (currentTime > 0 && isFinite(currentTime)) {
+                        audioPlayer.currentTime = currentTime;
+                    }
+                    if (wasPlaying) {
+                        audioPlayer.play().catch(e => console.warn('卡顿恢复播放失败', e));
+                    }
+                    isRecoveringFromStall = false;
+                    const titleEl = document.getElementById('musicTitle');
+                    if (titleEl && musicList[currentMusicIndex]) {
+                        titleEl.innerText = musicList[currentMusicIndex].name;
+                    }
+                });
+                
+                setTimeout(() => {
+                    if (isRecoveringFromStall) {
+                        console.warn('重新加载超时，切换到下一首');
+                        isRecoveringFromStall = false;
+                        if (musicList.length > 1) {
+                            const nextIndex = getNextMusicIndex();
+                            if (nextIndex !== currentMusicIndex) {
+                                playMusic(nextIndex);
+                            }
+                        } else {
+                            playMusic(currentMusicIndex, true);
+                        }
+                    }
+                }, 4000);
+            }
+            
+            function playMusic(index, isRetry = false) {
+                if (!musicList.length) return;
+                currentMusicIndex = Math.max(0, Math.min(index, musicList.length - 1));
+                localStorage.setItem(STORAGE.currentMusicIndex, currentMusicIndex);
+                const song = musicList[currentMusicIndex];
+                if (!song?.url) return;
+                
+                if (audioStallTimer) clearTimeout(audioStallTimer);
+                if (!isRetry) audioRetryCount = 0;  
+                isRecoveringFromStall = false;
+                
+                initAudioPlayer();
+                
+                const titleEl = document.getElementById('musicTitle');
+                if (titleEl) titleEl.innerText = song.name + ' (加载中...)';
+                
+                audioPlayer.src = song.url;
+                audioPlayer.load();
+                
+                let loadTimeout = setTimeout(() => {
+                    if (audioPlayer.readyState < 2) { // 未加载到元数据
+                        console.warn('音频加载超时，尝试重试或切歌');
+                        if (audioRetryCount < MAX_RETRY_PER_SONG) {
+                            audioRetryCount++;
+                            playMusic(currentMusicIndex, true);
+                        } else if (musicList.length > 1) {
+                            audioRetryCount = 0;
+                            playMusic(getNextMusicIndex());
+                        } else {
+                            if (titleEl) titleEl.innerText = song.name + ' (加载失败)';
+                        }
+                    }
+                }, 8000);
+                
+                audioPlayer.addEventListener('canplay', () => {
+                    clearTimeout(loadTimeout);
+                    if (titleEl) titleEl.innerText = song.name;
+                    audioPlayer.play().catch(err => {
+                        console.warn('播放失败', err);
+                        if (audioRetryCount < MAX_RETRY_PER_SONG) {
+                            audioRetryCount++;
+                            setTimeout(() => playMusic(currentMusicIndex, true), 1000);
+                        }
+                    });
+                }, { once: true });
+                
+                updateProgressUI();
                 applyLoopByMode();
             }
 
@@ -7675,28 +7884,7 @@
 
             function updateMusicFloatVisibility() { const fb = document.getElementById('musicFloatBtn'); if (fb) musicList.length ? fb
                     .classList.remove('hidden') : fb.classList.add('hidden'); }
-
-            function playMusic(index) {
-                if (!musicList.length) return;
-                currentMusicIndex = Math.max(0, Math.min(index, musicList.length - 1));
-                localStorage.setItem(STORAGE.currentMusicIndex, currentMusicIndex);
-                const song = musicList[currentMusicIndex];
-                if (!song?.url) return;
-                initAudioPlayer();
-                audioPlayer.src = song.url;
-                const playPromise = audioPlayer.play();
-                if (playPromise !== undefined) {
-                    playPromise.then(() => {
-                        document.getElementById('playPauseMusicBtn').innerHTML = '<i class="fa-solid fa-pause"></i>';
-                    }).catch(() => {
-                        document.getElementById('playPauseMusicBtn').innerHTML = '<i class="fa-solid fa-play"></i>';                        
-                    });
-                }
-                document.getElementById('musicTitle').innerText = song.name || '未知';
-                updateProgressUI();
-                applyLoopByMode();
-            }
-
+            
             function togglePlayPause() { if (!audioPlayer || !musicList.length) return; if (audioPlayer.paused) { audioPlayer.play()
                     .catch(() => {});
                     document.getElementById('playPauseMusicBtn').innerHTML = '<i class="fa-solid fa-pause"></i>'; } else { audioPlayer
