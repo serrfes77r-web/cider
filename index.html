@@ -3490,9 +3490,9 @@
             border-radius: 30px !important;
         }
         #smartWordManagerModal .theme-pill-btn {
-            padding: 8px 8px !important;      
-            font-size: 14px !important;         
-            border-radius: 20px !important;     
+            padding: 8px 8px !important;      /* 增大内边距 → 按钮更宽更高 */
+            font-size: 14px !important;         /* 字体变大（约16px） */
+            border-radius: 20px !important;     /* 保持圆润气泡感 */
             /* 若想缩小，可使用 padding: 6px 12px; font-size: 0.75rem; */
         }
         .smart-card-item.batch-selected {
@@ -3941,7 +3941,8 @@
                     renderMessages();
                 }
             }
-            async function clearAllMessagesSafe() {=
+            async function clearAllMessagesSafe() {
+                // 1. 统计所有消息中引用的图片 ID 及其出现次数
                 const imgRefCount = new Map();
                 for (const msg of messages) {
                     if (msg.type === 'image' && isImgIdRef(msg.content)) {
@@ -3949,7 +3950,8 @@
                         imgRefCount.set(id, (imgRefCount.get(id) || 0) + 1);
                     }
                 }
-           
+            
+                // 2. 遍历所有被引用的图片，检查是否还被其他地方使用
                 for (const [imgId, count] of imgRefCount.entries()) {
                     const usedInImgCards = imgCardList.some(card => extractImgId(card.url) === imgId);
                     const customBg = localStorage.getItem(STORAGE.customBgImage);
@@ -3957,15 +3959,18 @@
                     const usedInMengAvatar = (profile.mengAvatar && extractImgId(profile.mengAvatar) === imgId);
                     const usedInMyAvatar = (profile.myAvatar && extractImgId(profile.myAvatar) === imgId);
                     const usedInMemberAvatar = groupMembers.some(m => m.avatar && extractImgId(m.avatar) === imgId);
+                    // ✅ 新增：检查是否被朋友圈动态（moments）使用
                     const usedInMoments = moments.some(m =>
                         m.images && m.images.some(img => extractImgId(img) === imgId)
                     );
             
+                    // 只有没有任何地方引用该图片时，才从 IndexedDB 中删除
                     if (!usedInImgCards && !usedInBg && !usedInMengAvatar && !usedInMyAvatar && !usedInMemberAvatar && !usedInMoments) {
                         await deleteImageFromDB(imgId);
                     }
                 }
             
+                // 3. 清空所有消息
                 messages = [];
                 saveMessagesImmediately();
                 renderMessages();
@@ -5057,7 +5062,7 @@
                     for (let i = 0; i < wcc; i++) {
                         const globalGroups = getGlobalGroupsConfig();
                         const enabledWordCards = filterEnabledCards(wordCardList, globalGroups);
-                        const finalWordCards = enabledWordCards.length ? enabledWordCards : wordCardList; 
+                        const finalWordCards = enabledWordCards.length ? enabledWordCards : wordCardList; // 兜底
                         const content = finalWordCards.length ? finalWordCards[Math.floor(Math.random() * finalWordCards.length)] : '💜';
                         const quote = (i === 0) ? useQuote : null;
                         addMessage('meng', content, 'text', quote);
@@ -7733,14 +7738,15 @@
                     ds.innerText = d && isFinite(d) ? formatTime(d) : "0:00"; } }
 
 
-            let audioInitialized = false; 
+            let audioInitialized = false;   // 添加在文件顶部（与 audioPlayer 同级别），约第 2800 行附近
 
             function initAudioPlayer() {
-                if (audioInitialized) return;   
+                if (audioInitialized) return;   // 已经绑定过事件，直接返回
                 if (!audioPlayer) {
                     audioPlayer = new Audio();
                 }
                 
+                // 这些事件监听器只绑定一次
                 audioPlayer.addEventListener('timeupdate', updateProgressUI);
                 audioPlayer.addEventListener('loadedmetadata', () => {
                     updateDurationUI();
@@ -7773,9 +7779,10 @@
                 
                 audioPlayer.onerror = (e) => {
                     console.error('音频播放错误', e);
+                    // ... 原有错误处理（保持不变）
                 };
                 
-                audioInitialized = true;   
+                audioInitialized = true;   // 标记已绑定
                 applyLoopByMode();
             }
             
