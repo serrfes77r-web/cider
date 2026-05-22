@@ -6482,7 +6482,6 @@
                     modal.querySelectorAll('.color-dot').forEach(d => d.classList.toggle('active', parseInt(d.dataset.cidx) === 1));
                     if (fs) fs.value = 18;
                 };
-                // 渲染预设样式按钮
                 const presetContainer = modal.querySelector('#presetStyleList');
                 if (presetContainer) {
                     presetStyles.forEach(style => {
@@ -6492,12 +6491,9 @@
                         btn.style.fontSize = '12px';
                         btn.style.padding = '6px 12px';
                         btn.addEventListener('click', () => {
-                            // 应用预设CSS
                             applyCustomBubbleCSS(style.css);
-                            // 如果管理面板中的文本框存在，同步更新
                             const manageTextarea = document.getElementById('bubbleCssTextarea');
                             if (manageTextarea) manageTextarea.value = style.css;
-                            // 提示用户（需要 showToast 函数，原文件已有）
                             if (typeof showToast === 'function') {
                                 showToast(`已应用「${style.name}」`, '🎨');
                             }
@@ -7927,37 +7923,31 @@
                 }
             }
             let isProcessingLongPress = false;
-            // 改造后函数
             let currentActionMsg = null;
             
             async function handleMessageLongPress(msg, event) {
                 if (isProcessingLongPress) return;
                 isProcessingLongPress = true;
                 
-                // 清除之前的选中样式
                 document.querySelectorAll('.message-row.selected-for-action').forEach(row => {
                     row.classList.remove('selected-for-action');
                 });
-                // 为当前消息行添加高亮
                 const targetRow = event.target.closest('.message-row');
                 if (targetRow) targetRow.classList.add('selected-for-action');
                 
                 currentActionMsg = msg;
                 
-                // 获取点击位置坐标
                 let clientX = event.clientX ?? (event.touches?.[0]?.clientX ?? 0);
                 let clientY = event.clientY ?? (event.touches?.[0]?.clientY ?? 0);
                 
                 const menu = document.getElementById('msgActionMenu');
                 if (!menu) return;
                 
-                // 显示菜单并调整位置（防止超出边界）
                 menu.style.display = 'block';
                 document.getElementById('menuOverlay').style.display = 'block';
                 menu.style.left = clientX + 'px';
                 menu.style.top = clientY + 'px';
                 
-                // 边界检测
                 setTimeout(() => {
                     const rect = menu.getBoundingClientRect();
                     if (rect.right > window.innerWidth) menu.style.left = (window.innerWidth - rect.width - 10) + 'px';
@@ -8007,10 +7997,8 @@
                         closeActionMenu();
                     };
                 }
-                // 点击遮罩关闭菜单
                 if (overlay) overlay.onclick = () => closeActionMenu();
                 
-                // 可选：按 ESC 键关闭
                 document.addEventListener('keydown', (e) => {
                     if (e.key === 'Escape') closeActionMenu();
                 });
@@ -9941,15 +9929,30 @@
                 document.getElementById('smartSaveBtn').addEventListener('click', () => {
                     saveWordListCallback(currentWordList);
                     saveGroupsCallback(currentGroups);
-                    if (options.mode === 'global') {
-                        globalGroupsConfig = currentGroups;
-                    } else if (options.mode === 'member' && options.memberId) {
-                        updateMemberGroupsCache(options.memberId, currentGroups);
+                    
+                    const mainPanel = document.getElementById('managePanelModal');
+                    if (mainPanel && mainPanel.style.display !== 'none') {
+                        if (options.mode === 'global') {
+                            const wordTextarea = document.getElementById('wordTextarea');
+                            const wordCountSpan = document.getElementById('wordCountDisplay');
+                            if (wordTextarea) wordTextarea.value = currentWordList.join('\n');
+                            if (wordCountSpan) wordCountSpan.innerHTML = `📝 当前 ${currentWordList.length} 条`;
+                        } 
+                        else if (options.mode === 'member' && options.memberId) {
+                            const memberTextarea = document.getElementById(`wordTextarea_${options.memberId}`);
+                            const memberCard = document.querySelector(`.member-card[data-member-id="${options.memberId}"]`);
+                            if (memberTextarea) memberTextarea.value = currentWordList.join('\n');
+                            if (memberCard) {
+                                const wordCountSpan = memberCard.querySelector('.member-word-count');
+                                if (wordCountSpan) wordCountSpan.innerHTML = `📝 ${currentWordList.length} 条`;
+                            }
+                        }
                     }
-                    alert('已同步到字卡库');                    
-                    exitBatchMode();       
-                    renderGroupTabs();       
-                    renderCardList();         
+                    
+                    alert('已同步到字卡库');
+                    exitBatchMode();
+                    renderGroupTabs();
+                    renderCardList();
                 });                
                 renderGroupTabs();
                 renderCardList();
