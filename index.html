@@ -2936,24 +2936,27 @@
             position: fixed;
             right: 12px;
             top: 38%;
-            width: 32px;
-            height: 32px;
+            width: 26px;
+            height: 26px;
             border-radius: 50%;
             background: var(--card-bg);
             backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
             border: 1px solid var(--border-light);
             color: var(--text-secondary);
-            font-size: 12px;
+            font-size: 10px;
             cursor: pointer;
             z-index: 150;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
             transition: all 0.25s ease;
-            user-select: none;
-            -webkit-tap-highlight-color: transparent;
+        }
+        
+        /* 可选：调整内部图标垂直居中 */
+        .immersive-toggle i {
+            font-size: 10px;
+            line-height: 1;
         }
         .immersive-toggle:hover {
             background: var(--accent-light);
@@ -4171,14 +4174,11 @@
                 unlockedCount: 0
             };
             let combineRepliesEnabled = false;            
-            let globalGroupsConfig = null;
-            let memberGroupsCache = new Map();
-            
+
+            // 删除 globalGroupsConfig 变量（可删，也可保留但不再使用）
             function getGlobalGroupsConfig() {
-              if (!globalGroupsConfig) {
-                globalGroupsConfig = loadGlobalWordGroups();
-              }
-              return globalGroupsConfig;
+              // 每次调用都从 localStorage 重新加载，保证分组启用/禁用状态实时生效
+              return loadGlobalWordGroups();
             }            
             /**
              * 根据分组禁用状态过滤字卡列表
@@ -4201,11 +4201,10 @@
                 return groupEnabledMap.get(groupId) === true;
               });
             }
+            // 删除 memberGroupsCache（可删，也可保留但不再使用）
             function getMemberGroupsConfig(memberId) {
-              if (!memberGroupsCache.has(memberId)) {
-                memberGroupsCache.set(memberId, loadMemberWordGroups(memberId));
-              }
-              return memberGroupsCache.get(memberId);
+              // 每次都重新加载，不依赖缓存，确保修改分组后即时生效
+              return loadMemberWordGroups(memberId);
             }
             
             function updateMemberGroupsCache(memberId, config) {
@@ -4885,7 +4884,7 @@
                 markMyMessagesRead();
                 isTyping = true;
                 showTypingIndicator(true, '群成员正在输入...');
-                
+            
                 const actMin = Math.min(replyMinDelayMs, replyMaxDelayMs);
                 const actMax = Math.max(replyMinDelayMs, replyMaxDelayMs);
                 const delay = actMin + Math.random() * (actMax - actMin);
@@ -4901,11 +4900,10 @@
                         await new Promise(r => setTimeout(r, replyInterMessageDelayMs));
                         continue;
                     }
-                    
+            
                     const msgCount = getWeightedReplyCount();
-                    const needExtra = !emojiDisabled && !imgDisabled && Math.random() < 0.2;
                     const messagesToSend = [];
-                    
+            
                     for (let i = 0; i < msgCount; i++) {
                         let msgType = 'text';
                         let content = null;
@@ -4914,10 +4912,20 @@
                         const hasText = textPool.length > 0;
                         const hasEmoji = !emojiDisabled && emojiCardList.length > 0;
                         const hasImage = !imgDisabled && imgCardList.length > 0;
-                        
+            
                         if (hasText && (Math.random() < 0.6 || (!hasEmoji && !hasImage))) {
                             msgType = 'text';
                             content = textPool[Math.floor(Math.random() * textPool.length)];
+            
+                            if (hasEmoji && Math.random() < 0.45) {
+                                const emoji = emojiCardList[Math.floor(Math.random() * emojiCardList.length)];
+                                const position = Math.random() < 0.5 ? 'before' : 'after';
+                                if (position === 'before') {
+                                    content = emoji + ' ' + content;
+                                } else {
+                                    content = content + ' ' + emoji;
+                                }
+                            }
                         } else if (hasEmoji && (Math.random() < 0.6 || !hasImage)) {
                             msgType = 'text';
                             content = emojiCardList[Math.floor(Math.random() * emojiCardList.length)];
@@ -4929,35 +4937,27 @@
                             } else {
                                 msgType = 'text';
                                 content = textPool.length ? textPool[Math.floor(Math.random() * textPool.length)] : '💬';
+                                if (hasEmoji && Math.random() < 0.3) {
+                                    const emoji = emojiCardList[Math.floor(Math.random() * emojiCardList.length)];
+                                    const position = Math.random() < 0.5 ? 'before' : 'after';
+                                    if (position === 'before') content = emoji + ' ' + content;
+                                    else content = content + ' ' + emoji;
+                                }
                             }
                         } else {
                             msgType = 'text';
                             content = textPool.length ? textPool[Math.floor(Math.random() * textPool.length)] : '💬';
-                        }
-                        
-                        messagesToSend.push({ type: msgType, content, imgUrl });
-                    }
-                    
-                    if (needExtra && messagesToSend.length > 0) {
-                        const addEmoji = !emojiDisabled && (imgDisabled || Math.random() < 0.6);
-                        if (addEmoji && emojiCardList.length) {
-                            messagesToSend.push({
-                                type: 'text',
-                                content: emojiCardList[Math.floor(Math.random() * emojiCardList.length)],
-                                imgUrl: null
-                            });
-                        } else if (!imgDisabled && imgCardList.length) {
-                            const validImages = imgCardList.filter(img => img && img.url && img.url.trim());
-                            if (validImages.length) {
-                                messagesToSend.push({
-                                    type: 'image',
-                                    content: null,
-                                    imgUrl: validImages[Math.floor(Math.random() * validImages.length)].url
-                                });
+                            if (hasEmoji && Math.random() < 0.3) {
+                                const emoji = emojiCardList[Math.floor(Math.random() * emojiCardList.length)];
+                                const position = Math.random() < 0.5 ? 'before' : 'after';
+                                if (position === 'before') content = emoji + ' ' + content;
+                                else content = content + ' ' + emoji;
                             }
                         }
+            
+                        messagesToSend.push({ type: msgType, content, imgUrl });
                     }
-                    
+           
                     for (let idx = 0; idx < messagesToSend.length; idx++) {
                         const msg = messagesToSend[idx];
                         let useQuote = null;
@@ -4974,48 +4974,48 @@
                                 }
                             }
                         }
-                        
+            
                         if (msg.type === 'text') {
                             addMessageWithSender(member.id, member.name, member.avatar || defaultAvatar(), msg.content, 'text', useQuote);
                         } else if (msg.type === 'image' && msg.imgUrl) {
                             addMessageWithSender(member.id, member.name, member.avatar || defaultAvatar(), null, 'image', useQuote, msg.imgUrl);
                         }
                         playSound('meng');
-                        
+            
                         if (idx < messagesToSend.length - 1) {
                             await new Promise(r => setTimeout(r, replyInterMessageDelayMs));
                         }
                     }
-                    
+            
                     if (member !== selectedMembers[selectedMembers.length - 1]) {
                         await new Promise(r => setTimeout(r, replyInterMessageDelayMs));
                     }
                 }
-                
+            
                 isTyping = false;
             }
 
             async function sendMengRepliesLegacy(forceQuoteMsg = null) {
                 if (isTyping) return;
-               
+            
                 markMyMessagesRead();
-               
+            
                 if (patList.length > 0 && Math.random() < 0.03) {
-                    await sendRandomPat();          
+                    await sendRandomPat();
                     isTyping = false;
                     return;
                 }
-                
+            
                 isTyping = true;
                 showTypingIndicator(true);
                 const actMin = Math.min(replyMinDelayMs, replyMaxDelayMs);
                 const actMax = Math.max(replyMinDelayMs, replyMaxDelayMs);
                 const delay = actMin + Math.random() * (actMax - actMin);
                 await new Promise(r => setTimeout(r, delay));
-                showTypingIndicator(false);                               
-                
-                const wcc = getWeightedReplyCount(); 
-                let useQuote = null; 
+                showTypingIndicator(false);
+            
+                const wcc = getWeightedReplyCount();
+                let useQuote = null;
                 if (mengQuoteEnabled) {
                     if (forceQuoteMsg !== null) {
                         useQuote = forceQuoteMsg;
@@ -5029,59 +5029,64 @@
                         }
                     }
                 }
-                
+            
+                const globalGroups = getGlobalGroupsConfig();
+                let enabledWordCards = filterEnabledCards(wordCardList, globalGroups);
+                if (enabledWordCards.length === 0) enabledWordCards = wordCardList;
+            
                 if (combineRepliesEnabled && wcc >= 2) {
-                    const cc = [];
+                    let combined = [];
                     for (let i = 0; i < wcc; i++) {
-                        cc.push(wordCardList.length ? wordCardList[Math.floor(Math.random() * wordCardList.length)] : '💜');
-                    }
-                    const ct = cc.join(' ');
-                    addMessage('meng', ct, 'text', useQuote);
-                    playSound('meng');
-                    if (!emojiDisabled && emojiCardList.length > 0 && Math.random() < 0.3) {
-                        await new Promise(r => setTimeout(r, replyInterMessageDelayMs));
-                        const re = emojiCardList[Math.floor(Math.random() * emojiCardList.length)];
-                        addMessage('meng', re, 'text', null);
-                        playSound('meng');
-                    }
-                    if (!imgDisabled && imgCardList.length > 0 && Math.random() < 0.3) {
-                        const vi = imgCardList.filter(img => img && img.url && img.url.trim());
-                        if (vi.length > 0) {
-                            await new Promise(r => setTimeout(r, replyInterMessageDelayMs));
-                            const ri = vi[Math.floor(Math.random() * vi.length)];
-                            addMessage('meng', null, 'image', null, ri.url);
-                            playSound('meng');
+                        let content = enabledWordCards[Math.floor(Math.random() * enabledWordCards.length)];
+                        if (!emojiDisabled && emojiCardList.length > 0 && Math.random() < 0.3) {
+                            const emoji = emojiCardList[Math.floor(Math.random() * emojiCardList.length)];
+                            const position = Math.random() < 0.5 ? 'before' : 'after';
+                            if (position === 'before') {
+                                content = emoji + ' ' + content;
+                            } else {
+                                content = content + ' ' + emoji;
+                            }
                         }
+                        combined.push(content);
                     }
+                    const combinedContent = combined.join(' ');
+                    addMessage('meng', combinedContent, 'text', useQuote);
+                    playSound('meng');
+            
                 } else {
                     for (let i = 0; i < wcc; i++) {
-                        const globalGroups = getGlobalGroupsConfig();
-                        const enabledWordCards = filterEnabledCards(wordCardList, globalGroups);
-                        const finalWordCards = enabledWordCards.length ? enabledWordCards : wordCardList; // 兜底
-                        const content = finalWordCards.length ? finalWordCards[Math.floor(Math.random() * finalWordCards.length)] : '💜';
+                        let content = enabledWordCards[Math.floor(Math.random() * enabledWordCards.length)];
+            
+                        if (!emojiDisabled && emojiCardList.length > 0 && Math.random() < 0.45) {
+                            const emoji = emojiCardList[Math.floor(Math.random() * emojiCardList.length)];
+                            const position = Math.random() < 0.5 ? 'before' : 'after';
+                            if (position === 'before') {
+                                content = emoji + ' ' + content;
+                            } else {
+                                content = content + ' ' + emoji;
+                            }
+                        }
+            
                         const quote = (i === 0) ? useQuote : null;
                         addMessage('meng', content, 'text', quote);
                         playSound('meng');
-                        if (!emojiDisabled && emojiCardList.length > 0 && Math.random() < 0.3) {
-                            await new Promise(r => setTimeout(r, replyInterMessageDelayMs));
-                            const re = emojiCardList[Math.floor(Math.random() * emojiCardList.length)];
-                            addMessage('meng', re, 'text', null);
-                            playSound('meng');
-                        }
+            
                         if (i < wcc - 1) {
                             await new Promise(r => setTimeout(r, replyInterMessageDelayMs));
                         }
                     }
+            
                     if (!imgDisabled && imgCardList.length > 0 && Math.random() < 0.3) {
-                        const vi = imgCardList.filter(img => img && img.url && img.url.trim());
-                        if (vi.length > 0) {
+                        const validImages = imgCardList.filter(img => img && img.url && img.url.trim());
+                        if (validImages.length > 0) {
                             await new Promise(r => setTimeout(r, replyInterMessageDelayMs));
-                            const ri = vi[Math.floor(Math.random() * vi.length)];
-                            addMessage('meng', null, 'image', null, ri.url);
+                            const randomImg = validImages[Math.floor(Math.random() * validImages.length)];
+                            addMessage('meng', null, 'image', null, randomImg.url);
                             playSound('meng');
                         }
                     }
                 }
+            
                 isTyping = false;
             }
 
@@ -6733,7 +6738,7 @@
                     if (pendingReplyTimer || isTyping) return;
                     activeMengTalkManual();
                     maybeTriggerIncomingCall();
-                }, 45000 + Math.random() * 75000);
+                }, 45000 + Math.random() * 135000);
             }
 
             function stopActiveTalkTimer() { if (activeTalkInterval) { clearInterval(activeTalkInterval);
