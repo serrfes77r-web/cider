@@ -4946,7 +4946,8 @@
                 const actMax = Math.max(replyMinDelayMs, replyMaxDelayMs);
                 const delay = actMin + Math.random() * (actMax - actMin);
                 await new Promise(r => setTimeout(r, delay));
-                           
+                showTypingIndicator(false);           
+                
                 for (const member of selectedMembers) {
                     const isPat = patList.length > 0 && Math.random() < 0.03;
                     if (isPat) {
@@ -5047,7 +5048,7 @@
                         await new Promise(r => setTimeout(r, replyInterMessageDelayMs));
                     }
                 }
-                showTypingIndicator(false);
+                
                 isTyping = false;
             }
 
@@ -5068,7 +5069,8 @@
                 const actMax = Math.max(replyMinDelayMs, replyMaxDelayMs);
                 const delay = actMin + Math.random() * (actMax - actMin);
                 await new Promise(r => setTimeout(r, delay));
-           
+                showTypingIndicator(false);
+                
                 const wcc = getWeightedReplyCount();
                 let useQuote = null;
                 if (mengQuoteEnabled) {
@@ -5141,7 +5143,7 @@
                         }
                     }
                 }
-                showTypingIndicator(false);
+                
                 isTyping = false;
             }
 
