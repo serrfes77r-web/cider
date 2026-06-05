@@ -4,6 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>ta · 灵犀对话</title>
+
+    <!-- 网页图标 favicon -->
+    <link rel="icon" type="image/png" sizes="512x512" href="a_clean_pastel_app_icon_logo_style_image_round.png">
+
+    <!-- iOS / Android 桌面图标 -->
+    <link rel="apple-touch-icon" sizes="512x512" href="a_clean_pastel_app_icon_logo_style_image_round.png">
+    <link rel="shortcut icon" href="a_clean_pastel_app_icon_logo_style_image_round.png">
+    <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
@@ -7604,7 +7612,7 @@
                 }
             }
             
-            <!-- 修改后的 buildCheckinMemberSelect 函数（位于 <script> 内） -->
+            // 修改后的 buildCheckinMemberSelect 函数
             function buildCheckinMemberSelect() {
                 const select = document.getElementById('checkinMemberSelect');
                 if (!select) return;
@@ -15401,5 +15409,87 @@
             window.addEventListener('beforeunload', () => { updateLastOnlineTime(); stopActiveLetterTimer(); });
         })();
     </script>
+
+<script>
+(function () {
+    'use strict';
+
+    // 全局错误保护
+    window.addEventListener('error', function (e) {
+        console.warn('已拦截页面错误:', e.message);
+    });
+
+    // 防止空元素报错
+    const originalQuery = document.querySelector.bind(document);
+    document.safeQuery = function(selector){
+        try {
+            return originalQuery(selector);
+        } catch(err){
+            console.warn('选择器异常:', selector);
+            return null;
+        }
+    };
+
+    // 图片加载失败兜底
+    document.addEventListener('error', function(e){
+        const target = e.target;
+        if(target && target.tagName === 'IMG'){
+            target.style.opacity = '0.5';
+            target.alt = '图片加载失败';
+        }
+    }, true);
+
+    // 防止 localStorage 异常
+    const safeStorage = {
+        get(key, def = null){
+            try {
+                const v = localStorage.getItem(key);
+                return v !== null ? v : def;
+            } catch(e){
+                return def;
+            }
+        },
+        set(key, val){
+            try {
+                localStorage.setItem(key, val);
+            } catch(e){
+                console.warn('localStorage 写入失败');
+            }
+        }
+    };
+    window.safeStorage = safeStorage;
+
+    // 修复移动端 vh 问题
+    function fixViewportHeight() {
+        document.documentElement.style.setProperty(
+            '--vh',
+            (window.innerHeight * 0.01) + 'px'
+        );
+    }
+    fixViewportHeight();
+    window.addEventListener('resize', fixViewportHeight);
+
+    // 防止按钮重复绑定
+    const clickedMap = new WeakMap();
+    document.addEventListener('click', function(e){
+        const el = e.target.closest('button');
+        if(!el) return;
+
+        const last = clickedMap.get(el) || 0;
+        const now = Date.now();
+
+        if(now - last < 150){
+            e.preventDefault();
+            e.stopPropagation();
+            return;
+        }
+
+        clickedMap.set(el, now);
+    }, true);
+
+    console.log('灵犀字卡 HTML 修复补丁已加载');
+})();
+</script>
+
 </body>
 </html>
