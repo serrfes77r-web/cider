@@ -4,12 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>ta · 灵犀对话</title>
-    <!-- 添加桌面/浏览器图标 -->
     <link rel="shortcut icon" href="icon.png" type="image/png">
     <link rel="icon" href="icon.png" type="image/png">
     <link rel="apple-touch-icon" href="icon.png">
-    
-    <!-- 移动端添加到桌面时的全屏体验配置 -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -4634,12 +4631,12 @@
     </style>    
     <!-- ===== 新增私聊样式 ===== -->
     <style id="private-chat-enhance">
-        .private-chat-btn{
+        /* .private-chat-btn{
             margin-left:8px;border:none;border-radius:12px;padding:6px 10px;
             background:var(--accent-light);color:var(--accent-color);font-size:12px;
             font-weight:600;cursor:pointer;transition:.2s;
-        }
-        .private-chat-btn:active{transform:scale(.94);}
+        } */
+        /* .private-chat-btn:active{transform:scale(.94);} */
         .private-chat-floating-exit{
             position:fixed;right:18px;bottom:140px;z-index:9999;
             display:none;align-items:center;gap:4px;
@@ -5027,7 +5024,6 @@
             const KV_DB_VERSION = 1;
             const KV_STORE = 'kv';
             let _kvDb = null;
-            // 内存缓存，供同步兼容层使用
             const _kvCache = {};
             let _kvReady = false;
             let _kvReadyCallbacks = [];
@@ -5047,7 +5043,6 @@
                 });
             }
 
-            // 预加载所有KV到内存缓存（启动时调用一次）
             async function _preloadKvCache() {
                 try {
                     const db = await _openKvDB();
@@ -5082,7 +5077,6 @@
                         tx.onerror = () => reject(tx.error);
                     });
                 } catch(e) {
-                    // fallback to localStorage if IDB fails
                     try { idbSet(key, value); } catch(_) {}
                 }
             }
@@ -5121,13 +5115,10 @@
                 }
             }
 
-            // 同步兼容层（依赖预加载缓存，启动后可用）
             function idbGetSync(key) {
                 return _kvCache.hasOwnProperty(key) ? _kvCache[key] : null;
             }
 
-            // 覆盖 safeSetLocal 使其写到 IDB（fire-and-forget）
-            // 真正的 safeSetLocal 在后面定义，这里先注册全局以便后面覆盖
             window.__idbSet = idbSet;
             window.__idbGet = idbGet;
             window.__idbRemove = idbRemove;
@@ -6559,7 +6550,6 @@
                 isTyping = false;
             }
             async function sendMengRepliesLegacyWithPool(textPool, forceQuoteMsg = null) {
-                // 随机涂鸦（保留原有概率）
                 if (Math.random() < 0.03) {
                     await sendRandomDoodleAsOther('meng');
                     return;
@@ -6567,7 +6557,6 @@
                 if (isTyping) return;
                 markMyMessagesRead();
             
-                // 直接使用传入的字卡池，不再进行全局分组过滤
                 let enabledWordCards = textPool;
                 const hasText = enabledWordCards.length > 0;
                 const hasEmoji = !emojiDisabled && emojiCardList.length > 0;
@@ -6579,7 +6568,6 @@
                     return;
                 }
             
-                // 拍一拍随机回复（保留）
                 if (patList.length > 0 && Math.random() < 0.03) {
                     await sendRandomPat();
                     isTyping = false;
@@ -6609,8 +6597,7 @@
                         }
                     }
                 }
-            
-                // 组合回复或逐条发送（逻辑与原版一致）
+           
                 if (combineRepliesEnabled && wcc >= 2) {
                     let combined = [];
                     for (let i = 0; i < wcc; i++) {
@@ -6642,7 +6629,6 @@
                             await new Promise(r => setTimeout(r, replyInterMessageDelayMs));
                         }
                     }
-                    // 随机发送图片（保留）
                     if (!imgDisabled && imgCardList.length > 0 && Math.random() < 0.3) {
                         const validImages = imgCardList.filter(img => img && img.url && img.url.trim());
                         if (validImages.length > 0) {
@@ -6658,19 +6644,17 @@
             async function sendMengReplies(forceQuoteMsg = null) {
                 if (forceQuoteMsg && forceQuoteMsg.sender !== 'me') forceQuoteMsg = null;
             
-                // 私聊模式：使用指定成员的独立字卡
                 if (window.__xiayiPrivateModeActive && window.__currentPrivateMemberId) {
                     const memberId = window.__currentPrivateMemberId;
                     let member = groupMembers.find(m => m.id === memberId);
                     if (!member) member = window.__privateTargetMember;
                     if (member) {
-                        const textPool = getMemberEffectiveTextPool(member); // 获取该成员的有效字卡池（已考虑分组）
+                        const textPool = getMemberEffectiveTextPool(member); 
                         if (textPool.length > 0) {
                             await sendMengRepliesLegacyWithPool(textPool, forceQuoteMsg);
                             return;
                         }
                     }
-                    // 若成员无独立字卡，则降级到全局回复（继续执行下方逻辑）
                 }
             
                 if (groupChatEnabled) await sendGroupReplies(forceQuoteMsg);
@@ -7073,11 +7057,9 @@
                     replyTime: null,
                 };
                 letters.unshift(newLetter);
-                
-                // 关键修改：只有保存成功才继续后续流程
+               
                 const saved = saveLetters();
                 if (!saved) {
-                    // 保存失败，从内存中移除这封信，避免内存与存储不一致
                     letters = letters.filter(l => l.id !== newLetter.id);
                     return;
                 }
@@ -7497,12 +7479,10 @@
                 if (needsSaveLetters) {
                     saveLetters();
                 }
-                // 在 loadData 函数末尾添加（确保内存与存储一致）
                 try {
                     const storedRaw = idbGetSync(STORAGE.letters);
                     if (storedRaw) {
                         const storedLetters = JSON.parse(storedRaw);
-                        // 如果内存中的信件数量与存储不一致，以存储为准（避免残留脏数据）
                         if (storedLetters.length !== letters.length) {
                             console.warn('信件数据不一致，以存储为准');
                             letters = storedLetters;
@@ -8308,50 +8288,106 @@
                 ctx.fillStyle = '#fff8f8';
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
                 const colors = ['#e74c3c', '#3498db', '#2ecc71', '#f39c12', '#9b59b6', '#e91e63'];
-                const mode = Math.floor(Math.random() * 3);
+            
+                const mode = Math.random() < 0.5 ? 2 : Math.floor(Math.random() * 2); 
             
                 if (mode === 0) {
-                    for (let i = 0; i < 4; i++) {
+                    const lines = 3 + Math.floor(Math.random() * 5);
+                    for (let i = 0; i < lines; i++) {
                         ctx.beginPath();
-                        ctx.strokeStyle = colors[i % colors.length];
-                        ctx.lineWidth = 3;
-                        ctx.moveTo(Math.random() * canvas.width, Math.random() * canvas.height);
-                        for (let j = 0; j < 6; j++) {
-                            ctx.quadraticCurveTo(Math.random() * canvas.width, Math.random() * canvas.height, Math.random() * canvas.width, Math.random() * canvas.height);
+                        ctx.strokeStyle = colors[Math.floor(Math.random() * colors.length)];
+                        ctx.lineWidth = 2 + Math.random() * 6;
+                        const startX = Math.random() * canvas.width;
+                        const startY = Math.random() * canvas.height;
+                        ctx.moveTo(startX, startY);
+                        const segments = 3 + Math.floor(Math.random() * 6);
+                        for (let j = 0; j < segments; j++) {
+                            ctx.lineTo(
+                                Math.random() * canvas.width,
+                                Math.random() * canvas.height
+                            );
                         }
                         ctx.stroke();
                     }
                 } else if (mode === 1) {
-                    for (let i = 0; i < 6; i++) {
-                        ctx.fillStyle = colors[i % colors.length];
-                        ctx.globalAlpha = 0.7;
+                    const shapes = 2 + Math.floor(Math.random() * 4);
+                    for (let i = 0; i < shapes; i++) {
                         ctx.beginPath();
-                        const x = Math.random() * (canvas.width - 60) + 30;
-                        const y = Math.random() * (canvas.height - 60) + 20;
-                        const r = Math.random() * 25 + 10;
-                        Math.random() < 0.5 ? ctx.arc(x, y, r, 0, Math.PI * 2) : ctx.rect(x - r, y - r, r * 2, r * 1.5);
-                        ctx.fill();
+                        const color = colors[Math.floor(Math.random() * colors.length)];
+                        ctx.fillStyle = color;
+                        ctx.strokeStyle = color;
+                        ctx.lineWidth = 2 + Math.random() * 4;
+                
+                        const margin = 20; 
+                        const maxW = canvas.width - margin * 2;
+                        const maxH = canvas.height - margin * 2;
+                        const x = margin + Math.random() * maxW;
+                        const y = margin + Math.random() * maxH;
+                        const w = 20 + Math.random() * Math.min(maxW * 0.6, 120);
+                        const h = 20 + Math.random() * Math.min(maxH * 0.6, 120);
+                
+                        const type = Math.floor(Math.random() * 3);
+                        if (type === 0) {
+                            const rx = Math.min(x, canvas.width - w);
+                            const ry = Math.min(y, canvas.height - h);
+                            ctx.rect(rx, ry, w, h);
+                        } else if (type === 1) {
+                            const cx = Math.min(x, canvas.width - margin);
+                            const cy = Math.min(y, canvas.height - margin);
+                            const radiusX = Math.min(w / 2, cx - margin, canvas.width - cx - margin);
+                            const radiusY = Math.min(h / 2, cy - margin, canvas.height - cy - margin);
+                            if (radiusX > 0 && radiusY > 0) {
+                                ctx.ellipse(cx, cy, radiusX, radiusY, 0, 0, Math.PI * 2);
+                            } else {
+                                ctx.arc(cx, cy, 5, 0, Math.PI * 2);
+                            }
+                        } else {
+                            const x1 = Math.min(x, canvas.width - margin);
+                            const y1 = Math.min(y, canvas.height - margin);
+                            const x2 = Math.min(x + w, canvas.width - margin);
+                            const y2 = Math.min(y, canvas.height - margin);
+                            const x3 = Math.min(x + w / 2, canvas.width - margin);
+                            const y3 = Math.min(y - h, canvas.height - margin);
+                            ctx.moveTo(x1, y1);
+                            ctx.lineTo(x2, y2);
+                            ctx.lineTo(x3, y3);
+                            ctx.closePath(); 
+                        }
+              
+                        if (Math.random() > 0.5) {
+                            ctx.fill();
+                        } else {
+                            ctx.stroke();
+                        }
+                        if (Math.random() < 0.3) {
+                            ctx.fill();
+                            ctx.stroke();
+                        }
                     }
-                    ctx.globalAlpha = 1;
-                } else {
-                    
+                } 
+                else {
                     const getRandomEnglishToken = () => {
                         const commonWords = [
                             'Hi', 'Hey', 'Hello', 'Love', 'Joy', 'Peace', 'Hope', 'Dream', 'Star', 'Sun',
                             'Moon', 'You', 'Me', 'Yes', 'OK', 'Cool', 'Great', 'Nice', 'Sweet', 'Cute',
-                            'Good', 'Fine', 'Wow', 'OMG', 'LOL', 'Hug', 'Kiss', 'Care', 'Smile', 'Wish'
+                            'Good', 'Fine', 'Wow', 'OMG', 'LOL', 'Hug', 'Kiss', 'Care', 'Smile', 'Wish',
+                            'Awesome', 'Brilliant', 'Chill', 'Darling', 'Elegant', 'Fabulous', 'Gorgeous',
+                            'Happy', 'Inspiring', 'Joyful', 'Kind', 'Lovely', 'Magical', 'Natural',
+                            'Optimistic', 'Peaceful', 'Quiet', 'Radiant', 'Sunny', 'Tender', 'Unique',
+                            'Vivid', 'Warm', 'eXtra', 'Youthful', 'Zealous'   
                         ];
                         if (Math.random() < 0.4) {
                             return commonWords[Math.floor(Math.random() * commonWords.length)];
                         } else {
-                            const length = Math.floor(Math.random() * 5) + 2; // 2~6 个字母
+                            const length = Math.floor(Math.random() * 5) + 2;
                             let randomStr = '';
                             for (let i = 0; i < length; i++) {
-                                randomStr += String.fromCharCode(65 + Math.floor(Math.random() * 26)); // A-Z
+                                randomStr += String.fromCharCode(65 + Math.floor(Math.random() * 26));
                             }
                             return randomStr;
                         }
                     };
+           
                     let dynamicWords = [];
                     if (profile.myNick && profile.myNick.trim()) dynamicWords.push(profile.myNick);
                     if (profile.mengNick && profile.mengNick.trim()) dynamicWords.push(profile.mengNick);
@@ -8362,20 +8398,31 @@
                             dynamicWords.push(...memberNames);
                         }
                     }
-                    dynamicWords = [...new Set(dynamicWords)];
+                    dynamicWords = [...new Set(dynamicWords)];  
             
-                    const fixedWords = [
-                        '❤️', '🌸', '✨', '🥰', '💕', '抱抱', '想你', '🌙', '⭐', '系统随机，可忽略',
+                    const englishWords = [];
+                    const englishCount = 5 + Math.floor(Math.random() * 4); 
+                    for (let i = 0; i < englishCount; i++) {
+                        englishWords.push(getRandomEnglishToken());
+                    }
+            
+                    const chineseOrEmoji = [
+                        '❤️', '🌸', '✨', '🥰', '💕', '抱抱', '想你', '🌙', '⭐', 
                         '😊', '💖', '🌹', '🍀', '🔥', '👍', '🎉', '💪', '☀️', '🌈',
                         '晚安', '早安', '哈哈', '嗯嗯', '好的', '加油', '可爱', '棒棒'
                     ];
-                    const englishToken = getRandomEnglishToken();
+                    const shuffledCn = chineseOrEmoji.sort(() => Math.random() - 0.5);
+                    const cnCount = Math.min(2 + Math.floor(Math.random() * 3), shuffledCn.length);
+                    const cnWords = shuffledCn.slice(0, cnCount);
             
-                    let allWords = [...dynamicWords, ...fixedWords, englishToken];
-                    allWords = [...new Set(allWords)];
-            
-                    let chosenWord = allWords.length ? allWords[Math.floor(Math.random() * allWords.length)] : '✨';
+                    let allWords = [...englishWords, ...dynamicWords, ...cnWords];
           
+                    allWords = [...new Set(allWords)];
+          
+                    if (allWords.length === 0) allWords = ['✨'];
+           
+                    let chosenWord = allWords[Math.floor(Math.random() * allWords.length)];
+  
                     if (chosenWord.length > 12) chosenWord = chosenWord.slice(0, 10) + '…';
             
                     ctx.font = 'bold 32px "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif';
@@ -8415,22 +8462,52 @@
             }
             
             async function sendRandomDoodleAsOther(senderId = 'meng') {
-                const doodleBase64 = generateRandomDoodle();
-                const compressed = await compressImage(doodleBase64, 800, 0.8);
-                const imgId = makeImgId();
-                await saveImageToDB(imgId, compressed);
-                const imgRef = IMG_ID_PREFIX + imgId;
-                avatarCache.set(imgRef, compressed);
-                if (groupChatEnabled && senderId !== 'meng') {
-                    const member = groupMembers.find(m => m.id === senderId);
-                    if (member) {
-                        addMessageWithSender(member.id, member.name, member.avatar || defaultAvatar(), null, 'image', null, imgRef);
-                        playSound('meng');
-                        return;
+                try {
+                    const doodleBase64 = generateRandomDoodle();
+                   
+                    if (!doodleBase64 || doodleBase64.length < 100) {
+                        throw new Error('生成的涂鸦数据无效');
                     }
+            
+                    const compressed = await compressImage(doodleBase64, 800, 0.8);
+                    
+                    if (!compressed || compressed.length < 100) {
+                        throw new Error('压缩后的图片数据无效');
+                    }
+            
+                    const imgId = makeImgId();
+                    await saveImageToDB(imgId, compressed);
+                    const imgRef = IMG_ID_PREFIX + imgId;
+                    avatarCache.set(imgRef, compressed);
+            
+                    if (groupChatEnabled && senderId !== 'meng') {
+                        const member = groupMembers.find(m => m.id === senderId);
+                        if (member) {
+                            addMessageWithSender(member.id, member.name, member.avatar || defaultAvatar(), null, 'image', null, imgRef);
+                            playSound('meng');
+                            return;
+                        }
+                    }
+                    addMessage('meng', null, 'image', null, imgRef);
+                    playSound('meng');
+            
+                } catch (error) {
+                    console.warn('涂鸦生成失败，改用文字回复:', error);
+                    const fallbackText = wordCardList.length 
+                        ? wordCardList[Math.floor(Math.random() * wordCardList.length)] 
+                        : '💬 想给你画点什么，但手滑了～';
+                    
+                    if (groupChatEnabled && senderId !== 'meng') {
+                        const member = groupMembers.find(m => m.id === senderId);
+                        if (member) {
+                            addMessageWithSender(member.id, member.name, member.avatar || defaultAvatar(), fallbackText, 'text');
+                            playSound('meng');
+                            return;
+                        }
+                    }
+                    addMessage('meng', fallbackText, 'text');
+                    playSound('meng');
                 }
-                addMessage('meng', null, 'image', null, imgRef);
-                playSound('meng');
             }
             
             // ========== 构建横向切换的文字库 ==========
@@ -8839,7 +8916,10 @@
                     } if (addedCount < targetCount) { const delay =
                             initialCommentIntervalMin * 1000 + Math.random() * (initialCommentIntervalMax * 1000);
                         setTimeout(addNext, delay); } }
-                addNext(); }
+                if (targetCount > 0) {
+                    const firstDelay = initialCommentIntervalMin * 1000 + Math.random() * (initialCommentIntervalMax * 1000);
+                    setTimeout(addNext, firstDelay);
+                } }
 
             function postMoment(content, feeling, location, images) {
                 const newMoment = {
@@ -10662,8 +10742,25 @@
             
                 const processMultipleFiles = async (files, onFileProcessed, successMessage) => {
                     if (!files.length) return;
+                    
+                    const activeBtn = document.activeElement; 
+                    let btn = document.getElementById('saveToGalleryBtn');
+                    if (!btn || !btn.contains(document.activeElement)) {
+                        btn = document.getElementById('sendOnlyBtn');
+                    }
+                    if (!btn) {
+                        btn = document.querySelector('#normalButtons .sec-btn');
+                    }
+                    
+                    const originalText = btn ? btn.innerHTML : '处理中...';
+                    if (btn) {
+                        btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> 处理中 0/${files.length}`;
+                        btn.disabled = true;
+                    }
+                
                     let processed = 0;
                     let errors = 0;
+                    
                     for (const file of files) {
                         try {
                             const rawBase64 = await new Promise((resolve) => {
@@ -10678,14 +10775,28 @@
                             avatarCache.set(imgRef, compressed);
                             await onFileProcessed(imgRef);
                             processed++;
+                            
+                            if (btn) {
+                                btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> 处理中 ${processed}/${files.length}`;
+                            }
                         } catch (err) {
                             errors++;
                             console.error(err);
                         }
                     }
+               
                     await renderPickerGrid();
-                    if (errors === 0) showToast(successMessage.replace('{n}', processed), '✅');
-                    else showToast(`完成 ${processed} 张，失败 ${errors} 张`, '⚠️');
+                    
+                    if (btn) {
+                        btn.innerHTML = originalText;
+                        btn.disabled = false;
+                    }
+                    
+                    if (errors === 0) {
+                        showToast(successMessage.replace('{n}', processed), '✅');
+                    } else {
+                        showToast(`完成 ${processed} 张，失败 ${errors} 张`, '⚠️');
+                    }
                 };
             
                 const saveToGalleryOnly = () => {
@@ -10945,8 +11056,7 @@
                     </div>
                 `;
                 document.body.appendChild(modal);
-            
-                // 刷新按钮：从 localStorage 重新加载信件
+         
                 document.getElementById('refreshLettersBtn').onclick = () => {
                     try {
                         const stored = idbGetSync(STORAGE.letters);
@@ -10955,8 +11065,8 @@
                         } else {
                             letters = [];
                         }
-                        saveLetters(); // 确保内存与存储一致（如存储为空则清空内存）
-                        renderLetterHistoryList(); // 重新渲染列表
+                        saveLetters(); 
+                        renderLetterHistoryList(); 
                         showToast('已同步存储中的信件', '🔄');
                     } catch(e) {
                         console.error('刷新信件失败', e);
@@ -11045,8 +11155,7 @@
                 render();
                 document.getElementById('closeHistoryModal').onclick = () => modal.remove();
             }
-            
-            // 辅助函数：渲染信件历史列表（用于刷新后重新渲染）
+         
             function renderLetterHistoryList() {
                 const container = document.getElementById('historyListModal');
                 if (!container) return;
@@ -11057,8 +11166,6 @@
                 container.innerHTML = '';
                 const sortedLetters = [...letters].sort((a, b) => b.sendTime - a.sendTime);
                 sortedLetters.forEach(l => {
-                    // 此处复用上面 render 函数中的卡片生成逻辑，为保持简洁，可复用同一段代码
-                    // 实际项目中建议抽取为独立函数 buildLetterCard(l)
                     const card = document.createElement('div');
                     card.className = 'letter-card';
                     card.style.position = 'relative';
@@ -11160,7 +11267,7 @@
             }
             
             function openPatManager() {
-                loadPersonalPatList();  // 确保数据加载
+                loadPersonalPatList(); 
                 const modalDiv = document.createElement('div');
                 modalDiv.className = 'modal';
                 modalDiv.innerHTML = `
@@ -11195,7 +11302,6 @@
                 `;
                 document.body.appendChild(modalDiv);
             
-                // 渲染通用拍一拍列表
                 function renderCommonList() {
                     const c = document.getElementById('patListContainerCommon');
                     if (!c) return;
@@ -11216,7 +11322,7 @@
                             e.stopPropagation();
                             const idx = parseInt(el.dataset.sendIdx);
                             sendPatMessage(patList[idx], 'me', true);
-                            modalDiv.remove();  // 发送后关闭面板
+                            modalDiv.remove();  
                         });
                     });
                     c.querySelectorAll('[data-del-idx]').forEach(btn => {
@@ -11230,8 +11336,7 @@
                         });
                     });
                 }
-            
-                // 渲染专属拍一拍列表
+          
                 function renderPersonalList() {
                     const c = document.getElementById('patListContainerPersonal');
                     if (!c) return;
@@ -11266,8 +11371,7 @@
                         });
                     });
                 }
-            
-                // 批量添加通用拍一拍
+         
                 document.getElementById('addPatBtnCommon').onclick = () => {
                     const text = document.getElementById('newPatInputCommon').value.trim();
                     if (!text) return;
@@ -11279,7 +11383,6 @@
                         document.getElementById('newPatInputCommon').value = '';
                     }
                 };
-                // 批量添加专属拍一拍
                 document.getElementById('addPatBtnPersonal').onclick = () => {
                     const text = document.getElementById('newPatInputPersonal').value.trim();
                     if (!text) return;
@@ -11292,7 +11395,6 @@
                     }
                 };
             
-                // 滑动时同步圆点指示器
                 const container = modalDiv.querySelector('.pat-swipe-container');
                 const dots = modalDiv.querySelectorAll('.pat-dot');
                 function updateDot() {
@@ -11312,12 +11414,10 @@
                     });
                 });
                 updateDot();
-            
-                // 关闭面板
+         
                 document.getElementById('closePatModal').onclick = () => modalDiv.remove();
                 modalDiv.addEventListener('click', (e) => { if (e.target === modalDiv) modalDiv.remove(); });
-            
-                // 初始渲染
+          
                 renderCommonList();
                 renderPersonalList();
             }
@@ -11326,7 +11426,7 @@
                 modalDiv.className = 'modal';
                 modalDiv.id = 'managePanelModal';
                 modalDiv.innerHTML =
-                    `<div class="modal-content" style="max-width:580px;padding:12px 16px;"><div class="settings-title" style="margin-bottom:12px;"><i class="fa-solid fa-gear"></i> 设置管理</div><div class="manage-fold"><div class="manage-fold-header" onclick="this.parentElement.classList.toggle('open');this.classList.toggle('open')"><span class="fold-arrow">▶</span> <i class="fa-solid fa-user"></i> 基础信息</div><div class="manage-fold-body"><div class="flex-between" style="margin-bottom:8px;"><span>我的昵称</span><input type="text" id="nickMyInput" value="${escapeHtml(profile.myNick)}" style="width:60%;background:var(--bg-body);border:1px solid var(--border-light);border-radius:20px;padding:6px 12px;"></div><div class="flex-between"><span>Ta的昵称</span><input type="text" id="nickMengInput" value="${escapeHtml(profile.mengNick)}" style="width:60%;background:var(--bg-body);border:1px solid var(--border-light);border-radius:20px;padding:6px 12px;"></div><button class="sec-btn" id="saveNicknamesBtn" style="margin-top:10px;width:100%;">保存昵称</button><div class="data-note" style="margin-top:4px;">💡 点击顶部头像可更换头像</div></div></div><div class="manage-fold"><div class="manage-fold-header" onclick="this.parentElement.classList.toggle('open');this.classList.toggle('open')"><span class="fold-arrow">▶</span> <i class="fa-solid fa-palette"></i> 外观</div><div class="manage-fold-body"><div style="margin-bottom:6px;font-weight:500;">🖼️ 聊天背景更换</div><input type="file" id="bgUploadInput" accept="image/jpeg" style="margin-bottom:10px;"><div class="button-group"><button class="sec-btn" id="applyBgBtn">应用背景</button><button class="sec-btn sec-btn-outline" id="resetBgBtn">恢复默认</button></div><div style="margin-top:16px;margin-bottom:6px;font-weight:500;">📞 通话界面背景</div><input type="file" id="callBgUploadInput" accept="image/jpeg" style="margin-bottom:10px;"><div class="button-group"><button class="sec-btn" id="applyCallBgBtn">应用通话背景</button><button class="sec-btn sec-btn-outline" id="resetCallBgBtn">恢复默认</button></div><div style="margin-top:14px;margin-bottom:6px;font-weight:500;">🫧 气泡CSS</div><textarea id="bubbleCssTextarea" class="textarea-clean" rows="10"></textarea><div class="button-group" style="margin-top:6px;"><button class="sec-btn" id="applyBubbleCss">应用</button><button class="sec-btn sec-btn-outline" id="resetBubbleCss">恢复</button><button class="sec-btn sec-btn-outline" id="loadExampleCssBtn">示例</button></div></div></div><div class="manage-fold"><div class="manage-fold-header" onclick="this.parentElement.classList.toggle('open');this.classList.toggle('open')"><span class="fold-arrow">▶</span> <i class="fa-solid fa-folder-open"></i> 内容库</div><div class="manage-fold-body"><div style="margin-bottom:8px;display:flex;align-items:center;gap:6px;"><span style="font-weight:500;">💬 字卡</span><button class="small-btn primary-outline" id="importGlobalAutoBtn" style="padding:3px 10px;font-size:11px;line-height:1;"><i class="fa-solid fa-file-import"></i> 导入</button><button class="small-btn primary-outline" id="exportGlobalTxtBtn" style="padding:3px 10px;font-size:11px;line-height:1;"><i class="fa-solid fa-file-export"></i> 导出</button><button class="small-btn primary-outline" id="openSmartWordBtn" style="margin-left: auto;"><i class="fa-solid fa-brain"></i> 智能管理</button><input type="file" id="globalImportFileInput" accept=".txt,.json" style="display:none;"></div><div id="wordCountDisplay" style="font-size:12px;color:var(--text-secondary);margin-bottom:6px;">📝 当前 ${wordCardList.length} 条</div><textarea id="wordTextarea" class="textarea-clean" rows="10">${wordCardList.join('\n')}</textarea><div class="button-group" style="margin-top:6px;"><button class="sec-btn" id="batchAddWord">保存</button><button class="sec-btn sec-btn-outline" id="delAllWord">清空</button></div><div class="content-library-toggle-row"><span>😊 表情</span><label class="toggle-switch" style="width:44px;height:22px;"><input type="checkbox" id="emojiDisabledToggle" ${emojiDisabled?'':'checked'}><span class="slider" style="width:44px;height:22px;"></span></label></div><textarea id="emojiTextarea" class="textarea-clean" rows="10">${emojiCardList.join('\n')}</textarea><div class="button-group" style="margin-top:6px;"><button class="sec-btn" id="batchAddEmoji">保存</button><button class="sec-btn sec-btn-outline" id="delAllEmoji">清空</button></div><div class="content-library-toggle-row"><span>🖼️ 图片</span><label class="toggle-switch" style="width:44px;height:22px;"><input type="checkbox" id="imgDisabledToggle" ${imgDisabled?'':'checked'}><span class="slider" style="width:44px;height:22px;"></span></label></div><input type="file" id="uploadImages" multiple accept="image/*" style="margin-bottom:8px;"><div id="imgPreviewList" class="img-grid-fixed"></div><div class="button-group" style="flex-direction:column;gap:6px;"><button class="sec-btn sec-btn-outline" id="deleteSelectedImg" style="width:100%;">删除选中</button><button class="sec-btn sec-btn-outline" id="clearAllImgBtn" style="width:100%;">全部清空</button></div></div></div><div class="manage-fold"><div class="manage-fold-header" onclick="this.parentElement.classList.toggle('open');this.classList.toggle('open')"><span class="fold-arrow">▶</span> <i class="fa-solid fa-sliders"></i> 回复策略</div><div class="manage-fold-body"><div class="flex-between" style="margin-bottom:10px;"><span>已读不回</span><label class="toggle-switch"><input type="checkbox" id="mengIgnoreToggle" ${mengMaybeIgnore?'checked':''}><span class="slider"></span></label></div><div class="flex-between" style="margin-bottom:10px;"><span>主动发消息</span><label class="toggle-switch"><input type="checkbox" id="mengActiveTalkToggle" ${mengActiveTalkEnabled?'checked':''}><span class="slider"></span></label></div><div class="flex-between" style="margin-bottom:10px;"><span>引用回复</span><label class="toggle-switch"><input type="checkbox" id="mengQuoteToggle" ${mengQuoteEnabled?'checked':''}><span class="slider"></span></label></div><div class="flex-between" style="margin-bottom:10px;"><span>显示消息时间</span><label class="toggle-switch"><input type="checkbox" id="showTimeToggle" ${showMessageTimeEnabled?'checked':''}><span class="slider"></span></label></div><div class="flex-between" style="margin-bottom:10px;"><span>组合回复</span><label class="toggle-switch"><input type="checkbox" id="combineRepliesToggle" ${combineRepliesEnabled?'checked':''}><span class="slider"></span></label></div><div class="data-note" style="margin-bottom:10px;">💡 开启后多条字卡回复将合并为一条消息，减少消息刷屏</div><div style="margin-bottom:10px;"><span>⏱️ 最短等待：</span><strong id="replyMinSpeedValue">${Math.round(replyMinDelayMs/1000)}</strong>秒</div><input type="range" id="replyMinSpeedSlider" min="1" max="180" value="${Math.round(replyMinDelayMs/1000)}" style="width:100%;"><div class="data-note" style="margin-top:2px;">💡 实际回复时间将在最短～最长之间随机</div><div style="margin-bottom:10px;"><span>⏱️ 最大等待：</span><strong id="replySpeedValue">${Math.round(replyMaxDelayMs/1000)}</strong>秒</div><input type="range" id="replySpeedSlider" min="3" max="180" value="${Math.round(replyMaxDelayMs/1000)}" style="width:100%;"><div style="margin-top:10px;"><span>⏳ 消息间隔：</span><strong id="interDelayValue">${(replyInterMessageDelayMs/1000).toFixed(1)}</strong>秒</div><input type="range" id="interDelaySlider" min="0" max="7" step="0.5" value="${(replyInterMessageDelayMs/1000).toFixed(1)}" style="width:100%;"><div style="margin-top: 16px; margin-bottom: 8px;"><span><span>⏱️ 主动消息间隔 &nbsp; (秒) &nbsp;～&nbsp; (分钟)</span><div style="display: flex; gap: 8px; margin-top: 12px;"><input type="number" id="activeTalkMinInput" class="member-name-input" value="${activeTalkMinSec}" min="5" max="300" step="1" style="width:70px;"> ~ <input type="number" id="activeTalkMaxInput" class="member-name-input" value="${Math.round(activeTalkMaxSec / 60)}" min="1" max="30" step="1" style="width:70px;"></div></div><div style="margin-top: 16px; margin-bottom: 8px;"><span>💭 随机回复 (1~10)</span></div><div style="display: flex; gap: 12px; align-items: center; margin-bottom: 8px;"><span style="font-size:13px;">最小条数</span><input type="number" id="replyCountMinInput" class="member-name-input" value="${replyMsgCountMin}" min="1" max="10" step="1" style="width: 70px;"><span style="font-size:13px;">～ 最大条数</span><input type="number" id="replyCountMaxInput" class="member-name-input" value="${replyMsgCountMax}" min="1" max="10" step="1" style="width: 70px;"></div><div class="data-note" style="margin-top: 4px;">💡 每次回复时随机生成此范围内的消息数量（单人/群聊成员各自独立生效）</div></div></div><div class="manage-fold"><div class="manage-fold-header" onclick="this.parentElement.classList.toggle('open');this.classList.toggle('open')"><span class="fold-arrow">▶</span> <i class="fa-regular fa-envelope"></i> 主动写信</div><div class="manage-fold-body"><div class="flex-between" style="margin-bottom:10px;"><span>✨ 启用主动写信</span><label class="toggle-switch"><input type="checkbox" id="activeLetterEnableToggle" ${activeLetterEnabled?'checked':''}><span class="slider"></span></label></div><div style="margin-bottom:10px;"><span>⏱️ 写信间隔 (小时)</span><div style="display:flex; gap:8px; margin-top:8px;"><input type="number" id="activeLetterMinSecInput" class="member-name-input" value="${(activeLetterMinSec / 3600).toFixed(1)}" step="0.5" min="1" max="168" style="width:70px;"> ~ <input type="number" id="activeLetterMaxSecInput" class="member-name-input" value="${(activeLetterMaxSec / 3600).toFixed(1)}" step="0.1" min="0.1" max="168" style="width:70px;"></div></div><div style="margin-bottom:10px;"><span>📄 信件句子条数 (随机1~20)</span><div style="display:flex; gap:8px; margin-top:8px;"><input type="number" id="activeLetterMinLinesInput" class="member-name-input" value="${activeLetterMinLines}" min="1" max="20" style="width:70px;"> ~ <input type="number" id="activeLetterMaxLinesInput" class="member-name-input" value="${activeLetterMaxLines}" min="1" max="20" style="width:70px;"></div></div><div class="data-note">💡 信的内容会从字卡库中随机抽取，发送后显示在信件历史中并弹窗通知</div></div></div><div class="manage-fold"><div class="manage-fold-header" onclick="this.parentElement.classList.toggle('open');this.classList.toggle('open')"><span class="fold-arrow">▶</span> <i class="fa-solid fa-bell"></i> 消息设置</div><div class="manage-fold-body"><div class="flex-between" style="margin-bottom:10px;"><span>推送通知</span><label class="toggle-switch"><input type="checkbox" id="notificationToggle" ${notificationEnabled?'checked':''}><span class="slider"></span></label></div><button class="sec-btn sec-btn-outline" id="requestNotifPermBtn" style="width:100%;margin-bottom:12px;">请求通知权限</button><div style="margin-bottom:12px;"><div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;"><span style="flex-shrink:0;">我的提示音</span><input type="file" id="mySoundUpload" accept="audio/mpeg" style="flex:1;"></div><div style="margin-bottom:6px;"><div style="display:flex; align-items:center; gap:8px;"><span style="flex-shrink:0; width:70px;">外链地址</span><input type="text" id="mySoundUrlInput" placeholder="https://...mp3" style="flex:1; background:var(--bg-body); border:1px solid var(--border-light); border-radius:20px; padding:6px 12px;"></div></div><div style="display:flex; gap:18px; margin-left:2px;"><button class="small-btn" id="applyMySoundUrl">应用外链</button><button class="small-btn" id="testMySound" title="试听">🎧 试听</button><button class="small-btn" id="clearMySound">清除</button></div></div><div style="margin-bottom:12px;"><div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;"><span style="flex-shrink:0;">Ta的提示音</span><input type="file" id="mengSoundUpload" accept="audio/mpeg" style="flex:1;"></div><div style="margin-bottom:6px;"><div style="display:flex; align-items:center; gap:8px;"><span style="flex-shrink:0; width:70px;">外链地址</span><input type="text" id="mengSoundUrlInput" placeholder="https://...mp3" style="flex:1; background:var(--bg-body); border:1px solid var(--border-light); border-radius:20px; padding:6px 12px;"></div></div><div style="display:flex; gap:18px; margin-left:2px;"><button class="small-btn" id="applyMengSoundUrl">应用外链</button><button class="small-btn" id="testMengSound" title="试听">🎧 试听</button><button class="small-btn" id="clearMengSound">清除</button></div></div><div class="data-note" style="margin-top:4px;">支持上传本地 MP3(小于1MB) 或使用外链地址（http/https）</div></div></div><div class="manage-fold" id="momentsManageFold"><div class="manage-fold-header" onclick="this.parentElement.classList.toggle('open');this.classList.toggle('open')"><span class="fold-arrow">▶</span> <i class="fa-solid fa-globe"></i> 朋友圈管理</div><div class="manage-fold-body"><div style="margin-bottom:20px;"><div style="font-weight:600;margin-bottom:8px;">📅 生成时间与条数</div><div style="display:flex;gap:10px;align-items:center;margin-bottom:8px;"><label>开始时间：</label><input type="time" id="momentsTimeStartInput" value="${momentsTimeStart}" style="background:var(--bg-body);border:1px solid var(--border-light);border-radius:20px;padding:6px;"><label style="margin-left:12px;">结束时间：</label><input type="time" id="momentsTimeEndInput" value="${momentsTimeEnd}" style="background:var(--bg-body);border:1px solid var(--border-light);border-radius:20px;padding:6px;"></div><div class="data-note" style="margin-bottom:12px;">💡 设置每天允许发朋友圈的时间段（在此范围内随机分布）。若开始时间晚于结束时间，视为跨夜。</div><div style="display:flex;gap:10px;align-items:center;margin-bottom:8px;"><label>最少条数：</label><input type="number" id="momentsCountMinInput" min="1" max="10" value="${momentsCountMin}" style="width:70px;background:var(--bg-body);border:1px solid var(--border-light);border-radius:20px;padding:6px;"><label style="margin-left:12px;">最多条数：</label><input type="number" id="momentsCountMaxInput" min="1" max="10" value="${momentsCountMax}" style="width:70px;background:var(--bg-body);border:1px solid var(--border-light);border-radius:20px;padding:6px;"></div><div class="data-note" style="margin-bottom:6px;">💡 每个成员（包括Ta）每天随机发送的条数范围。</div><button class="sec-btn" id="saveMomentsScheduleBtn" style="width:100%;">保存并立即生效</button></div><hr style="margin:12px 0;"><div style="margin-bottom:20px;"><div style="font-weight:600;margin-bottom:8px;">💬 评论速度</div><div style="margin-bottom:12px;font-weight:500;font-size:13px;">初始评论（动态发布后）</div><div style="margin-bottom:8px; display: flex; align-items: center; gap: 8px;"><span>最快间隔 ：</span><input type="number" id="icMinInput" class="msg-input" value="${initialCommentIntervalMin}" step="1" style="width: 70px;background:var(--bg-body);border:1px solid var(--border-light);border-radius:20px;padding:6px;"><span>秒</span></div><div style="margin-bottom:8px; display: flex; align-items: center; gap: 8px;"><span>最慢间隔 ：</span><input type="number" id="icMaxInput" class="msg-input" value="${initialCommentIntervalMax}" step="1" style="width: 70px;background:var(--bg-body);border:1px solid var(--border-light);border-radius:20px;padding:6px;"><span>秒</span></div><hr style="margin:12px 0;"><div style="margin-bottom:12px;font-weight:500;font-size:13px;">回复速度（你评论后Ta的回复）</div><div style="margin-bottom:8px; display: flex; align-items: center; gap: 8px;"><span>最小延迟 ：</span><input type="number" id="replyMinInput" class="msg-input" value="${momentsCommentDelayMin}" step="1" style="width: 70px;background:var(--bg-body);border:1px solid var(--border-light);border-radius:20px;padding:6px;"><span>秒</span></div><div style="margin-bottom:8px; display: flex; align-items: center; gap: 8px;"><span>最大延迟 ：</span><input type="number" id="replyMaxInput" class="msg-input" value="${momentsCommentDelayMax}" step="1" style="width: 70px;background:var(--bg-body);border:1px solid var(--border-light);border-radius:20px;padding:6px;"><span>秒</span></div><div class="data-note">💡 初始评论会在发布后陆续出现，对回复速度的修改立即生效。</div></div><hr style="margin:12px 0;"><div><div style="font-weight:600;margin-bottom:8px;">📍 地点管理</div><div id="momentLocationsManager" style="max-height:180px;overflow-y:auto;margin-bottom:10px;"></div><div style="display:flex;gap:6px;"><input type="text" id="newLocationInput" placeholder="新地点名称" style="flex:1;background:var(--bg-body);border:1px solid var(--border-light);border-radius:20px;padding:6px 12px;"><button class="small-btn primary-outline" id="addLocationBtn"><i class="fa-solid fa-plus"></i> 添加</button></div><div class="data-note" style="margin-top:6px;">💡 修改后立即生效，新动态将随机使用列表中的地点</div></div></div></div><div class="manage-fold"><div class="manage-fold-header" onclick="this.parentElement.classList.toggle('open');this.classList.toggle('open')"><span class="fold-arrow">▶</span> <i class="fa-solid fa-database"></i> 数据</div><div class="manage-fold-body"><div class="button-group"><button class="sec-btn" id="exportDataBtn"><i class="fa-solid fa-file-export"></i> 导出备份</button><button class="sec-btn sec-btn-outline" id="importDataBtn"><i class="fa-solid fa-file-import"></i> 导入备份</button><button class="sec-btn sec-btn-outline" id="viewStorageBtn"><i class="fa-solid fa-hard-drive"></i> 查看储存</button><button class="sec-btn sec-btn-outline" id="resetAllDataBtn" style="background: var(--danger-bg); color: var(--danger-color);"><i class="fa-solid fa-skull-crossbones"></i> 重置所有数据</button></div></div></div><button class="sec-btn" id="closeManage" style="margin-top:12px;width:100%;">关闭</button></div>`;
+                    `<div class="modal-content" style="max-width:580px;padding:12px 16px;"><div class="settings-title" style="margin-bottom:12px;"><i class="fa-solid fa-gear"></i> 设置管理</div><div class="manage-fold"><div class="manage-fold-header" onclick="this.parentElement.classList.toggle('open');this.classList.toggle('open')"><span class="fold-arrow">▶</span> <i class="fa-solid fa-user"></i> 基础信息</div><div class="manage-fold-body"><div class="flex-between" style="margin-bottom:8px;"><span>我的昵称</span><input type="text" id="nickMyInput" value="${escapeHtml(profile.myNick)}" style="width:60%;background:var(--bg-body);border:1px solid var(--border-light);border-radius:20px;padding:6px 12px;"></div><div class="flex-between"><span>Ta的昵称</span><input type="text" id="nickMengInput" value="${escapeHtml(profile.mengNick)}" style="width:60%;background:var(--bg-body);border:1px solid var(--border-light);border-radius:20px;padding:6px 12px;"></div><button class="sec-btn" id="saveNicknamesBtn" style="margin-top:10px;width:100%;">保存昵称</button><div class="data-note" style="margin-top:4px;">💡 点击顶部头像可更换头像</div></div></div><div class="manage-fold"><div class="manage-fold-header" onclick="this.parentElement.classList.toggle('open');this.classList.toggle('open')"><span class="fold-arrow">▶</span> <i class="fa-solid fa-palette"></i> 外观</div><div class="manage-fold-body"><div style="margin-bottom:6px;font-weight:500;">🖼️ 聊天背景更换</div><input type="file" id="bgUploadInput" accept="image/jpeg" style="margin-bottom:10px;"><div class="button-group"><button class="sec-btn" id="applyBgBtn">应用背景</button><button class="sec-btn sec-btn-outline" id="resetBgBtn">恢复默认</button></div><div style="margin-top:16px;margin-bottom:6px;font-weight:500;">📞 通话界面背景</div><input type="file" id="callBgUploadInput" accept="image/jpeg" style="margin-bottom:10px;"><div class="button-group"><button class="sec-btn" id="applyCallBgBtn">应用通话背景</button><button class="sec-btn sec-btn-outline" id="resetCallBgBtn">恢复默认</button></div><div style="margin-top:14px;margin-bottom:6px;font-weight:500;">🫧 气泡CSS</div><textarea id="bubbleCssTextarea" class="textarea-clean" rows="10"></textarea><div class="button-group" style="margin-top:6px;"><button class="sec-btn" id="applyBubbleCss">应用</button><button class="sec-btn sec-btn-outline" id="resetBubbleCss">恢复</button><button class="sec-btn sec-btn-outline" id="loadExampleCssBtn">示例</button></div></div></div><div class="manage-fold"><div class="manage-fold-header" onclick="this.parentElement.classList.toggle('open');this.classList.toggle('open')"><span class="fold-arrow">▶</span> <i class="fa-solid fa-folder-open"></i> 内容库</div><div class="manage-fold-body"><div style="margin-bottom:8px;display:flex;align-items:center;gap:6px;"><span style="font-weight:500;">💬 字卡</span><button class="small-btn primary-outline" id="importGlobalAutoBtn" style="padding:3px 10px;font-size:11px;line-height:1;"><i class="fa-solid fa-file-import"></i> 导入</button><button class="small-btn primary-outline" id="exportGlobalTxtBtn" style="padding:3px 10px;font-size:11px;line-height:1;"><i class="fa-solid fa-file-export"></i> 导出</button><button class="small-btn primary-outline" id="openSmartWordBtn" style="margin-left: auto;"><i class="fa-solid fa-brain"></i> 智能管理</button><input type="file" id="globalImportFileInput" accept=".txt,.json" style="display:none;"></div><div id="wordCountDisplay" style="font-size:12px;color:var(--text-secondary);margin-bottom:6px;">📝 当前 ${wordCardList.length} 条</div><textarea id="wordTextarea" class="textarea-clean" rows="10">${wordCardList.join('\n')}</textarea><div class="button-group" style="margin-top:6px;"><button class="sec-btn" id="batchAddWord">保存</button><button class="sec-btn sec-btn-outline" id="delAllWord">清空</button></div><div class="content-library-toggle-row"><span>😊 表情</span><label class="toggle-switch" style="width:44px;height:22px;"><input type="checkbox" id="emojiDisabledToggle" ${emojiDisabled?'':'checked'}><span class="slider" style="width:44px;height:22px;"></span></label></div><textarea id="emojiTextarea" class="textarea-clean" rows="10">${emojiCardList.join('\n')}</textarea><div class="button-group" style="margin-top:6px;"><button class="sec-btn" id="batchAddEmoji">保存</button><button class="sec-btn sec-btn-outline" id="delAllEmoji">清空</button></div><div class="content-library-toggle-row"><span>🖼️ 图片</span><label class="toggle-switch" style="width:44px;height:22px;"><input type="checkbox" id="imgDisabledToggle" ${imgDisabled?'':'checked'}><span class="slider" style="width:44px;height:22px;"></span></label></div><input type="file" id="uploadImages" multiple accept="image/*" style="margin-bottom:8px;"><div id="imgPreviewList" class="img-grid-fixed"></div><div class="button-group" style="flex-direction:column;gap:6px;"><button class="sec-btn sec-btn-outline" id="deleteSelectedImg" style="width:100%;">删除选中</button><button class="sec-btn sec-btn-outline" id="clearAllImgBtn" style="width:100%;">全部清空</button></div></div></div><div class="manage-fold"><div class="manage-fold-header" onclick="this.parentElement.classList.toggle('open');this.classList.toggle('open')"><span class="fold-arrow">▶</span> <i class="fa-solid fa-sliders"></i> 回复策略</div><div class="manage-fold-body"><div class="flex-between" style="margin-bottom:10px;"><span>已读不回</span><label class="toggle-switch"><input type="checkbox" id="mengIgnoreToggle" ${mengMaybeIgnore?'checked':''}><span class="slider"></span></label></div><div class="flex-between" style="margin-bottom:10px;"><span>主动发消息</span><label class="toggle-switch"><input type="checkbox" id="mengActiveTalkToggle" ${mengActiveTalkEnabled?'checked':''}><span class="slider"></span></label></div><div class="flex-between" style="margin-bottom:10px;"><span>引用回复</span><label class="toggle-switch"><input type="checkbox" id="mengQuoteToggle" ${mengQuoteEnabled?'checked':''}><span class="slider"></span></label></div><div class="flex-between" style="margin-bottom:10px;"><span>显示消息时间</span><label class="toggle-switch"><input type="checkbox" id="showTimeToggle" ${showMessageTimeEnabled?'checked':''}><span class="slider"></span></label></div><div class="flex-between" style="margin-bottom:10px;"><span>组合回复</span><label class="toggle-switch"><input type="checkbox" id="combineRepliesToggle" ${combineRepliesEnabled?'checked':''}><span class="slider"></span></label></div><div class="data-note" style="margin-bottom:10px;">💡 开启后多条字卡回复将合并为一条消息，减少消息刷屏</div><div style="margin-bottom:10px;"><span>⏱️ 最短等待：</span><strong id="replyMinSpeedValue">${Math.round(replyMinDelayMs/1000)}</strong>秒</div><input type="range" id="replyMinSpeedSlider" min="1" max="180" value="${Math.round(replyMinDelayMs/1000)}" style="width:100%;"><div class="data-note" style="margin-top:2px;">💡 实际回复时间将在最短～最长之间随机</div><div style="margin-bottom:10px;"><span>⏱️ 最长等待：</span><strong id="replySpeedValue">${Math.round(replyMaxDelayMs/1000)}</strong>秒</div><input type="range" id="replySpeedSlider" min="3" max="180" value="${Math.round(replyMaxDelayMs/1000)}" style="width:100%;"><div style="margin-top:10px;"><span>⏳ 消息间隔：</span><strong id="interDelayValue">${(replyInterMessageDelayMs/1000).toFixed(1)}</strong>秒</div><input type="range" id="interDelaySlider" min="0" max="7" step="0.5" value="${(replyInterMessageDelayMs/1000).toFixed(1)}" style="width:100%;"><div style="margin-top: 16px; margin-bottom: 8px;"><span><span>⏱️ 主动消息间隔 &nbsp; (秒) &nbsp;～&nbsp; (分钟)</span><div style="display: flex; gap: 8px; margin-top: 12px;"><input type="number" id="activeTalkMinInput" class="member-name-input" value="${activeTalkMinSec}" min="5" max="300" step="1" style="width:70px;"> ~ <input type="number" id="activeTalkMaxInput" class="member-name-input" value="${Math.round(activeTalkMaxSec / 60)}" min="1" max="30" step="1" style="width:70px;"></div></div><div style="margin-top: 16px; margin-bottom: 8px;"><span>💭 随机回复 (1~10)</span></div><div style="display: flex; gap: 12px; align-items: center; margin-bottom: 8px;"><span style="font-size:13px;">最小条数</span><input type="number" id="replyCountMinInput" class="member-name-input" value="${replyMsgCountMin}" min="1" max="10" step="1" style="width: 70px;"><span style="font-size:13px;">～ 最大条数</span><input type="number" id="replyCountMaxInput" class="member-name-input" value="${replyMsgCountMax}" min="1" max="10" step="1" style="width: 70px;"></div><div class="data-note" style="margin-top: 4px;">💡 每次回复时随机生成此范围内的消息数量（单人/群聊成员各自独立生效）</div></div></div><div class="manage-fold"><div class="manage-fold-header" onclick="this.parentElement.classList.toggle('open');this.classList.toggle('open')"><span class="fold-arrow">▶</span> <i class="fa-regular fa-envelope"></i> 主动写信</div><div class="manage-fold-body"><div class="flex-between" style="margin-bottom:10px;"><span>✨ 启用主动写信</span><label class="toggle-switch"><input type="checkbox" id="activeLetterEnableToggle" ${activeLetterEnabled?'checked':''}><span class="slider"></span></label></div><div style="margin-bottom:10px;"><span>⏱️ 写信间隔 (小时)</span><div style="display:flex; gap:8px; margin-top:8px;"><input type="number" id="activeLetterMinSecInput" class="member-name-input" value="${(activeLetterMinSec / 3600).toFixed(1)}" step="0.5" min="1" max="168" style="width:70px;"> ~ <input type="number" id="activeLetterMaxSecInput" class="member-name-input" value="${(activeLetterMaxSec / 3600).toFixed(1)}" step="0.1" min="0.1" max="168" style="width:70px;"></div></div><div style="margin-bottom:10px;"><span>📄 信件句子条数 (随机1~20)</span><div style="display:flex; gap:8px; margin-top:8px;"><input type="number" id="activeLetterMinLinesInput" class="member-name-input" value="${activeLetterMinLines}" min="1" max="20" style="width:70px;"> ~ <input type="number" id="activeLetterMaxLinesInput" class="member-name-input" value="${activeLetterMaxLines}" min="1" max="20" style="width:70px;"></div></div><div class="data-note">💡 信的内容会从字卡库中随机抽取，发送后显示在信件历史中并弹窗通知</div></div></div><div class="manage-fold"><div class="manage-fold-header" onclick="this.parentElement.classList.toggle('open');this.classList.toggle('open')"><span class="fold-arrow">▶</span> <i class="fa-solid fa-bell"></i> 消息设置</div><div class="manage-fold-body"><div class="flex-between" style="margin-bottom:10px;"><span>推送通知</span><label class="toggle-switch"><input type="checkbox" id="notificationToggle" ${notificationEnabled?'checked':''}><span class="slider"></span></label></div><button class="sec-btn sec-btn-outline" id="requestNotifPermBtn" style="width:100%;margin-bottom:12px;">请求通知权限</button><div style="margin-bottom:12px;"><div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;"><span style="flex-shrink:0;">我的提示音</span><input type="file" id="mySoundUpload" accept="audio/mpeg" style="flex:1;"></div><div style="margin-bottom:6px;"><div style="display:flex; align-items:center; gap:8px;"><span style="flex-shrink:0; width:70px;">外链地址</span><input type="text" id="mySoundUrlInput" placeholder="https://...mp3" style="flex:1; background:var(--bg-body); border:1px solid var(--border-light); border-radius:20px; padding:6px 12px;"></div></div><div style="display:flex; gap:18px; margin-left:2px;"><button class="small-btn" id="applyMySoundUrl">应用外链</button><button class="small-btn" id="testMySound" title="试听">🎧 试听</button><button class="small-btn" id="clearMySound">清除</button></div></div><div style="margin-bottom:12px;"><div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;"><span style="flex-shrink:0;">Ta的提示音</span><input type="file" id="mengSoundUpload" accept="audio/mpeg" style="flex:1;"></div><div style="margin-bottom:6px;"><div style="display:flex; align-items:center; gap:8px;"><span style="flex-shrink:0; width:70px;">外链地址</span><input type="text" id="mengSoundUrlInput" placeholder="https://...mp3" style="flex:1; background:var(--bg-body); border:1px solid var(--border-light); border-radius:20px; padding:6px 12px;"></div></div><div style="display:flex; gap:18px; margin-left:2px;"><button class="small-btn" id="applyMengSoundUrl">应用外链</button><button class="small-btn" id="testMengSound" title="试听">🎧 试听</button><button class="small-btn" id="clearMengSound">清除</button></div></div><div class="data-note" style="margin-top:4px;">支持上传本地 MP3(小于1MB) 或使用外链地址（http/https）</div></div></div><div class="manage-fold" id="momentsManageFold"><div class="manage-fold-header" onclick="this.parentElement.classList.toggle('open');this.classList.toggle('open')"><span class="fold-arrow">▶</span> <i class="fa-solid fa-globe"></i> 朋友圈管理</div><div class="manage-fold-body"><div style="margin-bottom:20px;"><div style="font-weight:600;margin-bottom:8px;">📅 生成时间与条数</div><div style="display:flex;gap:10px;align-items:center;margin-bottom:8px;"><label>开始时间：</label><input type="time" id="momentsTimeStartInput" value="${momentsTimeStart}" style="background:var(--bg-body);border:1px solid var(--border-light);border-radius:20px;padding:6px;"><label style="margin-left:12px;">结束时间：</label><input type="time" id="momentsTimeEndInput" value="${momentsTimeEnd}" style="background:var(--bg-body);border:1px solid var(--border-light);border-radius:20px;padding:6px;"></div><div class="data-note" style="margin-bottom:12px;">💡 设置每天允许发朋友圈的时间段（在此范围内随机分布）。若开始时间晚于结束时间，视为跨夜。</div><div style="display:flex;gap:10px;align-items:center;margin-bottom:8px;"><label>最少条数：</label><input type="number" id="momentsCountMinInput" min="1" max="10" value="${momentsCountMin}" style="width:70px;background:var(--bg-body);border:1px solid var(--border-light);border-radius:20px;padding:6px;"><label style="margin-left:12px;">最多条数：</label><input type="number" id="momentsCountMaxInput" min="1" max="10" value="${momentsCountMax}" style="width:70px;background:var(--bg-body);border:1px solid var(--border-light);border-radius:20px;padding:6px;"></div><div class="data-note" style="margin-bottom:6px;">💡 每个成员（包括Ta）每天随机发送的条数范围。</div><button class="sec-btn" id="saveMomentsScheduleBtn" style="width:100%;">保存并立即生效</button></div><hr style="margin:12px 0;"><div style="margin-bottom:20px;"><div style="font-weight:600;margin-bottom:8px;">💬 评论速度</div><div style="margin-bottom:12px;font-weight:500;font-size:13px;">初始评论（动态发布后）</div><div style="margin-bottom:8px; display: flex; align-items: center; gap: 8px;"><span>最快间隔 ：</span><input type="number" id="icMinInput" class="msg-input" value="${initialCommentIntervalMin}" step="1" style="width: 70px;background:var(--bg-body);border:1px solid var(--border-light);border-radius:20px;padding:6px;"><span>秒</span></div><div style="margin-bottom:8px; display: flex; align-items: center; gap: 8px;"><span>最慢间隔 ：</span><input type="number" id="icMaxInput" class="msg-input" value="${initialCommentIntervalMax}" step="1" style="width: 70px;background:var(--bg-body);border:1px solid var(--border-light);border-radius:20px;padding:6px;"><span>秒</span></div><hr style="margin:12px 0;"><div style="margin-bottom:12px;font-weight:500;font-size:13px;">回复速度（你评论后Ta的回复）</div><div style="margin-bottom:8px; display: flex; align-items: center; gap: 8px;"><span>最小延迟 ：</span><input type="number" id="replyMinInput" class="msg-input" value="${momentsCommentDelayMin}" step="1" style="width: 70px;background:var(--bg-body);border:1px solid var(--border-light);border-radius:20px;padding:6px;"><span>秒</span></div><div style="margin-bottom:8px; display: flex; align-items: center; gap: 8px;"><span>最大延迟 ：</span><input type="number" id="replyMaxInput" class="msg-input" value="${momentsCommentDelayMax}" step="1" style="width: 70px;background:var(--bg-body);border:1px solid var(--border-light);border-radius:20px;padding:6px;"><span>秒</span></div><div class="data-note">💡 初始评论会在发布后陆续出现，对回复速度的修改立即生效。</div></div><hr style="margin:12px 0;"><div><div style="font-weight:600;margin-bottom:8px;">📍 地点管理</div><div id="momentLocationsManager" style="max-height:180px;overflow-y:auto;margin-bottom:10px;"></div><div style="display:flex;gap:6px;"><input type="text" id="newLocationInput" placeholder="新地点名称" style="flex:1;background:var(--bg-body);border:1px solid var(--border-light);border-radius:20px;padding:6px 12px;"><button class="small-btn primary-outline" id="addLocationBtn"><i class="fa-solid fa-plus"></i> 添加</button></div><div class="data-note" style="margin-top:6px;">💡 修改后立即生效，新动态将随机使用列表中的地点</div></div></div></div><div class="manage-fold"><div class="manage-fold-header" onclick="this.parentElement.classList.toggle('open');this.classList.toggle('open')"><span class="fold-arrow">▶</span> <i class="fa-solid fa-database"></i> 数据</div><div class="manage-fold-body"><div class="button-group"><button class="sec-btn" id="exportDataBtn"><i class="fa-solid fa-file-export"></i> 导出备份</button><button class="sec-btn sec-btn-outline" id="importDataBtn"><i class="fa-solid fa-file-import"></i> 导入备份</button><button class="sec-btn sec-btn-outline" id="viewStorageBtn"><i class="fa-solid fa-hard-drive"></i> 查看储存</button><button class="sec-btn sec-btn-outline" id="resetAllDataBtn" style="background: var(--danger-bg); color: var(--danger-color);"><i class="fa-solid fa-skull-crossbones"></i> 重置所有数据</button></div></div></div><button class="sec-btn" id="closeManage" style="margin-top:12px;width:100%;">关闭</button></div>`;
                 document.body.appendChild(modalDiv);
                 async function ri() { const c = document.getElementById('imgPreviewList'); if (!c) return; if (!imgCardList
                         .length) { c.innerHTML =
@@ -11348,7 +11448,6 @@
                     updateCallUI(); };
                 document.getElementById('batchAddWord').onclick = () => {
                     const newList = document.getElementById('wordTextarea').value.split(/\r?\n/).filter(l => l.trim());
-                    // 如果新列表为空，询问是否确认清空（防止用户误操作）
                     if (newList.length === 0) {
                         if (!confirm('确定要清空所有字卡吗？')) return;
                     }
@@ -11460,7 +11559,6 @@
                     Object.keys(window.__idbGetSync ? Object.fromEntries(
                         Object.entries(window).filter(() => false)
                     ) : {}).forEach(k => { if(k && k.startsWith('xiayi_member_word_groups_')) keys.push(k); });
-                    // 从 IDB 缓存枚举动态成员字卡key
                     if (typeof _kvCache !== 'undefined') {
                         Object.keys(_kvCache).forEach(k => {
                             if (k && k.startsWith('xiayi_member_word_groups_')) keys.push(k);
@@ -11965,7 +12063,6 @@
                     document.getElementById('closeStorageModal').onclick = () => modal.remove();
                     modal.addEventListener('click', (e) => { if (e.target === modal) modal.remove(); }); try { let
                             localStorageSize = 0;
-                        // 统计 IDB KV 数据大小
                         try {
                             const _kvDb2 = await _openKvDB();
                             const _kvTx2 = _kvDb2.transaction(KV_STORE, 'readonly');
@@ -12023,8 +12120,7 @@
                 
                     const chatContainer = document.getElementById('chatMessages');
                     if (chatContainer) chatContainer.innerHTML = '';
-                    
-                    // 清除 KV IndexedDB 中所有 xiayi_ 开头的键
+               
                     try {
                         const kvDb = await _openKvDB();
                         const kvTx = kvDb.transaction(KV_STORE, 'readwrite');
@@ -12557,8 +12653,7 @@
                 const letterText = letter.textContent || (letter.sentences ? letter.sentences.join('\n') : "");
                 letter.replyMessages = generateReplyMessages(targetMember, letterText);
                 letter.replyTime = Date.now();
-                
-                // 关键修改：只有保存成功才继续，否则回滚状态
+            
                 const saved = saveLetters();
                 if (!saved) {
                     letter.status = 'pending';
@@ -13136,7 +13231,7 @@
                         }
                         playSound('meng');
                     };
-                } else { // custom 模式
+                } else {
                     const lines = questionOrOptions.split(/\r?\n/).filter(l => l.trim().length > 0);
                     if (lines.length < 2) {
                         showToast('自定义选项至少需要两个不同的选项', '⚠️');
@@ -13619,8 +13714,7 @@
                 for (let dayOffset = 1; dayOffset <= maxOfflineDays; dayOffset++) {
                     const targetDate = new Date(now - dayOffset * 86400000);
                     const dateStr = targetDate.toDateString();
-            
-                    // ✅ 移除时间窗口限制：全天候随机生成
+       
                     for (const author of authors) {
                         const existingCount = moments.filter(m =>
                             m.authorId === author.id &&
@@ -13631,7 +13725,6 @@
                         if (needGenerate === 0) continue;
             
                         for (let i = 0; i < needGenerate; i++) {
-                            // 随机生成 0～23 小时，分钟随机
                             const randomHour = Math.floor(Math.random() * 24);
                             const randomMinute = Math.floor(Math.random() * 60);
                             targetDate.setHours(randomHour, randomMinute, 0, 0);
@@ -14813,11 +14906,40 @@
                 renderMessages(); 
                 refreshActiveLetterTimers(); }
 
-            function openGroupMemberPanel() { const modal = document.createElement('div');
+            function openGroupMemberPanel() {
+                const modal = document.createElement('div');
                 modal.className = 'modal';
                 modal.id = 'groupMemberPanelModal';
-                modal.innerHTML =
-                    `<div class="modal-content" style="max-width:600px;max-height:90vh;"><div class="settings-title" style="display:flex;align-items:center;justify-content:space-between;"><span><i class="fa-solid fa-users"></i> 群聊成员管理</span><span class="badge badge-info">${groupMembers.length} 位 | ${getActiveMembers().length} 活跃</span></div><div class="settings-section" style="margin-bottom:16px;background:var(--accent-light);"><div class="flex-between"><span><strong>🔛 启用群聊模式</strong></span><label class="toggle-switch"><input type="checkbox" id="groupChatEnableSwitch" ${groupChatEnabled?'checked':''}><span class="slider"></span></label></div><div class="data-note" style="margin-top:8px;">${groupChatEnabled?'✅ 当前【群聊模式】，多位成员共同回复。':'❌ 当前【单人模式】，只有Ta回复。'}</div></div><div class="settings-section" style="margin-bottom:16px;background:var(--accent-light);"><div class="flex-between"><span><strong>🌏 允许群成员发朋友圈</strong></span><label class="toggle-switch"><input type="checkbox" id="groupMomentsSwitch" ${groupMembersMomentsEnabled?'checked':''}><span class="slider"></span></label></div><div class="data-note" style="margin-top:8px;">${groupMembersMomentsEnabled?'✅ 启用的群成员可以发布朋友圈（即使群聊未开启）':'❌ 仅Ta可以发布朋友圈'}</div></div><div id="memberListContainer" style="max-height:55vh;overflow-y:auto;padding-right:4px;"></div><div class="button-group" style="margin-top:12px;"><button class="sec-btn" id="addNewMemberBtn"><i class="fa-solid fa-plus"></i> 添加成员</button><button class="sec-btn sec-btn-outline" id="closeGroupMemberPanel">关闭</button></div></div>`;
+                modal.innerHTML = `<div class="modal-content" style="max-width:600px;max-height:90vh;">
+                    <div class="settings-title" style="display:flex;align-items:center;justify-content:space-between;">
+                        <span><i class="fa-solid fa-users"></i> 群聊成员管理</span>
+                        <span class="badge badge-info">${groupMembers.length} 位 | ${getActiveMembers().length} 活跃</span>
+                    </div>
+                    <div class="settings-section" style="margin-bottom:16px;background:var(--accent-light);">
+                        <div class="flex-between">
+                            <span><strong>🔛 启用群聊模式</strong></span>
+                            <label class="toggle-switch"><input type="checkbox" id="groupChatEnableSwitch" ${groupChatEnabled?'checked':''}><span class="slider"></span></label>
+                        </div>
+                        <div class="data-note" style="margin-top:8px;">${groupChatEnabled?'✅ 当前【群聊模式】，多位成员共同回复。':'❌ 当前【单人模式】，只有Ta回复。'}</div>
+                    </div>
+                    <div class="settings-section" style="margin-bottom:16px;background:var(--accent-light);">
+                        <div class="flex-between">
+                            <span><strong>🌏 允许群成员发朋友圈</strong></span>
+                            <label class="toggle-switch"><input type="checkbox" id="groupMomentsSwitch" ${groupMembersMomentsEnabled?'checked':''}><span class="slider"></span></label>
+                        </div>
+                        <div class="data-note" style="margin-top:8px;">${groupMembersMomentsEnabled?'✅ 启用的群成员可以发布朋友圈（即使群聊未开启）':'❌ 仅Ta可以发布朋友圈'}</div>
+                    </div>
+                    <!-- ✅ 新增：私聊模式数据保存提示（小字，位于成员卡片上方） -->
+                    <div style="margin: 6px 0 10px 0; padding: 6px 12px; background: var(--accent-light); border-radius: 8px; font-size: 12px; border-left: 3px solid var(--accent-color); color: var(--text-secondary); display: flex; align-items: center; gap: 4px;">
+                        <span>💡</span>
+                        <span>私聊模式退出时自动保存对话，请通过「退出私聊」按钮正常退出，避免私聊模式下刷新页面后导致数据丢失。</span>
+                    </div>
+                    <div id="memberListContainer" style="max-height:55vh;overflow-y:auto;padding-right:4px;"></div>
+                    <div class="button-group" style="margin-top:12px;">
+                        <button class="sec-btn" id="addNewMemberBtn"><i class="fa-solid fa-plus"></i> 添加成员</button>
+                        <button class="sec-btn sec-btn-outline" id="closeGroupMemberPanel">关闭</button>
+                    </div>
+                </div>`;
                 document.body.appendChild(modal);
                 renderMemberListInPanel();
                 document.getElementById('addNewMemberBtn').onclick = () => { const name = prompt('请输入新成员昵称：', '新成员'); if (name &&
@@ -14857,7 +14979,7 @@
                         <div class="member-info">
                             <div class="member-name-row">
                                 <input type="text" class="member-name-input" value="${escapeHtml(member.name)}" data-member-id="${member.id}" data-field="name">
-                                <button class="private-chat-btn" data-member-id="${member.id}" data-member-name="${escapeHtml(member.name)}" data-member-avatar="${member.avatar || ''}">私聊</button>
+                                <button class="small-btn primary-outline member-private-chat-btn" data-member-id="${member.id}" data-member-name="${escapeHtml(member.name)}" data-member-avatar="${member.avatar || ''}"><i class="fa-solid fa-comments"></i> 私聊</button>
                             </div>
                             <span class="member-word-count">📝 ${member.wordCardList?member.wordCardList.length:0} 条</span>
                             <div class="member-toggle-row">
@@ -14900,7 +15022,6 @@
                     </div>`;
                 }).join('');
             
-                // 原有事件绑定（全部保留）
                 container.querySelectorAll('.member-avatar-clickable').forEach(el => el.addEventListener('click', () => changeMemberAvatar(el.dataset.memberId)));
                 container.querySelectorAll('.member-name-input').forEach(input => input.addEventListener('change', () => {
                     updateMemberName(input.dataset.memberId, input.value);
@@ -14972,7 +15093,7 @@
                 });
             
                 // ===== 新增：私聊按钮点击事件 =====
-                container.querySelectorAll('.private-chat-btn').forEach(btn => {
+                container.querySelectorAll('.member-private-chat-btn').forEach(btn => {
                     btn.addEventListener('click', function(e) {
                         e.stopPropagation();
                         const memberId = this.dataset.memberId;
@@ -15288,8 +15409,7 @@
                 function renderGroupTabs() {
                     const container = document.getElementById('smartGroupTabs');
                     if (!container) return;
-                
-                    // 设置换行、间距、高度限制
+            
                     container.style.display = 'flex';
                     container.style.flexWrap = 'wrap';
                     container.style.gap = '6px 8px';
@@ -15307,8 +15427,7 @@
                         html += `<button class="theme-pill-btn ${currentGroupId === group.id ? 'active' : ''}" data-group="${group.id}">${group.name} (${count})</button>`;
                     }
                     container.innerHTML = html;
-                
-                    // 事件绑定（保持不变）
+              
                     container.querySelectorAll('[data-group]').forEach(btn => {
                         btn.addEventListener('click', () => {
                             currentGroupId = btn.dataset.group;
@@ -16065,7 +16184,6 @@
             window.openSmartWordManagerForMember = openSmartWordManagerForMember;
             
             window.onload = () => {
-                // 先预加载 IDB KV 缓存，完成后再初始化应用（保证 idbGetSync 同步读取有数据）
                 _preloadKvCache().then(() => { _runAppInit(); });
             };
 
@@ -16189,18 +16307,16 @@
                         updateGroupChatToggleUI();
                     }
                 };
-            } // end _runAppInit
+            } 
             window.addEventListener('beforeunload', () => { 
                 updateLastOnlineTime(); 
                 stopActiveLetterTimer(); 
-                // 如果私聊模式激活，自动退出，清理备份
                 if (window.__xiayiPrivateModeActive && typeof window.exitPrivateChat === 'function') {
                     window.exitPrivateChat();
                 }
             });
             // ======================== 私聊功能模块 ========================
             (function(){
-                // 私有存储管理
                 const PRIVATE_MSG_PREFIX = 'xiayi_private_messages_';
                 const GLOBAL_BACKUP_KEY = 'xiayi_global_backup';
                 
@@ -16341,8 +16457,7 @@
                         originalMengNick = core.profile.mengNick;
                         originalMengAvatar = core.profile.mengAvatar;
                     }
-                
-                    // 处理头像
+            
                     let realAvatarUrl = memberAvatar || core.defaultAvatar();
                     if (realAvatarUrl && typeof realAvatarUrl === 'string' && realAvatarUrl.startsWith('__IMG_ID__')) {
                         if (typeof window.resolveImageUrl === 'function') {
@@ -16372,7 +16487,6 @@
                         };
                     }
                 
-                    // 加载私聊记录
                     let privateMessages = loadPrivateMessages(memberId);
                     if (!privateMessages || privateMessages.length === 0) {
                         privateMessages = [];
@@ -16387,10 +16501,9 @@
                             msg.senderAvatar = realAvatarUrl;
                         }
                     });
-                
-                    // 备份全局消息
+            
                     originalMessagesBackup = core.getGlobalMessages ? JSON.parse(JSON.stringify(core.getGlobalMessages())) : [...core.messages];
-                    backupGlobalMessages(originalMessagesBackup);   // localStorage 备份
+                    backupGlobalMessages(originalMessagesBackup);   
                 
                     // ===== 新增：同时保存到 sessionStorage（页面级备份） =====
                     try {
@@ -16400,20 +16513,17 @@
                 
                     window.__xiayiPrivateModeActive = true;
                     window.__privateTargetMember = privateTargetMember;
-                
-                    // 切换到私聊消息
+          
                     if (core.setGlobalMessages) {
                         core.setGlobalMessages(privateMessages, false);
                     } else {
                         core.messages = privateMessages;
                     }
-                
-                    // 修改 profile 显示
+              
                     core.profile.mengNick = memberName;
                     core.profile.mengAvatar = realAvatarUrl;
                     core.updateProfileUI();
                 
-                    // 更新左侧头像
                     const leftAvatarImg = document.querySelector('.left-profile .avatar-img');
                     if (leftAvatarImg && realAvatarUrl) {
                         leftAvatarImg.src = realAvatarUrl;
@@ -16424,8 +16534,7 @@
                 
                     currentPrivateMemberId = memberId;
                     currentPrivateMemberName = memberName;
-                
-                    // 保存原始全局函数并覆盖
+         
                     if (typeof window.originalSaveMessagesImmediately === 'undefined') {
                         window.originalSaveMessagesImmediately = window.saveMessagesImmediately;
                     }
@@ -16452,15 +16561,13 @@
                 
                 function exitPrivateChat() {
                     if (!core || !currentPrivateMemberId) return;
-                
-                    // 恢复全局保存函数
+          
                     if (window.originalSaveMessagesImmediately) {
                         window.saveMessagesImmediately = window.originalSaveMessagesImmediately;
                         delete window.originalSaveMessagesImmediately;
                     }
                     if (core) core.saveMessagesImmediately = window.saveMessagesImmediately;
-                
-                    // 保存当前私聊消息
+             
                     const currentMessages = core.getGlobalMessages ? core.getGlobalMessages() : (core.messages || []);
                     savePrivateMessages(currentPrivateMemberId, currentMessages);
                 
@@ -16472,11 +16579,9 @@
                             globalMessages = JSON.parse(sessBackup);
                         } catch(e) {}
                     }
-                    // 若 sessionStorage 无备份，则从 localStorage 恢复
                     if (!globalMessages || !globalMessages.length) {
-                        globalMessages = restoreGlobalMessages();   // localStorage 备份
+                        globalMessages = restoreGlobalMessages(); 
                     }
-                    // 最后降级：从 IndexedDB 默认读取
                     if (!globalMessages || !globalMessages.length) {
                         try {
                             const saved = localStorage.getItem('xiayi_messages');
@@ -16485,12 +16590,10 @@
                         } catch(e) { globalMessages = []; }
                     }
                 
-                    // 恢复群聊模式（如果之前开启了）
                     if (originalGroupChatEnabled && core.setGroupChatEnabled) {
                         core.setGroupChatEnabled(true);
                     }
-                
-                    // 覆盖全局消息
+            
                     if (core.setGlobalMessages) {
                         core.setGlobalMessages(globalMessages, true);
                     } else {
@@ -16501,8 +16604,7 @@
                     window.__xiayiPrivateModeActive = false;
                     window.__privateTargetMember = null;
                     restoreGlobalProfileFromBackup();
-                
-                    // 恢复 profile
+              
                     if (originalMengNick !== null && core.profile) {
                         core.profile.mengNick = originalMengNick;
                         core.profile.mengAvatar = originalMengAvatar;
@@ -16530,34 +16632,29 @@
                 }
                
                 window.addEventListener('load', function() {
-                    // 如果存在私聊备份，说明上次未正常退出私聊，直接清除，避免自动恢复profile
-                    // ===== 修改：检测私聊状态并自动恢复全局消息 =====
                     const privateModeActive = sessionStorage.getItem('xiayi_private_mode_active');
                     if (privateModeActive === 'true') {
-                        // 1. 尝试从 sessionStorage 恢复全局消息
                         const messagesBackup = sessionStorage.getItem('xiayi_private_global_messages');
                         if (messagesBackup) {
                             try {
                                 const restored = JSON.parse(messagesBackup);
                                 if (Array.isArray(restored) && restored.length) {
-                                    // 覆盖当前内存中的 messages
                                     if (core && core.setGlobalMessages) {
-                                        core.setGlobalMessages(restored, true);   // 跳过自动保存，直接替换
+                                        core.setGlobalMessages(restored, true);  
                                     } else if (core) {
                                         core.messages = restored;
                                     }
                                     if (core) {
-                                        core.saveMessagesImmediately();   // 持久化到 IndexedDB
+                                        core.saveMessagesImmediately();   
                                         core.renderMessages();
                                         console.log('✅ 已从备份恢复全局对话（自动退出私聊）');
                                         if (typeof showToast === 'function') {
-                                            showToast('📱 已自动退出私聊模式，回到全局对话', '💬');
+                                            showToast('已自动退出私聊模式，回到全局对话', '💬');
                                         }
                                     }
                                 }
                             } catch(e) { /* 忽略解析错误 */ }
                         }
-                        // 2. 清除所有私聊状态标志
                         sessionStorage.removeItem('xiayi_private_mode_active');
                         sessionStorage.removeItem('xiayi_private_global_messages');
                         sessionStorage.removeItem('xiayi_private_global_backup');
