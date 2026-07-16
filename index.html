@@ -6874,7 +6874,11 @@
             }
 
             function loadActiveLetterConfig() {
-                activeLetterEnabled = idbGetSync(STORAGE.activeLetterEnabled) === 'true';
+                // ---- 开关从 localStorage 统一设置读取 ----
+                const settings = loadReplySettings();
+                activeLetterEnabled = settings.activeLetterEnabled ?? false;
+            
+                // 其他配置（间隔、行数）仍从 IndexedDB 读取
                 let min = parseInt(idbGetSync(STORAGE.activeLetterMinSec));
                 if (!isNaN(min) && min >= 3600) activeLetterMinSec = min;
                 else activeLetterMinSec = 3600;
@@ -6892,7 +6896,10 @@
                 if (activeLetterMinSec < 3600) activeLetterMinSec = 3600;
                 if (activeLetterMaxSec < activeLetterMinSec) activeLetterMaxSec = activeLetterMinSec;
                 
-                idbSet(STORAGE.activeLetterEnabled, activeLetterEnabled);
+                // ---- 开关保存到 localStorage 统一设置 ----
+                setReplySetting('activeLetterEnabled', activeLetterEnabled);
+                
+                // 其他配置仍保存到 IndexedDB
                 idbSet(STORAGE.activeLetterMinSec, activeLetterMinSec);
                 idbSet(STORAGE.activeLetterMaxSec, activeLetterMaxSec);
                 idbSet(STORAGE.activeLetterMinLines, activeLetterMinLines);
@@ -7379,26 +7386,110 @@
                 modal.addEventListener('click', (e) => { if (e.target === modal) modal.remove(); });
             }
             
-            function loadData() { try { const sm = idbGetSync(STORAGE.messages); if (sm) messages = JSON.parse(sm); } catch (
-                    e) { messages = []; } try { const w = idbGetSync(STORAGE.wordCards); if (w) wordCardList = JSON.parse(w); } catch (
-                    e) {} try { const e = idbGetSync(STORAGE.emojiCards); if (e) emojiCardList = JSON.parse(e); } catch (ex) {} try { const
-                        imgs = idbGetSync(STORAGE.imgCards); if (imgs) imgCardList = JSON.parse(imgs); } catch (ex) {} try { const
-                        prof = idbGetSync(STORAGE.profile); if (prof) profile = JSON.parse(prof); } catch (ex) {} try { const sl =
-                        idbGetSync(STORAGE.letters); if (sl) letters = JSON.parse(sl); else letters = []; } catch (ex) { letters = []; } const
-                    ig = idbGetSync(STORAGE.mengMaybeIgnore);
-                mengMaybeIgnore = ig === 'true'; const at = idbGetSync(STORAGE.mengActiveTalk);
-                mengActiveTalkEnabled = at === 'true'; try { const smd = idbGetSync(STORAGE.replyMaxDelayMs); if (smd && !
-                        isNaN(parseInt(smd))) { let v = parseInt(smd); if (v < REPLY_MIN_DELAY_MS) v = REPLY_MIN_DELAY_MS; if (v >
-                        300000) v = 300000;
-                    replyMaxDelayMs = v; } } catch (e) { replyMaxDelayMs = 20000; } try { const smin = idbGetSync(STORAGE
-                        .replyMinDelayMs); if (smin && !isNaN(parseInt(smin))) { let v = parseInt(smin); if (v < 1000) v = 1000; if (
-                            v > replyMaxDelayMs) v = replyMaxDelayMs;
-                    replyMinDelayMs = v; } } catch (e) { replyMinDelayMs = 3000; } try { const sid = idbGetSync(STORAGE
-                        .replyInterMessageDelayMs); if (sid !== null && !isNaN(parseInt(sid))) { let v = parseInt(sid); if (v < 0) v =
-                            0; if (v > 15000) v = 15000;
-                    replyInterMessageDelayMs = v; } } catch (e) { replyInterMessageDelayMs = 2500; } const sq = idbGetSync(
-                    STORAGE.mengQuoteEnabled);
-                mengQuoteEnabled = sq !== null ? sq === 'true' : true;
+            // ===== 新增：回复策略设置统一存储 =====
+            const REPLY_SETTINGS_KEY = 'xiayi_reply_settings';
+            
+            function loadReplySettings() {
+                try {
+                    const raw = localStorage.getItem(REPLY_SETTINGS_KEY);
+                    return raw ? JSON.parse(raw) : {};
+                } catch {
+                    return {};
+                }
+            }
+            
+            function saveReplySettings(settings) {
+                localStorage.setItem(REPLY_SETTINGS_KEY, JSON.stringify(settings));
+            }
+            
+            // 获取单个设置（带默认值）
+            function getReplySetting(key, defaultValue) {
+                const settings = loadReplySettings();
+                return settings.hasOwnProperty(key) ? settings[key] : defaultValue;
+            }
+            
+            // 设置单个并保存
+            function setReplySetting(key, value) {
+                const settings = loadReplySettings();
+                settings[key] = value;
+                saveReplySettings(settings);
+            }
+            function loadData() {
+                try {
+                    const sm = idbGetSync(STORAGE.messages);
+                    if (sm) messages = JSON.parse(sm);
+                } catch (e) { messages = []; }
+            
+                try {
+                    const w = idbGetSync(STORAGE.wordCards);
+                    if (w) wordCardList = JSON.parse(w);
+                } catch (e) {}
+            
+                try {
+                    const e = idbGetSync(STORAGE.emojiCards);
+                    if (e) emojiCardList = JSON.parse(e);
+                } catch (ex) {}
+            
+                try {
+                    const imgs = idbGetSync(STORAGE.imgCards);
+                    if (imgs) imgCardList = JSON.parse(imgs);
+                } catch (ex) {}
+            
+                try {
+                    const prof = idbGetSync(STORAGE.profile);
+                    if (prof) profile = JSON.parse(prof);
+                } catch (ex) {}
+            
+                try {
+                    const sl = idbGetSync(STORAGE.letters);
+                    if (sl) letters = JSON.parse(sl);
+                    else letters = [];
+                } catch (ex) { letters = []; }
+            
+                // ---- 使用 localStorage 统一读取回复策略设置 ----
+                const settings = loadReplySettings();
+                mengMaybeIgnore = settings.mengMaybeIgnore ?? false;
+                mengActiveTalkEnabled = settings.mengActiveTalkEnabled ?? false;
+                mengQuoteEnabled = settings.mengQuoteEnabled ?? true;   // 默认开启
+                showMessageTimeEnabled = settings.showMessageTimeEnabled ?? true;
+                combineRepliesEnabled = settings.combineRepliesEnabled ?? false;
+                activeLetterEnabled = settings.activeLetterEnabled ?? false;
+            
+                // 应用显示时间设置（替代原来的 loadShowMessageTimeSetting）
+                updateShowTimeAttribute();
+            
+                // 原有其他加载（保留）
+                try {
+                    const smd = idbGetSync(STORAGE.replyMaxDelayMs);
+                    if (smd && !isNaN(parseInt(smd))) {
+                        let v = parseInt(smd);
+                        if (v < REPLY_MIN_DELAY_MS) v = REPLY_MIN_DELAY_MS;
+                        if (v > 300000) v = 300000;
+                        replyMaxDelayMs = v;
+                    }
+                } catch (e) { replyMaxDelayMs = 20000; }
+            
+                try {
+                    const smin = idbGetSync(STORAGE.replyMinDelayMs);
+                    if (smin && !isNaN(parseInt(smin))) {
+                        let v = parseInt(smin);
+                        if (v < 1000) v = 1000;
+                        if (v > replyMaxDelayMs) v = replyMaxDelayMs;
+                        replyMinDelayMs = v;
+                    }
+                } catch (e) { replyMinDelayMs = 3000; }
+            
+                try {
+                    const sid = idbGetSync(STORAGE.replyInterMessageDelayMs);
+                    if (sid !== null && !isNaN(parseInt(sid))) {
+                        let v = parseInt(sid);
+                        if (v < 0) v = 0;
+                        if (v > 15000) v = 15000;
+                        replyInterMessageDelayMs = v;
+                    }
+                } catch (e) { replyInterMessageDelayMs = 2500; }
+            
+                // 其他设置（从 idb 加载）
                 myMessageSoundUrl = idbGetSync(STORAGE.myMessageSound);
                 mengMessageSoundUrl = idbGetSync(STORAGE.mengMessageSound);
                 loadNotificationSetting();
@@ -7406,11 +7497,18 @@
                 loadPersonalPatList();
                 loadGroupChatSetting();
                 loadGroupMembers();
-                loadGroupMomentsSetting(); if (idbGetSync(STORAGE.offlineGenerated) === 'true') { idbRemove(
-                        STORAGE.offlineGenerated);
-                    offlineGeneratedHandled = false; } const ed = idbGetSync(STORAGE.emojiDisabled);
-                emojiDisabled = ed === 'true'; const id = idbGetSync(STORAGE.imgDisabled);
+                loadGroupMomentsSetting();
+            
+                if (idbGetSync(STORAGE.offlineGenerated) === 'true') {
+                    idbRemove(STORAGE.offlineGenerated);
+                    offlineGeneratedHandled = false;
+                }
+            
+                const ed = idbGetSync(STORAGE.emojiDisabled);
+                emojiDisabled = ed === 'true';
+                const id = idbGetSync(STORAGE.imgDisabled);
                 imgDisabled = id === 'true';
+            
                 loadBubbleFontSize();
                 updateProfileUI();
                 renderMessages();
@@ -7420,35 +7518,61 @@
                 loadCustomBackground();
                 loadPuzzleData();
                 ensurePuzzleGridUpToDate();
-                setTimeout(checkPuzzleConditions, 500); if (mengActiveTalkEnabled) startActiveTalkTimer(); else
-                stopActiveTalkTimer();
-                loadShowMessageTimeSetting(); const imMode = idbGetSync('xiayi_immersive_mode');
+                setTimeout(checkPuzzleConditions, 500);
+                if (mengActiveTalkEnabled) startActiveTalkTimer();
+                else stopActiveTalkTimer();
+            
+                // 沉浸式模式
+                const imMode = idbGetSync('xiayi_immersive_mode');
                 immersiveMode = imMode === 'true';
-                applyImmersiveMode(); const cr = idbGetSync(STORAGE.combineReplies);
-                combineRepliesEnabled = cr === 'true'; try { const sm = idbGetSync(MOMENTS_STORAGE_KEY); if (sm) moments =
-                        JSON.parse(sm); else moments = []; } catch (e) { moments = []; } const icmin = idbGetSync(STORAGE
-                    .initialCommentIntervalMin); if (icmin !== null && !isNaN(parseInt(icmin))) { initialCommentIntervalMin = Math.max(
-                        1, parseInt(icmin)); } const icmax = idbGetSync(STORAGE.initialCommentIntervalMax); if (icmax !==
-                    null && !isNaN(parseInt(icmax))) { initialCommentIntervalMax = Math.max(initialCommentIntervalMin, parseInt(
-                        icmax)); } const rpmin = idbGetSync(STORAGE.momentsCommentDelayMin); if (rpmin !== null && !isNaN(
-                        parseInt(rpmin))) { momentsCommentDelayMin = Math.max(2, parseInt(rpmin)); } const rpmax = idbGetSync(
-                    STORAGE.momentsCommentDelayMax); if (rpmax !== null && !isNaN(parseInt(rpmax))) { momentsCommentDelayMax = Math
-                    .max(momentsCommentDelayMin, parseInt(rpmax)); } const ts = idbGetSync(STORAGE.momentsTimeStart); if (
-                    ts) momentsTimeStart = ts; const te = idbGetSync(STORAGE.momentsTimeEnd); if (te) momentsTimeEnd =
-                te; const cnMin = idbGetSync(STORAGE.momentsCountMin); if (cnMin && !isNaN(parseInt(cnMin)))
-                    momentsCountMin = Math.max(1, parseInt(cnMin)); const cnMax = idbGetSync(STORAGE.momentsCountMax); if (
-                        cnMax && !isNaN(parseInt(cnMax))) momentsCountMax = Math.max(momentsCountMin, parseInt(cnMax));
-                lastOnlineTime = parseFloat(idbGetSync('xiayi_lastOnlineTime') || '0'); 
+                applyImmersiveMode();
+            
+                // 加载朋友圈相关
+                try {
+                    const sm = idbGetSync(MOMENTS_STORAGE_KEY);
+                    if (sm) moments = JSON.parse(sm);
+                    else moments = [];
+                } catch (e) { moments = []; }
+            
+                const icmin = idbGetSync(STORAGE.initialCommentIntervalMin);
+                if (icmin !== null && !isNaN(parseInt(icmin))) {
+                    initialCommentIntervalMin = Math.max(1, parseInt(icmin));
+                }
+                const icmax = idbGetSync(STORAGE.initialCommentIntervalMax);
+                if (icmax !== null && !isNaN(parseInt(icmax))) {
+                    initialCommentIntervalMax = Math.max(initialCommentIntervalMin, parseInt(icmax));
+                }
+                const rpmin = idbGetSync(STORAGE.momentsCommentDelayMin);
+                if (rpmin !== null && !isNaN(parseInt(rpmin))) {
+                    momentsCommentDelayMin = Math.max(2, parseInt(rpmin));
+                }
+                const rpmax = idbGetSync(STORAGE.momentsCommentDelayMax);
+                if (rpmax !== null && !isNaN(parseInt(rpmax))) {
+                    momentsCommentDelayMax = Math.max(momentsCommentDelayMin, parseInt(rpmax));
+                }
+                const ts = idbGetSync(STORAGE.momentsTimeStart);
+                if (ts) momentsTimeStart = ts;
+                const te = idbGetSync(STORAGE.momentsTimeEnd);
+                if (te) momentsTimeEnd = te;
+                const cnMin = idbGetSync(STORAGE.momentsCountMin);
+                if (cnMin && !isNaN(parseInt(cnMin))) momentsCountMin = Math.max(1, parseInt(cnMin));
+                const cnMax = idbGetSync(STORAGE.momentsCountMax);
+                if (cnMax && !isNaN(parseInt(cnMax))) momentsCountMax = Math.max(momentsCountMin, parseInt(cnMax));
+            
+                lastOnlineTime = parseFloat(idbGetSync('xiayi_lastOnlineTime') || '0');
                 if (!idbGetSync(STORAGE.lastMomentsViewTime)) {
                     idbSet(STORAGE.lastMomentsViewTime, '0');
                 }
+            
                 globalGroupsConfig = loadGlobalWordGroups();
                 loadActiveTalkConfig();
                 loadActiveLetterConfig();
-                if (activeLetterEnabled) startActiveLetterTimer();            
+                if (activeLetterEnabled) startActiveLetterTimer();
+            
                 if (idbGetSync('undefined') !== null) {
                     idbRemove('undefined');
                 }
+            
                 let savedMin = idbGetSync(STORAGE.replyMsgCountMin);
                 let savedMax = idbGetSync(STORAGE.replyMsgCountMax);
                 let minVal = 1, maxVal = 3;
@@ -7465,6 +7589,7 @@
                 }
                 replyMsgCountMin = minVal;
                 replyMsgCountMax = maxVal;
+            
                 let needsSaveLetters = false;
                 for (let letter of letters) {
                     if (!letter.textContent && letter.sentences && letter.sentences.length) {
@@ -7479,6 +7604,7 @@
                 if (needsSaveLetters) {
                     saveLetters();
                 }
+            
                 try {
                     const storedRaw = idbGetSync(STORAGE.letters);
                     if (storedRaw) {
@@ -7557,6 +7683,18 @@
             let currentCheckinMemberId = null;
             let autoCheckinTimer = null;
             
+            // ===== 自动打卡开关 localStorage 存储（新增） =====
+            const AUTO_CHECKIN_PREFIX = 'checkin_auto_';
+            
+            function getAutoEnabledFromLocal(memberId) {
+                const val = localStorage.getItem(AUTO_CHECKIN_PREFIX + memberId);
+                if (val === null) return null;   
+                return val === 'true';
+            }
+            
+            function setAutoEnabledToLocal(memberId, enabled) {
+                localStorage.setItem(AUTO_CHECKIN_PREFIX + memberId, String(enabled));
+            }
             function loadAllCheckinData() {
                 const data = idbGetSync(CHECKIN_STORAGE_KEY);
                 if (data) {
@@ -7603,6 +7741,12 @@
                     }
                     if (needSave) saveAllCheckinData(all);
                 }
+            
+                const localEnabled = getAutoEnabledFromLocal(memberId);
+                if (localEnabled !== null) {
+                    all[memberId].auto.enabled = localEnabled;
+                }
+            
                 return all[memberId];
             }
             
@@ -7702,7 +7846,9 @@
                 data.auto.enabled = enabled;
                 data.auto.minInterval = Math.max(10, Math.min(86400, minSec));
                 data.auto.maxInterval = Math.max(data.auto.minInterval, Math.min(86400, maxSec));
-
+           
+                setAutoEnabledToLocal(memberId, enabled);
+            
                 if (enabled) {
                     data.auto.lastDate = new Date().toDateString();
                     saveMemberCheckinData(memberId, data);
@@ -7919,7 +8065,6 @@
                 }
             }
             
-            <!-- 修改后的 buildCheckinMemberSelect 函数（位于 <script> 内） -->
             function buildCheckinMemberSelect() {
                 const select = document.getElementById('checkinMemberSelect');
                 if (!select) return;
@@ -8510,7 +8655,6 @@
                 }
             }
             
-            // ========== 构建横向切换的文字库 ==========
             function buildDoodleTabs() {
                 const lettersPanel = document.getElementById('doodleLettersPanel');
                 const emojisPanel = document.getElementById('doodleEmojisPanel');
@@ -9459,7 +9603,6 @@
                     }); 
                 });
                 
-                // ========== 🆕 收藏朋友圈按钮 ==========
                 container.querySelectorAll('.favorite-moment-btn').forEach(btn => {
                     btn.addEventListener('click', async (e) => {
                         e.stopPropagation();
@@ -10471,7 +10614,6 @@
                         'chatMessages'); if (chatContainer) { const statusElements = chatContainer.querySelectorAll('.msg-status');
                         statusElements.forEach(el => { el.textContent = '已读'; }); } } }
 
-            // ---------- 修复 iOS 音频播放（复用+预加载+解锁） ----------
             let myAudioElement = null;
             let mengAudioElement = null;
             let audioUnlocked = false;
@@ -11675,24 +11817,34 @@
                     };
                     r.readAsText(imp.files[0]);
                 };
-                document.getElementById('mengIgnoreToggle').addEventListener('change', e => { mengMaybeIgnore = e.target
-                    .checked;
-                    saveMengIgnoreSetting(); });
-                document.getElementById('mengActiveTalkToggle')?.addEventListener('change', e => { 
-                    mengActiveTalkEnabled = e.target.checked;
-                    saveMengActiveTalkSetting(); 
-                    if (mengActiveTalkEnabled) startActiveTalkTimer(); 
-                    else stopActiveTalkTimer(); 
+                document.getElementById('mengIgnoreToggle').addEventListener('change', e => {
+                    const checked = e.target.checked;
+                    mengMaybeIgnore = checked;
+                    setReplySetting('mengMaybeIgnore', checked);
                 });
-                document.getElementById('mengQuoteToggle')?.addEventListener('change', e => { mengQuoteEnabled = e.target
-                    .checked;
-                    saveMengQuoteSetting(); });
-                document.getElementById('combineRepliesToggle')?.addEventListener('change', e => { combineRepliesEnabled = e
-                        .target.checked;
-                    idbSet(STORAGE.combineReplies, combineRepliesEnabled); });
-                document.getElementById('showTimeToggle')?.addEventListener('change', e => { showMessageTimeEnabled = e.target
-                    .checked;
-                    saveShowMessageTimeSetting(); }); const bta = document.getElementById('bubbleCssTextarea');
+                document.getElementById('mengActiveTalkToggle')?.addEventListener('change', e => {
+                    const checked = e.target.checked;
+                    mengActiveTalkEnabled = checked;
+                    setReplySetting('mengActiveTalkEnabled', checked);
+                    if (checked) startActiveTalkTimer();
+                    else stopActiveTalkTimer();
+                });
+                document.getElementById('mengQuoteToggle')?.addEventListener('change', e => {
+                    const checked = e.target.checked;
+                    mengQuoteEnabled = checked;
+                    setReplySetting('mengQuoteEnabled', checked);
+                });
+                document.getElementById('combineRepliesToggle')?.addEventListener('change', e => {
+                    const checked = e.target.checked;
+                    combineRepliesEnabled = checked;
+                    setReplySetting('combineRepliesEnabled', checked);
+                });
+                document.getElementById('showTimeToggle')?.addEventListener('change', e => {
+                    const checked = e.target.checked;
+                    showMessageTimeEnabled = checked;
+                    setReplySetting('showMessageTimeEnabled', checked);
+                    updateShowTimeAttribute(); 
+                }); const bta = document.getElementById('bubbleCssTextarea');
                 bta.value = idbGetSync(STORAGE.customBubbleCSS) || '';
                 document.getElementById('applyBubbleCss').onclick = () => { applyCustomBubbleCSS(bta.value);
                     checkPuzzleConditions(); };
@@ -11987,8 +12139,8 @@
                 if (activeLetterEnableToggle) {
                     activeLetterEnableToggle.addEventListener('change', (e) => {
                         activeLetterEnabled = e.target.checked;
-                        saveActiveLetterConfig();
-                        refreshActiveLetterTimers();  
+                        saveActiveLetterConfig();          
+                        refreshActiveLetterTimers();
                     });
                 }
                 const activeLetterMinSecInput = document.getElementById('activeLetterMinSecInput');
@@ -15092,7 +15244,6 @@
                     });
                 });
             
-                // ===== 新增：私聊按钮点击事件 =====
                 container.querySelectorAll('.member-private-chat-btn').forEach(btn => {
                     btn.addEventListener('click', function(e) {
                         e.stopPropagation();
@@ -16286,7 +16437,6 @@
                     miniWin.style.top = top + 'px';
                 }               
                 bindMiniSizeButton();
-                // ===== 新增：暴露核心 API 给私聊模块 =====
                 window.__xiayiCore = {
                     messages: messages,
                     profile: profile,
@@ -16505,7 +16655,6 @@
                     originalMessagesBackup = core.getGlobalMessages ? JSON.parse(JSON.stringify(core.getGlobalMessages())) : [...core.messages];
                     backupGlobalMessages(originalMessagesBackup);   
                 
-                    // ===== 新增：同时保存到 sessionStorage（页面级备份） =====
                     try {
                         sessionStorage.setItem('xiayi_private_global_messages', JSON.stringify(originalMessagesBackup));
                         sessionStorage.setItem('xiayi_private_mode_active', 'true');
@@ -16571,7 +16720,6 @@
                     const currentMessages = core.getGlobalMessages ? core.getGlobalMessages() : (core.messages || []);
                     savePrivateMessages(currentPrivateMemberId, currentMessages);
                 
-                    // ===== 修改：优先从 sessionStorage 恢复全局消息 =====
                     let globalMessages = null;
                     const sessBackup = sessionStorage.getItem('xiayi_private_global_messages');
                     if (sessBackup) {
@@ -16612,7 +16760,6 @@
                         if (typeof core.updateCallUI === 'function') core.updateCallUI();
                     }
                 
-                    // ===== 新增：清除 sessionStorage 私聊标志 =====
                     sessionStorage.removeItem('xiayi_private_mode_active');
                     sessionStorage.removeItem('xiayi_private_global_messages');
                     sessionStorage.removeItem('xiayi_private_global_backup');
