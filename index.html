@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>ta · 灵犀对话</title>
+    <title>灵犀对话</title>
     <link rel="shortcut icon" href="icon.png" type="image/png">
     <link rel="icon" href="icon.png" type="image/png">
     <link rel="apple-touch-icon" href="icon.png">
@@ -2948,24 +2948,24 @@
             position: fixed;
             right: 12px;
             top: 38%;
-            width: 26px;
-            height: 26px;
+            width: 18px;              /* 从 26px → 18px */
+            height: 18px;             /* 从 26px → 18px */
             border-radius: 50%;
             background: var(--card-bg);
             backdrop-filter: blur(12px);
             border: 1px solid var(--border-light);
             color: var(--text-secondary);
-            font-size: 10px;
+            font-size: 7px;           /* 从 10px → 7px */
             cursor: pointer;
             z-index: 150;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
             transition: all 0.25s ease;
         }
         .immersive-toggle i {
-            font-size: 10px;
+            font-size: 7px;           /* 从 10px → 7px */
             line-height: 1;
         }
         .immersive-toggle:hover {
@@ -5469,7 +5469,13 @@
             })();
 
             function getAuthorAvatar(authorId) {
-                if (authorId === 'meng' || authorId === 'other') { return profile.mengAvatar || defaultAvatar(); }
+                if (authorId === 'meng' || authorId === 'other') {
+                    // 私聊模式下使用原始头像
+                    if (window.__xiayiPrivateModeActive && window.__xiayiOriginalMengData) {
+                        return window.__xiayiOriginalMengData.avatar || defaultAvatar();
+                    }
+                    return profile.mengAvatar || defaultAvatar();
+                }    
                 if (authorId === 'me') { return profile.myAvatar || defaultAvatar(); }
                 const member = groupMembers.find(m => m.id === authorId);
                 return member ? (member.avatar || defaultAvatar()) : defaultAvatar();
@@ -6874,11 +6880,9 @@
             }
 
             function loadActiveLetterConfig() {
-                // ---- 开关从 localStorage 统一设置读取 ----
                 const settings = loadReplySettings();
                 activeLetterEnabled = settings.activeLetterEnabled ?? false;
             
-                // 其他配置（间隔、行数）仍从 IndexedDB 读取
                 let min = parseInt(idbGetSync(STORAGE.activeLetterMinSec));
                 if (!isNaN(min) && min >= 3600) activeLetterMinSec = min;
                 else activeLetterMinSec = 3600;
@@ -6896,10 +6900,8 @@
                 if (activeLetterMinSec < 3600) activeLetterMinSec = 3600;
                 if (activeLetterMaxSec < activeLetterMinSec) activeLetterMaxSec = activeLetterMinSec;
                 
-                // ---- 开关保存到 localStorage 统一设置 ----
                 setReplySetting('activeLetterEnabled', activeLetterEnabled);
-                
-                // 其他配置仍保存到 IndexedDB
+               
                 idbSet(STORAGE.activeLetterMinSec, activeLetterMinSec);
                 idbSet(STORAGE.activeLetterMaxSec, activeLetterMaxSec);
                 idbSet(STORAGE.activeLetterMinLines, activeLetterMinLines);
@@ -7386,7 +7388,6 @@
                 modal.addEventListener('click', (e) => { if (e.target === modal) modal.remove(); });
             }
             
-            // ===== 新增：回复策略设置统一存储 =====
             const REPLY_SETTINGS_KEY = 'xiayi_reply_settings';
             
             function loadReplySettings() {
@@ -7401,14 +7402,12 @@
             function saveReplySettings(settings) {
                 localStorage.setItem(REPLY_SETTINGS_KEY, JSON.stringify(settings));
             }
-            
-            // 获取单个设置（带默认值）
+           
             function getReplySetting(key, defaultValue) {
                 const settings = loadReplySettings();
                 return settings.hasOwnProperty(key) ? settings[key] : defaultValue;
             }
             
-            // 设置单个并保存
             function setReplySetting(key, value) {
                 const settings = loadReplySettings();
                 settings[key] = value;
@@ -7446,19 +7445,16 @@
                     else letters = [];
                 } catch (ex) { letters = []; }
             
-                // ---- 使用 localStorage 统一读取回复策略设置 ----
                 const settings = loadReplySettings();
                 mengMaybeIgnore = settings.mengMaybeIgnore ?? false;
                 mengActiveTalkEnabled = settings.mengActiveTalkEnabled ?? false;
-                mengQuoteEnabled = settings.mengQuoteEnabled ?? true;   // 默认开启
+                mengQuoteEnabled = settings.mengQuoteEnabled ?? true;   
                 showMessageTimeEnabled = settings.showMessageTimeEnabled ?? true;
                 combineRepliesEnabled = settings.combineRepliesEnabled ?? false;
                 activeLetterEnabled = settings.activeLetterEnabled ?? false;
             
-                // 应用显示时间设置（替代原来的 loadShowMessageTimeSetting）
                 updateShowTimeAttribute();
-            
-                // 原有其他加载（保留）
+           
                 try {
                     const smd = idbGetSync(STORAGE.replyMaxDelayMs);
                     if (smd && !isNaN(parseInt(smd))) {
@@ -7489,7 +7485,6 @@
                     }
                 } catch (e) { replyInterMessageDelayMs = 2500; }
             
-                // 其他设置（从 idb 加载）
                 myMessageSoundUrl = idbGetSync(STORAGE.myMessageSound);
                 mengMessageSoundUrl = idbGetSync(STORAGE.mengMessageSound);
                 loadNotificationSetting();
@@ -7521,13 +7516,11 @@
                 setTimeout(checkPuzzleConditions, 500);
                 if (mengActiveTalkEnabled) startActiveTalkTimer();
                 else stopActiveTalkTimer();
-            
-                // 沉浸式模式
+           
                 const imMode = idbGetSync('xiayi_immersive_mode');
                 immersiveMode = imMode === 'true';
                 applyImmersiveMode();
             
-                // 加载朋友圈相关
                 try {
                     const sm = idbGetSync(MOMENTS_STORAGE_KEY);
                     if (sm) moments = JSON.parse(sm);
@@ -7683,7 +7676,6 @@
             let currentCheckinMemberId = null;
             let autoCheckinTimer = null;
             
-            // ===== 自动打卡开关 localStorage 存储（新增） =====
             const AUTO_CHECKIN_PREFIX = 'checkin_auto_';
             
             function getAutoEnabledFromLocal(memberId) {
@@ -7997,39 +7989,38 @@
                     }
                 }
             
+                // 在 renderCheckinPanelUI() 中
                 const autoToggle = document.getElementById('autoCheckinToggle');
                 const configDiv = document.getElementById('autoCheckinConfig');
                 const minInput = document.getElementById('autoMinInterval');
                 const maxInput = document.getElementById('autoMaxInterval');
+                
                 if (autoToggle) {
                     autoToggle.checked = data.auto.enabled;
                     configDiv.style.display = data.auto.enabled ? 'block' : 'none';
                     minInput.value = (data.auto.minInterval / 60).toFixed(1);
                     maxInput.value = (data.auto.maxInterval / 60).toFixed(1);
-                }
-                const saveBtn = document.getElementById('saveAutoConfigBtn');
-                if (saveBtn && !saveBtn._bound) {
-                    saveBtn._bound = true;
-                    saveBtn.onclick = () => {
-                        const enabled = autoToggle.checked;
-                        let minMinutes = parseFloat(minInput.value);
-                        let maxMinutes = parseFloat(maxInput.value);
+                
+                    // 🔥 开关变化时自动保存（包括间隔时间）
+                    autoToggle.onchange = function() {
+                        const enabled = this.checked;
+                        configDiv.style.display = enabled ? 'block' : 'none';
+                
+                        // 读取间隔（分钟），做合法性校验
+                        const minMinutes = parseFloat(minInput.value);
+                        const maxMinutes = parseFloat(maxInput.value);
                         if (isNaN(minMinutes) || isNaN(maxMinutes) || minMinutes <= 0 || maxMinutes < minMinutes) {
-                            showToast('间隔范围需为有效正数（分钟），且最小值 ≤ 最大值', '⚠️');
+                            showToast('间隔值无效，请重新输入', '⚠️');
+                            this.checked = !enabled;            
+                            configDiv.style.display = this.checked ? 'block' : 'none';
                             return;
                         }
-                        minMinutes = Math.max(0.5, Math.min(1440, minMinutes));
-                        maxMinutes = Math.max(minMinutes, Math.min(1440, maxMinutes));
+                
+                        // 转换并保存
                         const minSec = Math.round(minMinutes * 60);
                         const maxSec = Math.round(maxMinutes * 60);
                         saveMemberAutoConfig(currentCheckinMemberId, enabled, minSec, maxSec);
-                        renderCheckinPanelUI();
-                    };
-                }
-                if (autoToggle && !autoToggle._changeBound) {
-                    autoToggle._changeBound = true;
-                    autoToggle.onchange = () => {
-                        configDiv.style.display = autoToggle.checked ? 'block' : 'none';
+                        showToast('自动打卡设置已保存', '');
                     };
                 }
             
@@ -9180,8 +9171,13 @@
                 }
                 let authorName, authorAvatar;
                 if (authorId === 'meng' || authorId === 'other') {
-                    authorName = profile.mengNick || 'ta';
-                    authorAvatar = profile.mengAvatar || defaultAvatar();
+                    if (window.__xiayiPrivateModeActive && window.__xiayiOriginalMengData) {
+                        authorName = window.__xiayiOriginalMengData.nick || 'ta';
+                        authorAvatar = window.__xiayiOriginalMengData.avatar || defaultAvatar();
+                    } else {
+                        authorName = profile.mengNick || 'ta';
+                        authorAvatar = profile.mengAvatar || defaultAvatar();
+                    }
                 } else {
                     const member = groupMembers.find(m => m.id === authorId);
                     if (!member) return null;
@@ -9344,6 +9340,12 @@
                 const sorted = [...moments].sort((a, b) => b.timestamp - a.timestamp);
                 let html = '';
                 for (const moment of sorted) {
+                    // 🔥 新增：私聊模式下替换作者昵称（头像由 getAuthorAvatar 处理）
+                    let displayName = moment.authorName;
+                    if (window.__xiayiPrivateModeActive && moment.authorId === 'meng' && window.__xiayiOriginalMengData) {
+                        displayName = window.__xiayiOriginalMengData.nick || displayName;
+                    }
+            
                     const avatarUrl = getAuthorAvatar(moment.authorId) || moment.authorAvatar || defaultAvatar();
                     const avatarSrc = isImgIdRef(avatarUrl) ? (avatarCache.get(avatarUrl) || defaultAvatar()) : avatarUrl;
             
@@ -9391,12 +9393,12 @@
                     }
             
                     const deleteBtnHtml = `<button class="moment-delete-btn" data-moment-id="${moment.id}" style="position:absolute;top:8px;right:10px;background:none;border:none;font-size:18px;cursor:pointer;color:var(--text-tertiary);padding:4px;" title="删除"><i class="fa-solid fa-trash-can"></i></button>`;
-          
+            
                     html += `<div class="moment-card" data-moment-id="${moment.id}" style="position:relative;">
                                 <div class="moment-header">
-                                    <img src="${avatarSrc}" alt="${escapeHtml(moment.authorName)}">
+                                    <img src="${avatarSrc}" alt="${escapeHtml(displayName)}">          <!-- 替换为 displayName -->
                                     <div class="moment-author">
-                                        <span class="moment-author-name">${escapeHtml(moment.authorName)}</span>
+                                        <span class="moment-author-name">${escapeHtml(displayName)}</span>  <!-- 替换为 displayName -->
                                         <span class="moment-time-loc">
                                             <span>${formatMsgTime(moment.timestamp)}</span>
                                             ${moment.location ? `<span>· ${escapeHtml(moment.location)}</span>` : ''}
@@ -11606,7 +11608,7 @@
                     document.getElementById('wordTextarea').value = '';
                     const countEl = document.getElementById('wordCountDisplay');
                     if (countEl) countEl.innerHTML = '📝 当前 0 条';
-                    showToast('🗑️ 已清空所有字卡', '🗑️');
+                    showToast(' 已清空所有字卡', '');
                 };
                 document.getElementById('batchAddEmoji').onclick = () => {
                     const newList = document.getElementById('emojiTextarea').value.split(/\r?\n/).filter(l => l.trim());
@@ -11615,14 +11617,14 @@
                     }
                     emojiCardList = newList;
                     saveEmojiCards();
-                    showToast(`✅ 已保存 ${emojiCardList.length} 个表情`, '😊');
+                    showToast(`✅ 已保存 ${emojiCardList.length} 个表情`, '');
                 };
                 document.getElementById('delAllEmoji').onclick = () => {
                     if (!confirm('确定要清空所有表情吗？此操作不可撤销！')) return;
                     emojiCardList = [];
                     saveEmojiCards();
                     document.getElementById('emojiTextarea').value = '';
-                    showToast('🗑️ 已清空所有表情', '🗑️');
+                    showToast('️ 已清空所有表情', '');
                 };
                 document.getElementById('uploadImages').onchange = async e => { const files = Array.from(e.target.files); for (
                         const f of files) { const b64 = await new Promise((res, rej) => { const r = new FileReader();
@@ -15038,11 +15040,13 @@
             function saveGroupChatSetting() { idbSet(STORAGE.groupChatEnabled, groupChatEnabled);
                 updateGroupChatToggleUI(); }
 
-            function loadGroupMomentsSetting() { groupMembersMomentsEnabled = idbGetSync(STORAGE
-                    .groupMembersMomentsEnabled) === 'true'; }
+            function loadGroupMomentsSetting() {
+                groupMembersMomentsEnabled = localStorage.getItem(STORAGE.groupMembersMomentsEnabled) === 'true';
+            }
 
-            function saveGroupMomentsSetting() { idbSet(STORAGE.groupMembersMomentsEnabled,
-                groupMembersMomentsEnabled); }
+            function saveGroupMomentsSetting() {
+                localStorage.setItem(STORAGE.groupMembersMomentsEnabled, String(groupMembersMomentsEnabled));
+            }
 
             function updateGroupChatToggleUI() { const btn = document.getElementById('groupChatToggleBtn'); if (!btn) return; if (
                     groupChatEnabled) { btn.classList.add('group-active');
@@ -16604,8 +16608,14 @@
                     backupGlobalProfileForPrivate();
                 
                     if (originalMengNick === null && core.profile) {
+                        // 在 enterPrivateChat 中
                         originalMengNick = core.profile.mengNick;
                         originalMengAvatar = core.profile.mengAvatar;
+                        // 额外保存到全局
+                        window.__xiayiOriginalMengData = {
+                            nick: originalMengNick,
+                            avatar: originalMengAvatar
+                        };
                     }
             
                     let realAvatarUrl = memberAvatar || core.defaultAvatar();
@@ -16812,35 +16822,8 @@
                 });
                 
                 function decorateMemberCards() {
-                    if (!core) core = window.__xiayiCore;
-                    if (!core || !core.groupMembers) return;
-                    document.querySelectorAll('.member-card').forEach((card) => {
-                        if (card.dataset.privateEnhanced === '1') return;
-                        const input = card.querySelector('.member-name-input');
-                        if (!input) return;
-                        const memberId = card.dataset.memberId;
-                        const member = core.groupMembers.find(m => m.id === memberId);
-                        const memberName = member ? member.name : (input.value || input.placeholder || '成员');
-                        const memberAvatar = member ? member.avatar : null;
-                        let row = card.querySelector('.member-name-row');
-                        if (!row) {
-                            row = document.createElement('div');
-                            row.className = 'member-name-row';
-                            input.parentNode.insertBefore(row, input);
-                            row.appendChild(input);
-                        }
-                        if (row.querySelector('.private-chat-btn')) return;
-                        const btn = document.createElement('button');
-                        btn.className = 'private-chat-btn';
-                        btn.textContent = '私聊';
-                        btn.type = 'button';
-                        btn.onclick = (e) => {
-                            e.stopPropagation();
-                            enterPrivateChat(memberName, memberAvatar, memberId);
-                        };
-                        row.appendChild(btn);
-                        card.dataset.privateEnhanced = '1';
-                    });
+                    // 此函数已废弃，成员卡片由 renderMemberListInPanel 渲染带图标的私聊按钮
+                    // 保留空函数以兼容已有调用
                 }
                 
                 function onMessagesChanged() {
